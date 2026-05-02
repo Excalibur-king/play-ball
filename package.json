@@ -10,11 +10,15 @@
     "assets:generate": "node scripts/generate-premium-assets.mjs",
     "content:build": "pnpm --filter @tower-rogue/game-content content:build",
     "build": "turbo build",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "test:core": "pnpm --filter @tower-rogue/game-core test",
+    "test:content": "pnpm --filter @tower-rogue/game-content test"
   },
   "devDependencies": {
     "sharp": "^0.34.5",
     "turbo": "^2.6.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.5"
   }
 }

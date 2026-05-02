@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.content.json --noEmit",
     "content:build": "rm -rf .content-build && tsc -p tsconfig.content.json && node scripts/export-content.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.content.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.content.json --noEmit",
+    "test": "vitest run"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
