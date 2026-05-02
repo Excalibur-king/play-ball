@@ -1,11 +1,24 @@
 import {
-  plantDefinitions,
-  plantFusionDefinitions,
-  plantTypes,
-  waves,
-  zombieDefinitions
+  buildingDefinitions,
+  buildingTypes,
+  directorRules,
+  enemyDefinitions,
+  enemyTypes,
+  strategyCardDefinitions,
+  strategyCardIds,
+  volcanoMap,
+  volcanoWaves
 } from './index'
-import type { PlantFusionKey, PlantType, ZombieType } from './index'
+import type {
+  BuildingDefinition,
+  BuildingId,
+  DirectorRuleDef,
+  EnemyDefinition,
+  EnemyId,
+  StrategyCardDefinition,
+  StrategyCardId,
+  VolcanoWaveDefinition
+} from './index'
 
 export type ContentValidationIssue = {
   path: string
@@ -14,10 +27,12 @@ export type ContentValidationIssue = {
 
 export function validateCurrentContent(): ContentValidationIssue[] {
   const issues: ContentValidationIssue[] = []
-  validatePlants(issues)
-  validateFusions(issues)
-  validateZombies(issues)
+  validateMap(issues)
+  validateBuildings(issues)
+  validateEnemies(issues)
+  validateStrategyCards(issues)
   validateWaves(issues)
+  validateDirectorRules(issues)
   return issues
 }
 
@@ -30,117 +45,220 @@ export function assertValidCurrentContent(): void {
   }
 }
 
-function validatePlants(issues: ContentValidationIssue[]) {
-  const seen = new Set<PlantType>()
+function validateMap(issues: ContentValidationIssue[]) {
+  requireNonEmptyString(issues, 'volcanoMap.id', volcanoMap.id)
+  requirePositiveNumber(issues, 'volcanoMap.laneCount', volcanoMap.laneCount)
+  requirePositiveNumber(issues, 'volcanoMap.baseHp', volcanoMap.baseHp)
+  requirePositiveNumber(issues, 'volcanoMap.initialPurchasePower', volcanoMap.initialPurchasePower)
 
-  for (const plantType of plantTypes) {
-    if (seen.has(plantType)) {
-      issues.push({ path: `plantTypes.${plantType}`, message: 'Plant type is duplicated.' })
-    }
-
-    seen.add(plantType)
+  if (!enemyDefinitions[volcanoMap.bossId as EnemyId]) {
+    issues.push({ path: 'volcanoMap.bossId', message: `Unknown boss enemy "${volcanoMap.bossId}".` })
   }
 
-  for (const [plantType, definition] of Object.entries(plantDefinitions) as Array<[PlantType, (typeof plantDefinitions)[PlantType]]>) {
-    if (!plantTypes.includes(plantType)) {
-      issues.push({ path: `plantDefinitions.${plantType}`, message: 'Plant definition is missing from plantTypes.' })
-    }
+  const [minMinutes, maxMinutes] = volcanoMap.runTimeMinutes
+  requirePositiveNumber(issues, 'volcanoMap.runTimeMinutes.0', minMinutes)
+  requirePositiveNumber(issues, 'volcanoMap.runTimeMinutes.1', maxMinutes)
 
-    if (definition.type !== plantType) {
-      issues.push({ path: `plantDefinitions.${plantType}.type`, message: 'Plant definition type must match its record key.' })
-    }
-
-    if (definition.cost < 0) {
-      issues.push({ path: `plantDefinitions.${plantType}.cost`, message: 'Plant cost cannot be negative.' })
-    }
-
-    if (definition.hp < 0) {
-      issues.push({ path: `plantDefinitions.${plantType}.hp`, message: 'Plant hp cannot be negative.' })
-    }
-
-    if (definition.cooldown < 0) {
-      issues.push({ path: `plantDefinitions.${plantType}.cooldown`, message: 'Plant cooldown cannot be negative.' })
-    }
-
-    if (definition.role === 'damage') {
-      requirePositiveNumber(issues, `plantDefinitions.${plantType}.damage`, definition.damage)
-      requirePositiveNumber(issues, `plantDefinitions.${plantType}.fireInterval`, definition.fireInterval)
-      requirePositiveNumber(issues, `plantDefinitions.${plantType}.projectileSpeed`, definition.projectileSpeed)
-    }
-
-    if (definition.role === 'economy') {
-      requirePositiveNumber(issues, `plantDefinitions.${plantType}.sunInterval`, definition.sunInterval)
-      requirePositiveNumber(issues, `plantDefinitions.${plantType}.sunAmount`, definition.sunAmount)
-    }
-
-    if (definition.role === 'blocker' && definition.hp < 200) {
-      issues.push({ path: `plantDefinitions.${plantType}.hp`, message: 'Blocker plants should have enough hp to hold a lane.' })
-    }
+  if (minMinutes > maxMinutes) {
+    issues.push({ path: 'volcanoMap.runTimeMinutes', message: 'Minimum run time cannot exceed maximum run time.' })
   }
 }
 
-function validateFusions(issues: ContentValidationIssue[]) {
-  for (const [fusionKey, definition] of Object.entries(plantFusionDefinitions) as Array<
-    [PlantFusionKey, (typeof plantFusionDefinitions)[PlantFusionKey]]
-  >) {
-    if (definition.key !== fusionKey) {
-      issues.push({ path: `plantFusionDefinitions.${fusionKey}.key`, message: 'Fusion key must match its record key.' })
+function validateBuildings(issues: ContentValidationIssue[]) {
+  validateUniqueIds(issues, 'buildingTypes', buildingTypes)
+
+  for (const [buildingId, definition] of Object.entries(buildingDefinitions) as Array<[BuildingId, BuildingDefinition]>) {
+    if (!buildingTypes.includes(buildingId)) {
+      issues.push({ path: `buildingDefinitions.${buildingId}`, message: 'Building definition is missing from buildingTypes.' })
     }
 
-    const [first, second] = definition.components
-    const expectedParts = fusionKey.split('+')
-
-    if (expectedParts.length !== 2 || expectedParts[0] !== first || expectedParts[1] !== second) {
-      issues.push({ path: `plantFusionDefinitions.${fusionKey}.components`, message: 'Fusion components must match the fusion key.' })
+    if (definition.id !== buildingId) {
+      issues.push({ path: `buildingDefinitions.${buildingId}.id`, message: 'Building definition id must match its record key.' })
     }
 
-    for (const component of definition.components) {
-      if (!plantDefinitions[component]) {
-        issues.push({ path: `plantFusionDefinitions.${fusionKey}.components`, message: `Unknown plant component "${component}".` })
+    requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.cost`, definition.cost)
+    requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.hp`, definition.hp)
+    requireNonEmptyArray(issues, `buildingDefinitions.${buildingId}.tags`, definition.tags)
+    requireNonEmptyArray(issues, `buildingDefinitions.${buildingId}.specialEffectHooks`, definition.specialEffectHooks)
+
+    if (definition.type === 'energy') {
+      requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.purchasePowerPerTick`, definition.purchasePowerPerTick)
+      requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.productionInterval`, definition.productionInterval)
+    }
+
+    if (definition.type === 'attack') {
+      requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.attackPower`, definition.attackPower)
+      requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.attackInterval`, definition.attackInterval)
+      requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.attackRange`, definition.attackRange)
+
+      if (!definition.canTargetGround && !definition.canTargetFlying) {
+        issues.push({ path: `buildingDefinitions.${buildingId}`, message: 'Attack buildings must target at least one enemy movement type.' })
       }
     }
+
+    if (definition.type === 'defense' && !definition.canBlockGround) {
+      issues.push({ path: `buildingDefinitions.${buildingId}.canBlockGround`, message: 'Defense buildings should block ground enemies.' })
+    }
+
+    if (definition.upgrade) {
+      requirePositiveNumber(issues, `buildingDefinitions.${buildingId}.upgrade.cost`, definition.upgrade.cost)
+    }
   }
 }
 
-function validateZombies(issues: ContentValidationIssue[]) {
-  for (const [zombieType, definition] of Object.entries(zombieDefinitions) as Array<[ZombieType, (typeof zombieDefinitions)[ZombieType]]>) {
-    if (definition.type !== zombieType) {
-      issues.push({ path: `zombieDefinitions.${zombieType}.type`, message: 'Zombie definition type must match its record key.' })
+function validateEnemies(issues: ContentValidationIssue[]) {
+  validateUniqueIds(issues, 'enemyTypes', enemyTypes)
+
+  for (const [enemyId, definition] of Object.entries(enemyDefinitions) as Array<[EnemyId, EnemyDefinition]>) {
+    if (!enemyTypes.includes(enemyId)) {
+      issues.push({ path: `enemyDefinitions.${enemyId}`, message: 'Enemy definition is missing from enemyTypes.' })
     }
 
-    requirePositiveNumber(issues, `zombieDefinitions.${zombieType}.hp`, definition.hp)
-    requirePositiveNumber(issues, `zombieDefinitions.${zombieType}.speed`, definition.speed)
-    requirePositiveNumber(issues, `zombieDefinitions.${zombieType}.damage`, definition.damage)
-    requirePositiveNumber(issues, `zombieDefinitions.${zombieType}.attackInterval`, definition.attackInterval)
+    if (definition.id !== enemyId) {
+      issues.push({ path: `enemyDefinitions.${enemyId}.id`, message: 'Enemy definition id must match its record key.' })
+    }
+
+    requirePositiveNumber(issues, `enemyDefinitions.${enemyId}.hp`, definition.hp)
+    requirePositiveNumber(issues, `enemyDefinitions.${enemyId}.speed`, definition.speed)
+    requirePositiveNumber(issues, `enemyDefinitions.${enemyId}.baseDamage`, definition.baseDamage)
+    requireNonNegativeNumber(issues, `enemyDefinitions.${enemyId}.buildingDamage`, definition.buildingDamage)
+    requireNonNegativeNumber(issues, `enemyDefinitions.${enemyId}.attackInterval`, definition.attackInterval)
+    requireNonEmptyArray(issues, `enemyDefinitions.${enemyId}.tags`, definition.tags)
+    requireNonEmptyArray(issues, `enemyDefinitions.${enemyId}.counterBy`, definition.counterBy)
+
+    if (definition.buildingDamage > 0) {
+      requirePositiveNumber(issues, `enemyDefinitions.${enemyId}.attackInterval`, definition.attackInterval)
+    }
+
+    if (definition.flying && definition.blockable) {
+      issues.push({ path: `enemyDefinitions.${enemyId}.blockable`, message: 'Flying enemies should not be blockable.' })
+    }
+  }
+}
+
+function validateStrategyCards(issues: ContentValidationIssue[]) {
+  validateUniqueIds(issues, 'strategyCardIds', strategyCardIds)
+
+  for (const [cardId, definition] of Object.entries(strategyCardDefinitions) as Array<[StrategyCardId, StrategyCardDefinition]>) {
+    if (!strategyCardIds.includes(cardId)) {
+      issues.push({ path: `strategyCardDefinitions.${cardId}`, message: 'Strategy card definition is missing from strategyCardIds.' })
+    }
+
+    if (definition.id !== cardId) {
+      issues.push({ path: `strategyCardDefinitions.${cardId}.id`, message: 'Strategy card id must match its record key.' })
+    }
+
+    requireNonEmptyArray(issues, `strategyCardDefinitions.${cardId}.tags`, definition.tags)
+    requireNonEmptyArray(issues, `strategyCardDefinitions.${cardId}.synergy`, definition.synergy)
+    requireNonEmptyString(issues, `strategyCardDefinitions.${cardId}.description`, definition.description)
+    requireNonEmptyString(issues, `strategyCardDefinitions.${cardId}.recommendReason`, definition.recommendReason)
+    requireNonEmptyString(issues, `strategyCardDefinitions.${cardId}.effect.kind`, definition.effect.kind)
+
+    for (const [pressureTag, score] of Object.entries(definition.solves)) {
+      if (typeof score !== 'number' || score <= 0 || score > 1) {
+        issues.push({ path: `strategyCardDefinitions.${cardId}.solves.${pressureTag}`, message: 'Solve score must be greater than 0 and no more than 1.' })
+      }
+    }
   }
 }
 
 function validateWaves(issues: ContentValidationIssue[]) {
-  if (waves.length === 0) {
-    issues.push({ path: 'waves', message: 'At least one wave is required.' })
+  const wavesToValidate: readonly VolcanoWaveDefinition[] = volcanoWaves
+
+  if (wavesToValidate.length === 0) {
+    issues.push({ path: 'volcanoWaves', message: 'At least one wave is required.' })
   }
 
-  waves.forEach((wave, waveIndex) => {
-    requirePositiveNumber(issues, `waves.${waveIndex}.totalZombies`, wave.totalZombies)
-    requirePositiveNumber(issues, `waves.${waveIndex}.spawnInterval`, wave.spawnInterval)
-    requirePositiveNumber(issues, `waves.${waveIndex}.zombieHpMultiplier`, wave.zombieHpMultiplier)
-
-    if (wave.mix.length === 0) {
-      issues.push({ path: `waves.${waveIndex}.mix`, message: 'Wave mix cannot be empty.' })
+  wavesToValidate.forEach((wave, waveIndex) => {
+    if (wave.mapId !== volcanoMap.id) {
+      issues.push({ path: `volcanoWaves.${waveIndex}.mapId`, message: `Unknown map "${wave.mapId}".` })
     }
 
-    wave.mix.forEach((entry, mixIndex) => {
-      if (!zombieDefinitions[entry.type]) {
-        issues.push({ path: `waves.${waveIndex}.mix.${mixIndex}.type`, message: `Unknown zombie type "${entry.type}".` })
+    if (wave.index !== waveIndex + 1) {
+      issues.push({ path: `volcanoWaves.${waveIndex}.index`, message: 'Wave index should match its 1-based array position.' })
+    }
+
+    requirePositiveNumber(issues, `volcanoWaves.${waveIndex}.durationSeconds`, wave.durationSeconds)
+    requireNonEmptyArray(issues, `volcanoWaves.${waveIndex}.enemyGroups`, wave.enemyGroups)
+    requireNonEmptyString(issues, `volcanoWaves.${waveIndex}.pressureGoal`, wave.pressureGoal)
+    requireNonEmptyString(issues, `volcanoWaves.${waveIndex}.nextWaveHint`, wave.nextWaveHint)
+
+    validateWaveBoss(issues, wave, waveIndex)
+
+    wave.enemyGroups.forEach((group, groupIndex) => {
+      if (!enemyDefinitions[group.enemyId as EnemyId]) {
+        issues.push({ path: `volcanoWaves.${waveIndex}.enemyGroups.${groupIndex}.enemyId`, message: `Unknown enemy "${group.enemyId}".` })
       }
 
-      requirePositiveNumber(issues, `waves.${waveIndex}.mix.${mixIndex}.weight`, entry.weight)
+      requirePositiveNumber(issues, `volcanoWaves.${waveIndex}.enemyGroups.${groupIndex}.count`, group.count)
+      requireNonNegativeNumber(issues, `volcanoWaves.${waveIndex}.enemyGroups.${groupIndex}.startSecond`, group.startSecond)
+      requirePositiveNumber(issues, `volcanoWaves.${waveIndex}.enemyGroups.${groupIndex}.interval`, group.interval)
+
+      if (group.startSecond > wave.durationSeconds) {
+        issues.push({ path: `volcanoWaves.${waveIndex}.enemyGroups.${groupIndex}.startSecond`, message: 'Enemy group starts after the wave ends.' })
+      }
     })
+  })
+}
+
+function validateWaveBoss(issues: ContentValidationIssue[], wave: VolcanoWaveDefinition, waveIndex: number) {
+  if (!wave.bossId) {
+    return
+  }
+
+  const boss = enemyDefinitions[wave.bossId as EnemyId]
+  if (!boss) {
+    issues.push({ path: `volcanoWaves.${waveIndex}.bossId`, message: `Unknown boss enemy "${wave.bossId}".` })
+    return
+  }
+
+  if (boss.role !== 'boss') {
+    issues.push({ path: `volcanoWaves.${waveIndex}.bossId`, message: 'Wave bossId must reference a boss enemy.' })
+  }
+}
+
+function validateDirectorRules(issues: ContentValidationIssue[]) {
+  directorRules.forEach((rule: DirectorRuleDef, ruleIndex: number) => {
+    requireNonEmptyString(issues, `directorRules.${ruleIndex}.id`, rule.id)
+    requireNonEmptyString(issues, `directorRules.${ruleIndex}.playerState`, rule.playerState)
+    requireNonEmptyString(issues, `directorRules.${ruleIndex}.allowedAdjustment`, rule.allowedAdjustment)
+    requireNonEmptyString(issues, `directorRules.${ruleIndex}.limits`, rule.limits)
+    requireNonEmptyArray(issues, `directorRules.${ruleIndex}.reasonTags`, rule.reasonTags)
+  })
+}
+
+function validateUniqueIds(issues: ContentValidationIssue[], path: string, ids: readonly string[]) {
+  const seen = new Set<string>()
+
+  ids.forEach((id, index) => {
+    if (seen.has(id)) {
+      issues.push({ path: `${path}.${index}`, message: `Duplicate id "${id}".` })
+    }
+
+    seen.add(id)
   })
 }
 
 function requirePositiveNumber(issues: ContentValidationIssue[], path: string, value: number | undefined) {
   if (typeof value !== 'number' || value <= 0) {
     issues.push({ path, message: 'Value must be a positive number.' })
+  }
+}
+
+function requireNonNegativeNumber(issues: ContentValidationIssue[], path: string, value: number | undefined) {
+  if (typeof value !== 'number' || value < 0) {
+    issues.push({ path, message: 'Value must be zero or a positive number.' })
+  }
+}
+
+function requireNonEmptyString(issues: ContentValidationIssue[], path: string, value: string | undefined) {
+  if (typeof value !== 'string' || value.trim().length === 0) {
+    issues.push({ path, message: 'Value must be a non-empty string.' })
+  }
+}
+
+function requireNonEmptyArray(issues: ContentValidationIssue[], path: string, value: readonly unknown[] | undefined) {
+  if (!Array.isArray(value) || value.length === 0) {
+    issues.push({ path, message: 'Value must be a non-empty array.' })
   }
 }

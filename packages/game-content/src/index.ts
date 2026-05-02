@@ -65,13 +65,13 @@ export const buildingTypes = buildings.map((building) => building.id) as Buildin
 export const enemyTypes = enemies.map((enemy) => enemy.id) as EnemyId[]
 export const strategyCardIds = cards.map((card) => card.id) as StrategyCardId[]
 
-export const buildingDefinitions = Object.fromEntries(buildings.map((building) => [building.id, building])) as Record<
+export const buildingDefinitions = Object.fromEntries(buildings.map((building) => [building.id, building])) as unknown as Record<
   BuildingId,
   BuildingDefinition
 >
 
-export const enemyDefinitions = Object.fromEntries(enemies.map((enemy) => [enemy.id, enemy])) as Record<EnemyId, EnemyDefinition>
-export const strategyCardDefinitions = Object.fromEntries(cards.map((card) => [card.id, card])) as Record<
+export const enemyDefinitions = Object.fromEntries(enemies.map((enemy) => [enemy.id, enemy])) as unknown as Record<EnemyId, EnemyDefinition>
+export const strategyCardDefinitions = Object.fromEntries(cards.map((card) => [card.id, card])) as unknown as Record<
   StrategyCardId,
   StrategyCardDefinition
 >
@@ -110,4 +110,3 @@ export function rowsForRoute(route: 'left' | 'center' | 'right' | 'mixed') {
 export function getPlantFusionKey(): PlantFusionKey | undefined {
   return undefined
 }
-
