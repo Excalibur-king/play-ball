@@ -1,0 +1,279 @@
+/* HUD styles are DOM overlay only. Keep game-world sprites and animation
+   in Phaser renderers so React remains a control surface, not the playfield. */
+.hud-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  padding: 16px;
+}
+
+.top-hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: grid;
+  grid-template-columns: auto minmax(360px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.sun-counter,
+.match-stats,
+.icon-button,
+.seed-card,
+.status-chip {
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow:
+    0 5px 0 rgba(95, 59, 31, 0.34),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.sun-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 0 16px;
+  color: #5c3a15;
+  background: #ffef9d;
+}
+
+.sun-counter svg {
+  color: var(--sun);
+  filter: drop-shadow(0 2px 0 #a56a18);
+}
+
+.sun-counter strong {
+  min-width: 44px;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.seed-bank {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.seed-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(92px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: min(202px, 32%);
+  min-height: 62px;
+  padding: 8px 10px;
+  color: var(--text);
+  background: #c98a47;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.seed-card::before {
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  content: "";
+  border: 1px dashed rgba(82, 49, 25, 0.42);
+  border-radius: 5px;
+}
+
+.seed-card.selected {
+  outline: 4px solid #fff08a;
+  outline-offset: 2px;
+  transform: translateY(-2px);
+}
+
+.seed-card.damage {
+  background: #88bf57;
+}
+
+.seed-card.economy {
+  background: #f1c44d;
+}
+
+.seed-card.blocker {
+  background: #b97a42;
+}
+
+.seed-card:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.7);
+  opacity: 0.72;
+}
+
+.seed-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(67, 39, 18, 0.55);
+  border-radius: 999px;
+  color: #f9e7a8;
+  background: rgba(78, 48, 23, 0.55);
+}
+
+.seed-icon svg {
+  color: #f9e7a8;
+}
+
+.seed-name {
+  min-width: 0;
+  color: #35200f;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.32);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.seed-cost {
+  color: #fff5a8;
+  font-weight: 900;
+  text-shadow: 0 2px 0 rgba(77, 45, 18, 0.54);
+}
+
+.cooldown {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff7cf;
+  font-weight: 900;
+  background: rgba(67, 45, 28, 0.62);
+}
+
+.match-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.match-stats span {
+  color: var(--text);
+}
+
+.match-stats .danger-stat {
+  color: #fff4d7;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--danger);
+}
+
+.hud-actions {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: #fff5d1;
+  background: #78502c;
+  cursor: pointer;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.icon-button.primary {
+  color: #3f2a17;
+  background: linear-gradient(180deg, #fff08a, #f5b83b);
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.status-chip {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  max-width: 260px;
+  padding: 12px 14px;
+  color: #fff5d1;
+  background: #78502c;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.result-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  min-width: 270px;
+  padding: 20px 28px;
+  border: 4px solid var(--line);
+  border-radius: 8px;
+  text-align: center;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  background: var(--panel-strong);
+  box-shadow: 0 8px 0 rgba(95, 59, 31, 0.34);
+}
+
+.result-banner.won {
+  color: var(--leaf-dark);
+}
+
+.result-banner.lost {
+  color: var(--danger);
+}
+
+@media (max-width: 920px) {
+  .top-hud {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .seed-bank {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 4px;
+  }
+
+  .seed-card {
+    flex: 0 0 168px;
+    width: 168px;
+  }
+
+  .match-stats {
+    justify-content: space-between;
+  }
+
+  .status-chip {
+    left: 18px;
+    right: 18px;
+    max-width: none;
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@tower-rogue/game-content",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./generated/*": "./data/generated/*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.content.json --noEmit",
+    "content:build": "rm -rf .content-build && tsc -p tsconfig.content.json && node scripts/export-content.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.content.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

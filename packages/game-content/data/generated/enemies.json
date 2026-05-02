@@ -1,0 +1,126 @@
+[
+  {
+    "id": "ember_grunt",
+    "name": "火渣兵",
+    "role": "normal",
+    "hp": 90,
+    "speed": 0.75,
+    "buildingDamage": 12,
+    "attackInterval": 1.2,
+    "baseDamage": 1,
+    "blockable": true,
+    "flying": false,
+    "tags": [
+      "normal",
+      "ground"
+    ],
+    "special": "无特殊能力，作为基础压力单位。",
+    "counterBy": [
+      "arrow_turret"
+    ],
+    "visualRule": "小体型、暗红轮廓、无护甲，作为最基础读法。",
+    "firstWave": 1,
+    "status": "draft"
+  },
+  {
+    "id": "spark_runner",
+    "name": "火星疾行者",
+    "role": "fast",
+    "hp": 65,
+    "speed": 1.35,
+    "buildingDamage": 8,
+    "attackInterval": 1,
+    "baseDamage": 1,
+    "blockable": true,
+    "flying": false,
+    "tags": [
+      "fast",
+      "ground"
+    ],
+    "special": "高速冲线，考验防御机关和攻速补强。",
+    "counterBy": [
+      "lava_wall",
+      "attack_speed_up",
+      "emergency_freeze"
+    ],
+    "visualRule": "细长剪影、拖尾火星、移动动画更急促。",
+    "firstWave": 2,
+    "status": "draft"
+  },
+  {
+    "id": "basalt_smasher",
+    "name": "玄武重击者",
+    "role": "heavy_attack",
+    "hp": 180,
+    "speed": 0.55,
+    "buildingDamage": 34,
+    "attackInterval": 1.4,
+    "baseDamage": 1,
+    "blockable": true,
+    "flying": false,
+    "tags": [
+      "heavy_attack",
+      "ground",
+      "building_breaker"
+    ],
+    "special": "对建筑造成高伤害，逼玩家修复、防御或补单体输出。",
+    "counterBy": [
+      "arrow_turret",
+      "emergency_repair_all",
+      "defense_taunt_wall"
+    ],
+    "visualRule": "宽大厚重剪影、黑灰石甲、攻击建筑时有重击前摇。",
+    "firstWave": 3,
+    "status": "draft"
+  },
+  {
+    "id": "ash_wing",
+    "name": "灰烬飞翼",
+    "role": "flying",
+    "hp": 75,
+    "speed": 0.95,
+    "buildingDamage": 0,
+    "attackInterval": 0,
+    "baseDamage": 1,
+    "blockable": false,
+    "flying": true,
+    "tags": [
+      "flying",
+      "anti_block"
+    ],
+    "special": "飞行单位，无视防御机关，检验方向炮塔覆盖和对空强化。",
+    "counterBy": [
+      "arrow_turret",
+      "attack_anti_air_focus"
+    ],
+    "visualRule": "悬浮高度明显，地面阴影与翅膀轮廓区分飞行属性。",
+    "firstWave": 4,
+    "status": "draft"
+  },
+  {
+    "id": "volcano_core_beast",
+    "name": "火山核心兽",
+    "role": "boss",
+    "hp": 900,
+    "speed": 0.38,
+    "buildingDamage": 42,
+    "attackInterval": 1.5,
+    "baseDamage": 3,
+    "blockable": true,
+    "flying": false,
+    "tags": [
+      "boss",
+      "ground",
+      "building_breaker"
+    ],
+    "special": "最终检验单位，移动慢、拆建筑强、触底伤害高。",
+    "counterBy": [
+      "arrow_turret",
+      "attack_power_up",
+      "emergency_repair_all"
+    ],
+    "visualRule": "大体型核心怪，胸口熔岩亮点作为弱点提示。",
+    "firstWave": 5,
+    "status": "draft"
+  }
+]

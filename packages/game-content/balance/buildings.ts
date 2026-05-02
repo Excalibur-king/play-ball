@@ -1,0 +1,70 @@
+import type { BuildingDef } from './types.js'
+
+export const buildings = [
+  {
+    id: 'energy_core',
+    name: '能量核心',
+    type: 'energy',
+    cost: 50,
+    hp: 90,
+    purchasePowerPerTick: 25,
+    productionInterval: 8,
+    canBlockGround: false,
+    canTargetGround: false,
+    canTargetFlying: false,
+    tags: ['economy', 'fragile'],
+    specialEffectHooks: ['energy_special'],
+    upgrade: {
+      cost: 75,
+      hpBonus: 40,
+      purchasePowerPerTickBonus: 10
+    },
+    visualRule: '稳定发光的熔岩能量核心，读法偏经济建筑，不要像攻击塔。',
+    status: 'draft',
+    notes: 'V0.2 经济原型：持续生产购买力，被破坏后停止产出。'
+  },
+  {
+    id: 'arrow_turret',
+    name: '方向炮塔',
+    type: 'attack',
+    cost: 100,
+    hp: 120,
+    attackPower: 28,
+    attackInterval: 1.2,
+    attackRange: 4,
+    attackDirection: 'up',
+    canBlockGround: false,
+    canTargetGround: true,
+    canTargetFlying: true,
+    tags: ['single', 'anti_air', 'stable_damage'],
+    specialEffectHooks: ['attack_special'],
+    upgrade: {
+      cost: 100,
+      attackPowerBonus: 14,
+      attackRangeBonus: 1
+    },
+    visualRule: '炮口方向必须清楚，弹道读法稳定，能打地面和飞天。',
+    status: 'draft',
+    notes: 'V0.2 唯一基础输出源，先默认向上，后续再加放置朝向选择。'
+  },
+  {
+    id: 'lava_wall',
+    name: '熔岩壁垒',
+    type: 'defense',
+    cost: 75,
+    hp: 360,
+    canBlockGround: true,
+    canTargetGround: false,
+    canTargetFlying: false,
+    tags: ['block', 'high_hp'],
+    specialEffectHooks: ['defense_special'],
+    upgrade: {
+      cost: 80,
+      hpBonus: 180
+    },
+    visualRule: '厚重、低矮、横向阻挡感强，必须明显不是输出建筑。',
+    status: 'draft',
+    notes: 'V0.2 防御原型：阻挡地面敌人，不阻挡飞天。'
+  }
+] as const satisfies readonly BuildingDef[]
+

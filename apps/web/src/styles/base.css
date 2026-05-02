@@ -1,0 +1,36 @@
+:root {
+  --bg: #8fd4ff;
+  --panel: rgba(255, 239, 191, 0.94);
+  --panel-strong: rgba(255, 245, 216, 0.98);
+  --line: #6f4a2b;
+  --leaf: #62ad45;
+  --leaf-dark: #3f7d32;
+  --sun: #ffc83d;
+  --seed: #a86a37;
+  --soil: #6f4a2b;
+  --danger: #c94848;
+  --text: #3f2a17;
+  --muted: #715037;
+  color: var(--text);
+  background: var(--bg);
+  font-family:
+    Inter, ui-rounded, "Comic Sans MS", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+button {
+  border: 0;
+  font: inherit;
+}

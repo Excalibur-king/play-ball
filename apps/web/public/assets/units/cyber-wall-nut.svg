@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 104">
+  <defs>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="armor" x1="20" x2="78" y1="16" y2="90" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3a2b5d"/>
+      <stop offset="1" stop-color="#15182a"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-linejoin="round">
+    <rect x="20" y="14" width="56" height="76" rx="18" fill="url(#armor)" stroke="#ff3df2" stroke-width="5" filter="url(#glow)"/>
+    <path d="M32 30h32v40H32z" fill="#101827" stroke="#ffd166" stroke-width="3"/>
+    <path d="M35 45h26M35 56h26" stroke="#35f7ff" stroke-width="3" opacity=".9"/>
+    <path d="M28 23h8M60 23h8M28 82h8M60 82h8" stroke="#9cff4a" stroke-width="4" stroke-linecap="round"/>
+    <rect x="31" y="76" width="34" height="8" rx="4" fill="#35f7ff" filter="url(#glow)"/>
+    <path d="M17 94h62" stroke="#ff3df2" stroke-width="5" opacity=".6"/>
+  </g>
+</svg>

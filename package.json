@@ -1,0 +1,20 @@
+{
+  "name": "tower-rogue-ai",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "dev": "turbo dev --parallel",
+    "dev:web": "pnpm --filter @tower-rogue/web dev",
+    "dev:api": "pnpm --filter @tower-rogue/api dev",
+    "assets:generate": "node scripts/generate-premium-assets.mjs",
+    "content:build": "pnpm --filter @tower-rogue/game-content content:build",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5",
+    "turbo": "^2.6.3",
+    "typescript": "^5.9.3"
+  }
+}
