@@ -77,7 +77,7 @@ function BattleRuntime({ levelId, battleBackgroundUrl }: { levelId: LevelId; bat
         gameBridge.dispatch({ type: 'clearSelectedPlant' })
       }}
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(24, 10, 8, 0.3), rgba(24, 10, 8, 0.72)), url("${battleBackgroundUrl}")`
+        backgroundImage: `linear-gradient(180deg, rgba(24, 10, 8, 0.15), rgba(24, 10, 8, 0.35)), url("${battleBackgroundUrl}")`
       }}
     >
       <GameCanvas levelId={levelId} skillLoadout={skillLoadout} skillLevels={skillLevels} />

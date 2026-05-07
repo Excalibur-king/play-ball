@@ -11,7 +11,6 @@ type SkillPackPanelProps = {
 export function SkillPackPanel({ skillPack, onUse, onClose }: SkillPackPanelProps) {
   return (
     <div className="battle-skill-pack-panel">
-      <img className="battle-skill-pack-frame" src="/assets/ui/skill_pack_popup.png" alt="" aria-hidden="true" draggable={false} />
       <div className="battle-skill-pack-body">
         <button type="button" className="battle-skill-pack-close" aria-label="收起" onClick={onClose} />
         <div className="battle-skill-pack-list">

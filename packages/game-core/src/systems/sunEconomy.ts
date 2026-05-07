@@ -33,7 +33,13 @@ export function updateSunEconomy(state: GameState, dt: number, events: GameEvent
     while (building.sunTimer + 1e-9 >= secondsPerPacket) {
       building.sunTimer -= secondsPerPacket
       state.sun += purchasePowerPacket
-      events.push({ type: 'sunChanged', amount: purchasePowerPacket, at: { x: building.x, y: building.y - 30 } })
+      events.push({
+        type: 'sunChanged',
+        amount: purchasePowerPacket,
+        at: { x: building.x, y: building.y - 30 },
+        plantId: building.id,
+        plantType: building.type
+      })
     }
   }
 }

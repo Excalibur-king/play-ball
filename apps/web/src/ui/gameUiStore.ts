@@ -8,6 +8,11 @@ import type {
 import { create } from 'zustand'
 import { gameBridge } from '../game/bridge/gameBridge'
 
+type AiDirectorAnnounce = {
+  message: string
+  timestamp: number
+}
+
 type GameUiState = {
   snapshot: HudSnapshot | null
   battleAdvice: string
@@ -21,6 +26,7 @@ type GameUiState = {
   strategyAdviceDebugLoading: boolean
   strategyAdvice: StrategyAdviceResponse | null
   strategyAdviceLoading: boolean
+  aiDirectorAnnounce: AiDirectorAnnounce | null
   clearBattleAdvice: () => void
   clearDirectorDebug: () => void
   clearStrategyAdvice: () => void
@@ -38,6 +44,8 @@ type GameUiState = {
   setStrategyAdviceDebugLoading: (strategyAdviceDebugLoading: boolean) => void
   setStrategyAdvice: (strategyAdvice: StrategyAdviceResponse | null) => void
   setStrategyAdviceLoading: (strategyAdviceLoading: boolean) => void
+  showAiDirectorAnnounce: (message: string) => void
+  clearAiDirectorAnnounce: () => void
 }
 
 export const useGameUiStore = create<GameUiState>((set) => ({
@@ -53,6 +61,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   strategyAdviceDebugLoading: false,
   strategyAdvice: null,
   strategyAdviceLoading: false,
+  aiDirectorAnnounce: null,
   clearBattleAdvice: () =>
     set({
       battleAdvice: '',
@@ -91,7 +100,8 @@ export const useGameUiStore = create<GameUiState>((set) => ({
       strategyAdvice: null,
       strategyAdviceLoading: false,
       strategyAdviceDebug: null,
-      strategyAdviceDebugLoading: false
+      strategyAdviceDebugLoading: false,
+      aiDirectorAnnounce: null
     }),
   setBattleAdvice: (battleAdvice) => set({ battleAdvice }),
   setBattleAdviceDurationMs: (battleAdviceDurationMs) => set({ battleAdviceDurationMs }),
@@ -103,5 +113,7 @@ export const useGameUiStore = create<GameUiState>((set) => ({
   setStrategyAdviceDebug: (strategyAdviceDebug) => set({ strategyAdviceDebug }),
   setStrategyAdviceDebugLoading: (strategyAdviceDebugLoading) => set({ strategyAdviceDebugLoading }),
   setStrategyAdvice: (strategyAdvice) => set({ strategyAdvice }),
-  setStrategyAdviceLoading: (strategyAdviceLoading) => set({ strategyAdviceLoading })
+  setStrategyAdviceLoading: (strategyAdviceLoading) => set({ strategyAdviceLoading }),
+  showAiDirectorAnnounce: (message) => set({ aiDirectorAnnounce: { message, timestamp: Date.now() } }),
+  clearAiDirectorAnnounce: () => set({ aiDirectorAnnounce: null })
 }))

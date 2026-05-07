@@ -61,6 +61,8 @@ export type Projectile = {
   speed: number
   damage: number
   canHitFlying: boolean
+  sourcePlantId?: string
+  sourcePlantType?: BuildingId
   visualKey?: string
 }
 
@@ -390,13 +392,13 @@ export type GameCommand =
 // but gameplay must not depend on whether an event was rendered.
 export type GameEvent =
   | { type: 'plantPlaced'; plantId: string; plantType: BuildingId; at: Point }
-  | { type: 'sunChanged'; amount: number; at?: Point }
-  | { type: 'projectileFired'; projectileId: string; from: Point }
-  | { type: 'laserFired'; plantId: string; from: Point; to: Point }
+  | { type: 'sunChanged'; amount: number; at?: Point; plantId?: string; plantType?: BuildingId }
+  | { type: 'projectileFired'; projectileId: string; from: Point; to?: Point; plantId?: string; plantType?: BuildingId }
+  | { type: 'laserFired'; plantId: string; plantType: BuildingId; from: Point; to: Point }
   | { type: 'zombieHit'; zombieId: string; at: Point; damage: number }
   | { type: 'zombieKilled'; zombieId: string; zombieType: EnemyId; at: Point }
-  | { type: 'plantDamaged'; plantId: string; at: Point; dangerous?: boolean; blockedDangerous?: boolean }
-  | { type: 'plantDestroyed'; plantId: string; at: Point }
+  | { type: 'plantDamaged'; plantId: string; plantType: BuildingId; at: Point; dangerous?: boolean; blockedDangerous?: boolean }
+  | { type: 'plantDestroyed'; plantId: string; plantType: BuildingId; at: Point }
   | { type: 'baseHit'; zombieId: string }
   | { type: 'wavePhaseChanged'; waveIndex: number; phaseIndex: number; label: string }
   | { type: 'waveCleared'; waveIndex: number }
@@ -412,6 +414,7 @@ export type GameEvent =
       targetId?: string
     }
   | { type: 'runEnded'; outcome: 'won' | 'lost' }
+  | { type: 'aiWavePlanHydrated'; routes: AiWaveRoute[] }
 
 export type SeedSlot = {
   type: BuildingId
@@ -423,6 +426,7 @@ export type SeedSlot = {
   selectedMode?: BuildSelectionMode
   canPlant: boolean
   role: BuildingDefinition['type']
+  attackKind?: BuildingDefinition['attackKind']
 }
 
 export type RecommendationSlot = {

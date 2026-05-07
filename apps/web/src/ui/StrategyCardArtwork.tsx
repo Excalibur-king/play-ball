@@ -8,6 +8,7 @@ type StrategyCardArtworkProps = {
 }
 
 const cardArtExtensions = ['png', 'svg', 'webp', 'jpg'] as const
+const cardArtVersion = 'dr5-20260508'
 
 export function StrategyCardArtwork({ cardId, name, type, className }: StrategyCardArtworkProps) {
   const [attemptIndex, setAttemptIndex] = useState(0)
@@ -39,7 +40,7 @@ export function StrategyCardArtwork({ cardId, name, type, className }: StrategyC
 
 function getCardArtUrl(cardId: string, attemptIndex: number) {
   const extension = cardArtExtensions[attemptIndex]
-  return extension ? `/assets/game/cards/${cardId}.${extension}` : undefined
+  return extension ? `/assets/game/cards/${cardId}.${extension}?v=${cardArtVersion}` : undefined
 }
 
 function getFallbackLabel(name: string) {

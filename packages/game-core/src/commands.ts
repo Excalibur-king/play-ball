@@ -288,7 +288,8 @@ export function hydrateRealtimeAiWavePlan(
   input: {
     wave: number
     plan: AiWavePlan | null
-  }
+  },
+  events: GameEvent[] = []
 ) {
   if (state.phase !== 'playing' || !state.wave.active || state.waveIndex !== input.wave - 1 || !input.plan) {
     return false
@@ -329,6 +330,10 @@ export function hydrateRealtimeAiWavePlan(
     state.activeDirectorPlanForWave = undefined
     state.directorPlan = undefined
     state.realtimeDirectorRequestCount += 1
+
+    const routes = input.plan.phases.flatMap((p) => p.directives.map((d) => d.route))
+    events.push({ type: 'aiWavePlanHydrated', routes })
+
     return true
   } catch {
     return false

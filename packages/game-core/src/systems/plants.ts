@@ -54,8 +54,10 @@ export function updatePlants(state: GameState, dt: number, events: GameEvent[]) 
 
     if (definition.attackKind === 'melee') {
       target.hp -= damage
-      events.push({ type: 'projectileFired', projectileId: plant.id, from: { x: plant.x + 30, y: plant.y - 7 } })
-      events.push({ type: 'zombieHit', zombieId: target.id, at: { x: target.x, y: target.y }, damage })
+      const from = { x: plant.x + 30, y: plant.y - 7 }
+      const to = { x: target.x, y: target.y }
+      events.push({ type: 'projectileFired', projectileId: plant.id, plantId: plant.id, plantType: plant.type, from, to })
+      events.push({ type: 'zombieHit', zombieId: target.id, at: to, damage })
 
       if (target.hp <= 0) {
         state.currentWaveStats.killedByType[target.type] = (state.currentWaveStats.killedByType[target.type] ?? 0) + 1
@@ -81,12 +83,21 @@ export function updatePlants(state: GameState, dt: number, events: GameEvent[]) 
       speed: projectileSpeed,
       damage,
       canHitFlying: Boolean(definition.canTargetFlying),
+      sourcePlantId: plant.id,
+      sourcePlantType: plant.type,
       visualKey: definition.projectileKey
     }
 
     consumeCharge(plant, expiredPlantIds)
     state.projectiles.push(projectile)
-    events.push({ type: 'projectileFired', projectileId: projectile.id, from: { x: projectile.x, y: projectile.y } })
+    events.push({
+      type: 'projectileFired',
+      projectileId: projectile.id,
+      plantId: plant.id,
+      plantType: plant.type,
+      from: { x: projectile.x, y: projectile.y },
+      to: { x: target.x, y: target.y - (target.flying ? 30 : 7) }
+    })
   }
 
   if (expiredPlantIds.size > 0) {
@@ -208,7 +219,7 @@ function fireLaser(
   }
 
   state.zombies = state.zombies.filter((zombie) => zombie.hp > 0)
-  events.push({ type: 'laserFired', plantId: plant.id, from, to })
+  events.push({ type: 'laserFired', plantId: plant.id, plantType: plant.type, from, to })
 }
 
 function consumeCharge(plant: GameState['plants'][number], expiredPlantIds: Set<string>) {

@@ -14,6 +14,7 @@ type ZombieView = {
   type: Zombie['type']
   currentAnimationKey?: string
   hitAnimationUntil: number
+  deathAnimationStarted: boolean
 }
 
 // Renders enemies through manifest-driven sprites so future art swaps can stay
@@ -27,7 +28,7 @@ export class ZombieRenderer {
     const currentIds = new Set(zombies.map((zombie) => zombie.id))
 
     for (const [id, view] of this.views) {
-      if (!currentIds.has(id)) {
+      if (!currentIds.has(id) && !view.deathAnimationStarted) {
         destroyZombieView(view)
         this.views.delete(id)
       }
@@ -48,7 +49,7 @@ export class ZombieRenderer {
   playHit(zombieId: string) {
     const view = this.views.get(zombieId)
 
-    if (!view) {
+    if (!view || view.deathAnimationStarted) {
       return
     }
 
@@ -68,8 +69,72 @@ export class ZombieRenderer {
     }
   }
 
+  playDeath(zombieId: string, zombieType: Zombie['type'], at: { x: number; y: number }) {
+    const view = this.views.get(zombieId)
+
+    if (view?.deathAnimationStarted) {
+      return
+    }
+
+    if (!view) {
+      this.spawnDetachedDeathAnimation(zombieType, at)
+      return
+    }
+
+    const visual = assetManifest.enemies[view.type]
+    const deathState = visual.states?.death
+
+    view.deathAnimationStarted = true
+    view.hitAnimationUntil = Number.POSITIVE_INFINITY
+    view.hpBack.setVisible(false)
+    view.hp.setVisible(false)
+    view.aiAura?.setVisible(false)
+    view.aiAuraEdge?.setVisible(false)
+    view.badge?.setVisible(false)
+    view.body.setAngle(0)
+
+    if (deathState?.animationKey) {
+      this.playBodyState(view, deathState, visual.displayWidth, visual.displayHeight)
+      view.body.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.destroyView(zombieId, view)
+      })
+      return
+    }
+
+    this.scene.tweens.add({
+      targets: view.container,
+      alpha: 0,
+      y: view.container.y + 10,
+      duration: 280,
+      ease: 'Quad.easeIn',
+      onComplete: () => this.destroyView(zombieId, view)
+    })
+  }
+
+  private spawnDetachedDeathAnimation(zombieType: Zombie['type'], at: { x: number; y: number }) {
+    const visual = assetManifest.enemies[zombieType]
+    const deathState = visual.states?.death
+
+    if (!deathState?.animationKey) {
+      return
+    }
+
+    const sprite = this.scene.add
+      .sprite(at.x, at.y + visual.hoverOffsetY + visual.bodyOffsetY, deathState.textureKey, deathState.frame)
+      .setOrigin(0.5, 1)
+      .setDisplaySize(visual.displayWidth, visual.displayHeight)
+      .setDepth(72)
+
+    sprite.play(deathState.animationKey)
+    sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => sprite.destroy())
+  }
+
   private syncZombie(zombie: Zombie, simTime: number) {
     let view = this.views.get(zombie.id)
+
+    if (view?.deathAnimationStarted) {
+      return
+    }
 
     if (view && view.type !== zombie.type) {
       destroyZombieView(view)
@@ -157,7 +222,8 @@ export class ZombieRenderer {
       aiAuraEdge,
       badge,
       type: zombie.type,
-      hitAnimationUntil: 0
+      hitAnimationUntil: 0,
+      deathAnimationStarted: false
     }
     this.playBodyState(view, visual.body, visual.displayWidth, visual.displayHeight)
 
@@ -188,6 +254,15 @@ export class ZombieRenderer {
 
     view.body.play(state.animationKey)
     view.currentAnimationKey = state.animationKey
+  }
+
+  private destroyView(zombieId: string, view: ZombieView) {
+    if (this.views.get(zombieId) !== view) {
+      return
+    }
+
+    destroyZombieView(view)
+    this.views.delete(zombieId)
   }
 }
 

@@ -10,7 +10,7 @@ import { persist } from 'zustand/middleware'
 import { sanitizeSkillLoadout } from './skillCardRules'
 
 const MAX_SKILL_LEVEL = 100
-const INITIAL_GOLD = 1000
+const INITIAL_GOLD = 0
 const INITIAL_SKILL_CRYSTALS = 10
 export const DAILY_SKILL_CRYSTAL_PURCHASE_LIMIT = 5
 export const SKILL_CRYSTAL_GOLD_COST = 1000

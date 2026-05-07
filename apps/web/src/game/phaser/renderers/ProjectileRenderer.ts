@@ -37,6 +37,10 @@ export class ProjectileRenderer {
   }
 
   private syncProjectile(projectile: Projectile) {
+    if (shouldHideLegacyComboProjectile(projectile)) {
+      return
+    }
+
     let view = this.views.get(projectile.id)
     const visual = getProjectileVisual(projectile.visualKey)
 
@@ -62,6 +66,10 @@ export class ProjectileRenderer {
       view.body.setTint(0xb7fbff)
       view.body.setScale(1.35, 0.8)
       view.aura.setScale(1.45, 0.72)
+    } else {
+      view.body.setTint(0x7de8ff)
+      view.body.setScale(1.08, 0.92)
+      view.aura.setScale(1.18, 0.88)
     }
     view.aura.setDepth(31 + projectile.row)
     view.body.setDepth(32 + projectile.row)
@@ -74,6 +82,10 @@ function getProjectileVisual(visualKey: string | undefined) {
   }
 
   return assetManifest.projectiles.basicBolt
+}
+
+function shouldHideLegacyComboProjectile(projectile: Projectile) {
+  return projectile.sourcePlantType === 'melee_turret' && projectile.visualKey === 'basicBolt'
 }
 
 function destroyProjectileView(view: ProjectileView) {

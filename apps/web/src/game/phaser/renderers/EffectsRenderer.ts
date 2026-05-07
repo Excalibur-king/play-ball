@@ -20,9 +20,6 @@ type EffectContext = {
 }
 
 const ENERGY_HUD_ANCHOR = { x: 78, y: 86 }
-const ENERGY_SPRITE_COUNT = 2
-const ENERGY_SPRITE_RADIUS = 38
-const ENERGY_SPRITE_RADIANS_PER_SEC = Math.PI * 1.1
 
 // Lawn center pre-computed so every skill cast plays its big intro animation
 // at exactly the same map position. Cast intent (left HUD vs. front-line vs.
@@ -53,9 +50,10 @@ const CENTER_CAST_DURATION_MS = 720
 export class EffectsRenderer {
   private readonly wardOverlays = new Map<string, Phaser.GameObjects.Sprite>()
   private readonly golemOverlays = new Map<string, Phaser.GameObjects.Sprite>()
+  private readonly golemAttackUntil = new Map<string, number>()
   private readonly freezeOverlays = new Map<string, Phaser.GameObjects.Sprite>()
-  private energySpriteOverlays: Phaser.GameObjects.Sprite[] = []
-  private energySpriteAngle = 0
+  private energySpriteOverlay: Phaser.GameObjects.Sprite | undefined
+  private energySpriteAttachedPlantId: string | undefined
   private lastUpdateTime: number | undefined
   // Wall-clock timestamps (ms, scene.time.now) until which a card's
   // downstream visuals must wait for the centred intro to finish playing.
@@ -92,21 +90,48 @@ export class EffectsRenderer {
     for (const event of events) {
       if (event.type === 'projectileFired') {
         const shooter = this.findPlantByShotOrigin(context.plants, event.from)
+        const plantType = event.plantType ?? shooter?.type
+        const golemPlantId =
+          plantType === 'melee_turret' && shooter?.temporaryUntilTime !== undefined ? event.plantId : undefined
+        const isSummonedGolem = golemPlantId !== undefined
+        if (isSummonedGolem) {
+          this.golemAttackUntil.set(golemPlantId, this.scene.time.now + 360)
+        }
+        const effectDelayMs = context.plantRenderer.playAttackAnimation(context.plants, event.from)
         context.plantRenderer.playShooterRecoil(context.plants, event.from)
-        context.plantRenderer.playAttackAnimation(context.plants, event.from)
-        if (shooter?.type === 'ranged_turret') {
+        if (isSummonedGolem && event.to) {
+          const targetPoint = event.to
+          this.delayCharacterEffect(effectDelayMs, () => this.drawPurpleGolemPunch(event.from, targetPoint))
+        } else if (plantType === 'melee_turret' && event.to) {
+          const targetPoint = event.to
+          this.delayCharacterEffect(effectDelayMs, () => this.drawGreenArrowShot(event.from, targetPoint))
+        }
+        if (plantType === 'laser_turret' && event.to) {
+          const targetPoint = event.to
+          this.delayCharacterEffect(effectDelayMs, () => this.drawBlueBladeStrike(event.from, targetPoint))
+        }
+        if (plantType === 'ranged_turret') {
           this.spawnMuzzleFlash(event.from)
         }
       }
 
       if (event.type === 'laserFired') {
+        const effectDelayMs = context.plantRenderer.playAttackAnimation(context.plants, event.from)
         context.plantRenderer.playShooterRecoil(context.plants, event.from)
-        this.spawnLaserMuzzleFlash(event.from)
-        this.spawnLaserBeam(event.from, event.to)
+        if (event.plantType === 'ranged_turret') {
+          this.delayCharacterEffect(effectDelayMs, () => this.spawnPurpleLaserBeam(event.from, event.to))
+        } else {
+          this.spawnLaserMuzzleFlash(event.from)
+          this.spawnLaserBeam(event.from, event.to)
+        }
       }
 
       if (event.type === 'sunChanged' && event.amount > 0) {
         this.spawnFloatingText(event.at ?? ENERGY_HUD_ANCHOR, `+${event.amount}`, '#f6b72d')
+        if (event.plantType === 'lava_wall' && event.plantId && event.at) {
+          const effectDelayMs = context.plantRenderer.playAttackAnimationById(context.plants, event.plantId)
+          this.delayCharacterEffect(effectDelayMs, () => this.drawBlueEnergyGeneration(event.at!))
+        }
       }
 
       if (event.type === 'zombieHit') {
@@ -115,13 +140,24 @@ export class EffectsRenderer {
       }
 
       if (event.type === 'zombieKilled') {
+        context.zombieRenderer.playDeath(event.zombieId, event.zombieType, event.at)
         this.spawnDeathBurst(event.at)
         this.spawnFloatingText(event.at, 'down', '#fff4a8')
       }
 
-      if (event.type === 'plantDamaged' && event.dangerous) {
-        this.spawnFloatingText(event.at, event.blockedDangerous ? 'blocked' : 'crack', event.blockedDangerous ? '#b8ff83' : '#ffb1a2')
-        this.scene.cameras.main.shake(event.blockedDangerous ? 70 : 110, event.blockedDangerous ? 0.0025 : 0.004)
+      if (event.type === 'plantDamaged') {
+        if (event.plantType === 'energy_core' && event.blockedDangerous) {
+          const effectDelayMs = context.plantRenderer.playAttackAnimationById(context.plants, event.plantId)
+          this.delayCharacterEffect(effectDelayMs, () => this.drawYellowShieldSparks(event.at))
+        }
+        if (event.dangerous) {
+          this.spawnFloatingText(event.at, event.blockedDangerous ? 'blocked' : 'crack', event.blockedDangerous ? '#b8ff83' : '#ffb1a2')
+          this.scene.cameras.main.shake(event.blockedDangerous ? 70 : 110, event.blockedDangerous ? 0.0025 : 0.004)
+        }
+      }
+
+      if (event.type === 'plantDestroyed') {
+        context.plantRenderer.playDeath(event.plantId, event.plantType, event.at)
       }
 
       if (event.type === 'baseHit') {
@@ -175,13 +211,12 @@ export class EffectsRenderer {
   // game state without each gameplay system having to emit lifecycle events.
   update(context: EffectContext) {
     const now = context.time
-    const dt = this.lastUpdateTime === undefined ? 0 : Math.max(0, now - this.lastUpdateTime)
     this.lastUpdateTime = now
 
     this.syncWardOverlays(context.plants)
     this.syncGolemOverlays(context.plants)
     this.syncFreezeOverlays(context.zombies, now)
-    this.syncEnergySpriteOverlays(context.plants, context.activeCardEffects, now, dt)
+    this.syncEnergySpriteOverlays(context.plants, context.activeCardEffects, now)
   }
 
   // -------------------------- Persistent overlays --------------------------
@@ -209,7 +244,8 @@ export class EffectsRenderer {
   }
 
   private syncGolemOverlays(plants: Plant[]) {
-    const spec = overlaySpec('summon_furnace_golem')
+    const idleSpec = overlaySpec('summon_furnace_golem')
+    const attackSpec = overlaySpec('summon_furnace_golem_attack')
     const live = new Set<string>()
     const locked = this.isCardLocked('summon_furnace_golem')
 
@@ -221,7 +257,15 @@ export class EffectsRenderer {
       if (locked && !this.golemOverlays.has(plant.id)) {
         continue
       }
+      const attackUntil = this.golemAttackUntil.get(plant.id) ?? 0
+      const spec = attackUntil > this.scene.time.now ? attackSpec : idleSpec
       this.ensureOverlaySprite(this.golemOverlays, plant.id, spec, plant.x, plant.y)
+    }
+
+    for (const plantId of this.golemAttackUntil.keys()) {
+      if (!live.has(plantId)) {
+        this.golemAttackUntil.delete(plantId)
+      }
     }
 
     this.cullOverlays(this.golemOverlays, live)
@@ -252,61 +296,53 @@ export class EffectsRenderer {
   private syncEnergySpriteOverlays(
     plants: Plant[],
     activeCardEffects: ActiveCardEffects,
-    time: number,
-    dt: number
+    time: number
   ) {
     const endsAt = activeCardEffects.energySpriteEndsAt
-    const core = plants.find((plant) => plant.type === 'energy_core')
+    const lumimi = plants.find((plant) => plant.type === 'lava_wall')
 
-    if (endsAt === undefined || endsAt <= time || !core) {
+    if (endsAt === undefined || endsAt <= time || !lumimi) {
       this.disposeEnergySpriteOverlays()
       return
     }
 
-    // Hold the orbiting fairies off-stage while the centred intro is still
-    // playing; they fly in once the intro hands the floor over.
-    if (this.isCardLocked('summon_energy_sprite') && this.energySpriteOverlays.length === 0) {
+    // Hold the Lumimi-attached loop off-stage while the centred intro is still
+    // playing; it appears once the intro hands the floor over.
+    if (this.isCardLocked('summon_energy_sprite') && !this.energySpriteOverlay) {
       return
     }
 
     const spec = overlaySpec('summon_energy_sprite')
 
-    if (this.energySpriteOverlays.length === 0) {
-      for (let index = 0; index < ENERGY_SPRITE_COUNT; index += 1) {
-        const sprite = this.scene.add
-          .sprite(core.x, core.y, spec.textureKey)
-          .setOrigin(spec.origin?.x ?? 0.5, spec.origin?.y ?? 0.5)
-          .setDisplaySize(spec.displayWidth, spec.displayHeight)
-          .setDepth(spec.depth)
-          .setAlpha(0)
-        if (spec.animationKey && this.scene.anims.exists(spec.animationKey)) {
-          sprite.play(spec.animationKey)
-          sprite.setDisplaySize(spec.displayWidth, spec.displayHeight)
-        }
-        this.scene.tweens.add({ targets: sprite, alpha: 0.95, duration: 220 })
-        this.energySpriteOverlays.push(sprite)
+    if (!this.energySpriteOverlay || this.energySpriteAttachedPlantId !== lumimi.id) {
+      this.disposeEnergySpriteOverlays()
+      const sprite = this.scene.add
+        .sprite(lumimi.x, lumimi.y + (spec.offsetY ?? 0), spec.textureKey)
+        .setOrigin(spec.origin?.x ?? 0.5, spec.origin?.y ?? 0.5)
+        .setDisplaySize(spec.displayWidth, spec.displayHeight)
+        .setDepth(spec.depth)
+        .setAlpha(0)
+      if (spec.animationKey && this.scene.anims.exists(spec.animationKey)) {
+        sprite.play(spec.animationKey)
+        sprite.setDisplaySize(spec.displayWidth, spec.displayHeight)
       }
+      this.scene.tweens.add({ targets: sprite, alpha: spec.alpha ?? 0.95, duration: 220 })
+      this.energySpriteOverlay = sprite
+      this.energySpriteAttachedPlantId = lumimi.id
     }
 
-    this.energySpriteAngle += ENERGY_SPRITE_RADIANS_PER_SEC * dt
-    for (let index = 0; index < this.energySpriteOverlays.length; index += 1) {
-      const sprite = this.energySpriteOverlays[index]!
-      const phase = this.energySpriteAngle + (index * Math.PI * 2) / ENERGY_SPRITE_COUNT
-      sprite.x = core.x + Math.cos(phase) * ENERGY_SPRITE_RADIUS
-      sprite.y = core.y - 18 + Math.sin(phase) * (ENERGY_SPRITE_RADIUS * 0.45)
-      sprite.setDepth(spec.depth + (Math.sin(phase) > 0 ? 0 : -2))
-    }
+    this.energySpriteOverlay.x = lumimi.x
+    this.energySpriteOverlay.y = lumimi.y + (spec.offsetY ?? 0)
+    this.energySpriteOverlay.setDepth(spec.depth)
   }
 
   private disposeEnergySpriteOverlays() {
-    if (this.energySpriteOverlays.length === 0) {
+    if (!this.energySpriteOverlay) {
       return
     }
-    for (const sprite of this.energySpriteOverlays) {
-      sprite.destroy()
-    }
-    this.energySpriteOverlays = []
-    this.energySpriteAngle = 0
+    this.energySpriteOverlay.destroy()
+    this.energySpriteOverlay = undefined
+    this.energySpriteAttachedPlantId = undefined
   }
 
   private ensureOverlaySprite(
@@ -343,6 +379,14 @@ export class EffectsRenderer {
       bucket.set(key, sprite)
     } else {
       sprite.setPosition(targetX, targetY)
+      if (sprite.texture.key !== spec.textureKey) {
+        sprite.setTexture(spec.textureKey, spec.frame ?? 0)
+        if (spec.animationKey && this.scene.anims.exists(spec.animationKey)) {
+          sprite.play(spec.animationKey, true)
+        }
+      }
+      sprite.setOrigin(spec.origin?.x ?? 0.5, spec.origin?.y ?? 0.5)
+      sprite.setDisplaySize(spec.displayWidth, spec.displayHeight)
     }
   }
 
@@ -786,6 +830,278 @@ export class EffectsRenderer {
 
   // ----------------------- Reactive one-shot bursts ------------------------
 
+  private delayCharacterEffect(delayMs: number, drawEffect: () => void) {
+    if (delayMs <= 0) {
+      drawEffect()
+      return
+    }
+
+    this.scene.time.delayedCall(delayMs, drawEffect)
+  }
+
+  private drawGreenArrowShot(from: { x: number; y: number }, to: { x: number; y: number }) {
+    const adjustedFrom = { x: from.x + 4, y: from.y - 3 }
+    const adjustedTo = { x: to.x - 8, y: to.y - 10 }
+    const dx = adjustedTo.x - adjustedFrom.x
+    const dy = adjustedTo.y - adjustedFrom.y
+    const distance = Math.max(1, Math.hypot(dx, dy))
+    const angle = Math.atan2(dy, dx)
+
+    const shaft = this.scene.add
+      .rectangle(adjustedFrom.x, adjustedFrom.y, distance, 5, 0x66ff91, 0.92)
+      .setOrigin(0, 0.5)
+      .setRotation(angle)
+      .setDepth(76)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const glow = this.scene.add
+      .rectangle(adjustedFrom.x, adjustedFrom.y, distance, 16, 0x2ee86f, 0.22)
+      .setOrigin(0, 0.5)
+      .setRotation(angle)
+      .setDepth(75)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const arrowHead = this.scene.add
+      .triangle(adjustedTo.x, adjustedTo.y, 14, 0, -8, -8, -8, 8, 0xb8ff9d, 0.98)
+      .setRotation(angle)
+      .setDepth(77)
+      .setBlendMode(Phaser.BlendModes.ADD)
+
+    this.scene.tweens.add({
+      targets: [shaft, glow],
+      alpha: 0,
+      scaleX: 0.2,
+      duration: 260,
+      ease: 'Quad.easeOut',
+      onComplete: () => {
+        shaft.destroy()
+        glow.destroy()
+      }
+    })
+    this.scene.tweens.add({
+      targets: arrowHead,
+      scale: 1.8,
+      alpha: 0,
+      duration: 260,
+      ease: 'Quad.easeOut',
+      onComplete: () => arrowHead.destroy()
+    })
+  }
+
+  private drawBlueBladeStrike(from: { x: number; y: number }, to: { x: number; y: number }) {
+    const centerX = (from.x + to.x) / 2
+    const centerY = (from.y + to.y) / 2 - 4
+    const dx = to.x - from.x
+    const dy = to.y - from.y
+    const length = Math.min(150, Math.max(70, Math.hypot(dx, dy)))
+    const angle = Math.atan2(dy, dx)
+
+    for (const offset of [-10, 10]) {
+      const slash = this.scene.add
+        .rectangle(centerX, centerY + offset, length, 6, 0x59c8ff, 0.88)
+        .setRotation(angle - 0.18)
+        .setDepth(78)
+        .setBlendMode(Phaser.BlendModes.ADD)
+      const core = this.scene.add
+        .rectangle(centerX, centerY + offset, length * 0.72, 2, 0xe7fbff, 1)
+        .setRotation(angle - 0.18)
+        .setDepth(79)
+        .setBlendMode(Phaser.BlendModes.ADD)
+      this.scene.tweens.add({
+        targets: [slash, core],
+        alpha: 0,
+        scaleX: 1.35,
+        scaleY: 0.2,
+        duration: 240,
+        ease: 'Quad.easeOut',
+        onComplete: () => {
+          slash.destroy()
+          core.destroy()
+        }
+      })
+    }
+
+    this.drawCardStrike(to, 0x66d5ff, { spokes: 4, length: 24, ringColor: 0xdaf7ff })
+  }
+
+  private drawPurpleGolemPunch(from: { x: number; y: number }, to: { x: number; y: number }) {
+    const punchStart = { x: from.x + 12, y: from.y - 8 }
+    const punchEnd = { x: to.x - 10, y: to.y - 8 }
+    const punchDeltaX = punchEnd.x - punchStart.x
+    const punchDeltaY = punchEnd.y - punchStart.y
+    const punchDistance = Math.min(96, Math.max(34, Math.hypot(punchDeltaX, punchDeltaY)))
+    const punchAngle = Math.atan2(punchDeltaY, punchDeltaX)
+    const centerX = punchStart.x + Math.cos(punchAngle) * (punchDistance * 0.45)
+    const centerY = punchStart.y + Math.sin(punchAngle) * (punchDistance * 0.45)
+
+    const shockwave = this.scene.add
+      .ellipse(punchEnd.x, punchEnd.y, 48, 28, 0xb86cff, 0.32)
+      .setDepth(80)
+      .setRotation(punchAngle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const punchTrail = this.scene.add
+      .rectangle(centerX, centerY, punchDistance, 18, 0x8f3dff, 0.62)
+      .setDepth(79)
+      .setRotation(punchAngle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const punchCore = this.scene.add
+      .rectangle(centerX, centerY, punchDistance * 0.62, 5, 0xf2dcff, 0.96)
+      .setDepth(81)
+      .setRotation(punchAngle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+
+    for (const sparkOffset of [-0.9, -0.35, 0.35, 0.9]) {
+      const sparkAngle = punchAngle + sparkOffset
+      const spark = this.scene.add
+        .rectangle(punchEnd.x, punchEnd.y, 26, 3, 0xd9a6ff, 0.88)
+        .setOrigin(0, 0.5)
+        .setDepth(82)
+        .setRotation(sparkAngle)
+        .setBlendMode(Phaser.BlendModes.ADD)
+      this.scene.tweens.add({
+        targets: spark,
+        alpha: 0,
+        scaleX: 1.45,
+        duration: 230,
+        ease: 'Quad.easeOut',
+        onComplete: () => spark.destroy()
+      })
+    }
+
+    this.scene.cameras.main.shake(70, 0.0018)
+    this.scene.tweens.add({
+      targets: [shockwave, punchTrail, punchCore],
+      alpha: 0,
+      scaleX: 1.5,
+      scaleY: 0.65,
+      duration: 260,
+      ease: 'Quad.easeOut',
+      onComplete: () => {
+        shockwave.destroy()
+        punchTrail.destroy()
+        punchCore.destroy()
+      }
+    })
+  }
+
+  private spawnPurpleLaserBeam(from: { x: number; y: number }, to: { x: number; y: number }) {
+    this.spawnLaserMuzzleFlash(from)
+    const dx = to.x - from.x
+    const dy = to.y - from.y
+    const length = Math.hypot(dx, dy)
+    const angle = Math.atan2(dy, dx)
+    const midX = from.x + dx / 2
+    const midY = from.y + dy / 2
+
+    const outerBeam = this.scene.add
+      .rectangle(midX, midY, length, 34, 0x8f3dff, 0.34)
+      .setDepth(66)
+      .setRotation(angle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const beam = this.scene.add
+      .rectangle(midX, midY, length, 20, 0xb15cff, 0.78)
+      .setDepth(67)
+      .setRotation(angle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const core = this.scene.add
+      .rectangle(midX, midY, length, 6, 0xf6e4ff, 1)
+      .setDepth(68)
+      .setRotation(angle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const impactFlare = this.scene.add
+      .circle(to.x, to.y, 24, 0xdba6ff, 0.48)
+      .setDepth(69)
+      .setBlendMode(Phaser.BlendModes.ADD)
+
+    this.scene.cameras.main.shake(90, 0.0032)
+    this.scene.tweens.add({
+      targets: [outerBeam, beam, core, impactFlare],
+      alpha: 0,
+      scaleY: 2.5,
+      duration: 240,
+      ease: 'Quad.easeOut',
+      onComplete: () => {
+        outerBeam.destroy()
+        beam.destroy()
+        core.destroy()
+        impactFlare.destroy()
+      }
+    })
+  }
+
+  private drawYellowShieldSparks(at: { x: number; y: number }) {
+    const shield = this.scene.add
+      .arc(at.x, at.y - 8, 34, 205, 335, false, 0xffd55e, 0.36)
+      .setDepth(74)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    shield.setStrokeStyle(5, 0xfff0a8, 0.9)
+
+    this.scene.tweens.add({
+      targets: shield,
+      alpha: 0,
+      scale: 1.35,
+      duration: 320,
+      ease: 'Quad.easeOut',
+      onComplete: () => shield.destroy()
+    })
+
+    for (let index = 0; index < 8; index += 1) {
+      const angle = Math.PI + (index / 7) * Math.PI
+      const spark = this.scene.add.circle(at.x, at.y - 8, 3, 0xfff4a8, 1).setDepth(76)
+      this.scene.tweens.add({
+        targets: spark,
+        x: at.x + Math.cos(angle) * (24 + Math.random() * 22),
+        y: at.y - 8 + Math.sin(angle) * (16 + Math.random() * 18),
+        alpha: 0,
+        scale: 0.35,
+        duration: 360,
+        ease: 'Quad.easeOut',
+        onComplete: () => spark.destroy()
+      })
+    }
+  }
+
+  private drawBlueEnergyGeneration(at: { x: number; y: number }) {
+    const ring = this.scene.add
+      .circle(at.x, at.y, 12, 0x5ddcff, 0.42)
+      .setDepth(72)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const core = this.scene.add
+      .circle(at.x, at.y, 7, 0xe8fbff, 0.9)
+      .setDepth(73)
+      .setBlendMode(Phaser.BlendModes.ADD)
+
+    this.scene.tweens.add({
+      targets: ring,
+      radius: 42,
+      alpha: 0,
+      duration: 420,
+      ease: 'Quad.easeOut',
+      onComplete: () => ring.destroy()
+    })
+    this.scene.tweens.add({
+      targets: core,
+      y: at.y - 34,
+      alpha: 0,
+      scale: 1.8,
+      duration: 460,
+      ease: 'Quad.easeOut',
+      onComplete: () => core.destroy()
+    })
+
+    for (let index = 0; index < 6; index += 1) {
+      const angle = (index / 6) * Math.PI * 2
+      const mote = this.scene.add.circle(at.x, at.y, 3, 0x8df4ff, 0.95).setDepth(74)
+      this.scene.tweens.add({
+        targets: mote,
+        x: at.x + Math.cos(angle) * 30,
+        y: at.y + Math.sin(angle) * 20 - 10,
+        alpha: 0,
+        duration: 380,
+        ease: 'Quad.easeOut',
+        onComplete: () => mote.destroy()
+      })
+    }
+  }
+
   // Centred intro animation: every skill cast plays its full 4-frame sprite
   // sheet at the lawn centre, occupying the foreground for
   // CENTER_CAST_DURATION_MS. While this plays, the matching card's
@@ -971,21 +1287,43 @@ export class EffectsRenderer {
     const midX = from.x + dx / 2
     const midY = from.y + dy / 2
 
-    const beam = this.scene.add.rectangle(midX, midY, length, 18, 0xb7fbff, 0.92).setDepth(67).setRotation(angle)
-    const core = this.scene.add.rectangle(midX, midY, length, 7, 0xffffff, 1).setDepth(68).setRotation(angle)
-    const flare = this.scene.add.circle(from.x, from.y, 28, 0xff8df3, 0.45).setDepth(69)
+    const outerBeam = this.scene.add
+      .rectangle(midX, midY, length, 30, 0x1fb6ff, 0.3)
+      .setDepth(66)
+      .setRotation(angle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const beam = this.scene.add
+      .rectangle(midX, midY, length, 18, 0x4fdfff, 0.72)
+      .setDepth(67)
+      .setRotation(angle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const core = this.scene.add
+      .rectangle(midX, midY, length, 6, 0xf4feff, 1)
+      .setDepth(68)
+      .setRotation(angle)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const muzzleFlare = this.scene.add
+      .circle(from.x, from.y, 30, 0x66e8ff, 0.54)
+      .setDepth(69)
+      .setBlendMode(Phaser.BlendModes.ADD)
+    const impactFlare = this.scene.add
+      .circle(to.x, to.y, 22, 0xbdf8ff, 0.42)
+      .setDepth(69)
+      .setBlendMode(Phaser.BlendModes.ADD)
 
     this.scene.cameras.main.shake(80, 0.003)
     this.scene.tweens.add({
-      targets: [beam, core, flare],
+      targets: [outerBeam, beam, core, muzzleFlare, impactFlare],
       alpha: 0,
-      scaleY: 2.4,
-      duration: 180,
+      scaleY: 2.7,
+      duration: 220,
       ease: 'Quad.easeOut',
       onComplete: () => {
+        outerBeam.destroy()
         beam.destroy()
         core.destroy()
-        flare.destroy()
+        muzzleFlare.destroy()
+        impactFlare.destroy()
       }
     })
   }

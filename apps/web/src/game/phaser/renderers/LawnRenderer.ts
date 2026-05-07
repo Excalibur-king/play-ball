@@ -42,7 +42,7 @@ export class LawnRenderer {
     const enemyApproachX = originX + buildableWidth
     const boardPadding = 10
 
-    board.fillStyle(boardPalette.boardShadow, 0.14)
+    board.fillStyle(boardPalette.boardShadow, 0.06)
     board.fillRoundedRect(
       originX - boardPadding + 4,
       originY - boardPadding + 8,
@@ -51,20 +51,20 @@ export class LawnRenderer {
       18
     )
 
-    board.fillStyle(boardPalette.boardFrameDark, 0.34)
-    board.fillRoundedRect(originX - boardPadding, originY - boardPadding, width + boardPadding * 2, height + boardPadding * 2, 18)
-    board.lineStyle(3, boardPalette.boardFrame, 0.46)
+    board.lineStyle(2, boardPalette.boardFrame, 0.3)
     board.strokeRoundedRect(originX - boardPadding, originY - boardPadding, width + boardPadding * 2, height + boardPadding * 2, 18)
 
-    board.fillStyle(boardPalette.deployFillA, 0.1)
+    board.fillStyle(boardPalette.deployFillA, 0.04)
     board.fillRoundedRect(originX, originY, buildableWidth, height, 14)
-    board.lineStyle(2, boardPalette.deployEdge, 0.2)
+    board.lineStyle(1.5, boardPalette.deployEdge, 0.12)
     board.strokeRoundedRect(originX + 2, originY + 2, buildableWidth - 4, height - 4, 12)
 
-    board.fillStyle(boardPalette.approachFillA, 0.12)
-    board.fillRoundedRect(enemyApproachX, originY, width - buildableWidth, height, 14)
-    board.lineStyle(2, boardPalette.approachEdge, 0.22)
-    board.strokeRoundedRect(enemyApproachX + 2, originY + 2, width - buildableWidth - 4, height - 4, 12)
+    if (width - buildableWidth > 0) {
+      board.fillStyle(boardPalette.approachFillA, 0.05)
+      board.fillRoundedRect(enemyApproachX, originY, width - buildableWidth, height, 14)
+      board.lineStyle(1.5, boardPalette.approachEdge, 0.14)
+      board.strokeRoundedRect(enemyApproachX + 2, originY + 2, width - buildableWidth - 4, height - 4, 12)
+    }
 
     for (let row = 0; row < rows; row += 1) {
       for (let col = 0; col < cols; col += 1) {
@@ -74,14 +74,14 @@ export class LawnRenderer {
         const buildable = col >= buildableColStart && col <= buildableColEnd
 
         if (buildable) {
-          board.fillStyle(isEven ? boardPalette.deployFillA : boardPalette.deployFillB, isEven ? 0.08 : 0.05)
+          board.fillStyle(isEven ? boardPalette.deployFillA : boardPalette.deployFillB, isEven ? 0.04 : 0.02)
           board.fillRoundedRect(x + 2, y + 2, cellWidth - 4, cellHeight - 4, 10)
-          board.fillStyle(boardPalette.boardInnerGlow, isEven ? 0.06 : 0.04)
-          board.fillCircle(x + cellWidth - 13, y + 13, 3)
+          board.fillStyle(boardPalette.boardInnerGlow, isEven ? 0.04 : 0.02)
+          board.fillCircle(x + cellWidth - 13, y + 13, 2.5)
           continue
         }
 
-        board.fillStyle(isEven ? boardPalette.approachFillA : boardPalette.approachFillB, isEven ? 0.1 : 0.06)
+        board.fillStyle(isEven ? boardPalette.approachFillA : boardPalette.approachFillB, isEven ? 0.05 : 0.03)
         board.fillRoundedRect(x + 2, y + 2, cellWidth - 4, cellHeight - 4, 10)
       }
     }
@@ -98,13 +98,13 @@ export class LawnRenderer {
       const inDeployZone = col >= buildableColStart && col <= buildableColEnd
       const isBoundary = col === buildableColStart || col === buildableColEnd + 1
 
-      grid.lineStyle(isBoundary ? 3 : 1.5, inDeployZone ? boardPalette.deployEdge : boardPalette.approachEdge, isBoundary ? 0.22 : 0.1)
+      grid.lineStyle(isBoundary ? 2 : 1, inDeployZone ? boardPalette.deployEdge : boardPalette.approachEdge, isBoundary ? 0.16 : 0.07)
       grid.lineBetween(x, originY, x, originY + height)
     }
 
     for (let row = 0; row <= rows; row += 1) {
       const y = originY + row * cellHeight
-      grid.lineStyle(1.5, boardPalette.deployEdge, 0.1)
+      grid.lineStyle(1, boardPalette.deployEdge, 0.07)
       grid.lineBetween(originX, y, originX + width, y)
     }
 
@@ -112,9 +112,9 @@ export class LawnRenderer {
       for (let col = buildableColStart; col <= buildableColEnd; col += 1) {
         const x = originX + col * cellWidth
         const y = originY + row * cellHeight
-        grid.fillStyle(boardPalette.deployNode, 0.12)
-        grid.fillCircle(x + 9, y + 9, 2)
-        grid.fillCircle(x + cellWidth - 9, y + cellHeight - 9, 2)
+        grid.fillStyle(boardPalette.deployNode, 0.08)
+        grid.fillCircle(x + 9, y + 9, 1.5)
+        grid.fillCircle(x + cellWidth - 9, y + cellHeight - 9, 1.5)
       }
     }
   }

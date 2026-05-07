@@ -1,86 +1,112 @@
 {
   "attack_molten_chain": {
-    "cardId": "attack_molten_chain",
-    "frameWidth": 630,
-    "frameHeight": 368,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "mhls_t.png",
+    "frameWidth": 682,
+    "frameHeight": 473,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/attack_molten_chain.png"
   },
   "defense_temp_wall": {
-    "cardId": "defense_temp_wall",
-    "frameWidth": 609,
-    "frameHeight": 455,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "ytjj_t.png",
+    "frameWidth": 576,
+    "frameHeight": 576,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/defense_temp_wall.png",
+    "overlay": {
+      "idle": {
+        "frameWidth": 508,
+        "frameHeight": 512,
+        "frameCount": 1
+      }
+    }
   },
   "emergency_freeze": {
-    "cardId": "emergency_freeze",
-    "frameWidth": 630,
-    "frameHeight": 512,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "szfh_t.png",
+    "frameWidth": 597,
+    "frameHeight": 594,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/emergency_freeze.png"
   },
   "emergency_repair_all": {
-    "cardId": "emergency_repair_all",
-    "frameWidth": 510,
-    "frameHeight": 488,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "yggz_t.png",
+    "frameWidth": 613,
+    "frameHeight": 682,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/emergency_repair_all.png"
   },
   "energy_instant_power": {
-    "cardId": "energy_instant_power",
-    "frameWidth": 529,
-    "frameHeight": 512,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "nlpy_t.png",
+    "frameWidth": 472,
+    "frameHeight": 627,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/energy_instant_power.png"
   },
   "pivot_wall_feedback": {
-    "cardId": "pivot_wall_feedback",
-    "frameWidth": 613,
-    "frameHeight": 512,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "asfz_t.png",
+    "frameWidth": 657,
+    "frameHeight": 663,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/pivot_wall_feedback.png"
   },
   "premium_starfall_contract": {
-    "cardId": "premium_starfall_contract",
-    "frameWidth": 633,
-    "frameHeight": 491,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "xyqy_t.png",
+    "frameWidth": 598,
+    "frameHeight": 682,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/premium_starfall_contract.png"
   },
   "reward_fire_dragon_breath": {
-    "cardId": "reward_fire_dragon_breath",
-    "frameWidth": 768,
-    "frameHeight": 304,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "hltx_t.png",
+    "frameWidth": 682,
+    "frameHeight": 682,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/reward_fire_dragon_breath.png"
   },
   "spell_lava_rain": {
-    "cardId": "spell_lava_rain",
-    "frameWidth": 565,
-    "frameHeight": 416,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "xhjy_t.png",
+    "frameWidth": 633,
+    "frameHeight": 648,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/spell_lava_rain.png"
   },
   "summon_energy_sprite": {
-    "cardId": "summon_energy_sprite",
-    "frameWidth": 575,
-    "frameHeight": 459,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "nljl_t.png",
+    "frameWidth": 573,
+    "frameHeight": 585,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/summon_energy_sprite.png",
+    "overlay": {
+      "active": {
+        "frameWidth": 573,
+        "frameHeight": 565,
+        "frameCount": 3
+      }
+    }
   },
   "summon_flame_hawks": {
-    "cardId": "summon_flame_hawks",
-    "frameWidth": 723,
-    "frameHeight": 495,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "fysm_t.png",
+    "frameWidth": 610,
+    "frameHeight": 603,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/summon_flame_hawks.png"
   },
   "summon_furnace_golem": {
-    "cardId": "summon_furnace_golem",
-    "frameWidth": 707,
-    "frameHeight": 481,
-    "frameCount": 4,
-    "method": "cutout"
+    "source": "xymo_t.png",
+    "frameWidth": 603,
+    "frameHeight": 543,
+    "frameCount": 8,
+    "icon": "apps/web/public/assets/game/cards/summon_furnace_golem.png",
+    "overlay": {
+      "idle": {
+        "frameWidth": 542,
+        "frameHeight": 530,
+        "frameCount": 1
+      },
+      "attack": {
+        "frameWidth": 601,
+        "frameHeight": 502,
+        "frameCount": 2
+      }
+    }
   }
 }

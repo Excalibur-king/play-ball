@@ -1,0 +1,72 @@
+{
+  "melee_turret": {
+    "idle": {
+      "file": "idle.png",
+      "frameWidth": 269,
+      "frameHeight": 339,
+      "frameCount": 1
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 351,
+      "frameHeight": 339,
+      "frameCount": 4
+    }
+  },
+  "energy_core": {
+    "idle": {
+      "file": "idle.png",
+      "frameWidth": 296,
+      "frameHeight": 355,
+      "frameCount": 1
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 409,
+      "frameHeight": 350,
+      "frameCount": 4
+    }
+  },
+  "laser_turret": {
+    "idle": {
+      "file": "idle.png",
+      "frameWidth": 369,
+      "frameHeight": 369,
+      "frameCount": 1
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 409,
+      "frameHeight": 409,
+      "frameCount": 4
+    }
+  },
+  "ranged_turret": {
+    "idle": {
+      "file": "idle.png",
+      "frameWidth": 284,
+      "frameHeight": 383,
+      "frameCount": 1
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 361,
+      "frameHeight": 384,
+      "frameCount": 4
+    }
+  },
+  "lava_wall": {
+    "idle": {
+      "file": "idle.png",
+      "frameWidth": 289,
+      "frameHeight": 385,
+      "frameCount": 1
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 409,
+      "frameHeight": 387,
+      "frameCount": 4
+    }
+  }
+}

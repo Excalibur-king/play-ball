@@ -12,6 +12,7 @@ type PlantView = {
   upgraded: boolean
   attackSprite?: Phaser.GameObjects.Sprite
   upgradeRing?: Phaser.GameObjects.Arc
+  deathAnimationStarted: boolean
 }
 
 // Mirrors game-core buildings into disposable Phaser view objects.
@@ -26,7 +27,7 @@ export class PlantRenderer {
     const currentIds = new Set(plants.filter((plant) => shouldRenderPlantBase(plant)).map((plant) => plant.id))
 
     for (const [id, view] of this.views) {
-      if (!currentIds.has(id)) {
+      if (!currentIds.has(id) && !view.deathAnimationStarted) {
         destroyPlantView(view)
         this.views.delete(id)
       }
@@ -76,15 +77,24 @@ export class PlantRenderer {
     const plant = plants.find(
       (item) => shouldRenderPlantBase(item) && Math.abs(item.x + 30 - from.x) < 10 && Math.abs(item.y - 7 - from.y) < 34
     )
+    return this.playAttackAnimationForPlant(plant)
+  }
+
+  playAttackAnimationById(plants: Plant[], plantId: string) {
+    const plant = plants.find((item) => item.id === plantId && shouldRenderPlantBase(item))
+    return this.playAttackAnimationForPlant(plant)
+  }
+
+  private playAttackAnimationForPlant(plant: Plant | undefined) {
     const view = plant ? this.views.get(plant.id) : undefined
 
-    if (!plant || !view) {
-      return
+    if (!plant || !view || view.deathAnimationStarted) {
+      return 0
     }
 
     const attackAnimation = assetManifest.buildings[plant.type].attackAnimation
     if (!attackAnimation) {
-      return
+      return 0
     }
 
     if (view.attackSprite) {
@@ -111,6 +121,8 @@ export class PlantRenderer {
 
     if (attackAnimation.body.animationKey) {
       attackSprite.play(attackAnimation.body.animationKey)
+      const animation = this.scene.anims.get(attackAnimation.body.animationKey)
+      const animationDurationMs = animation ? (animation.frames.length / animation.frameRate) * 1000 : 300
       attackSprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         if (view.attackSprite === attackSprite) {
           attackSprite.destroy()
@@ -118,10 +130,46 @@ export class PlantRenderer {
           view.body.setVisible(true)
         }
       })
-      return
+      return animationDurationMs
     }
 
     view.body.setVisible(true)
+    return 0
+  }
+
+  playDeath(plantId: string, plantType: Plant['type'], at: { x: number; y: number }) {
+    const view = this.views.get(plantId)
+
+    if (view?.deathAnimationStarted) {
+      return
+    }
+
+    if (!view) {
+      this.spawnDetachedDeathAnimation(plantType, at)
+      return
+    }
+
+    const visual = assetManifest.buildings[view.type]
+    const deathAnimation = visual.deathAnimation
+
+    view.deathAnimationStarted = true
+    view.attackSprite?.destroy()
+    view.attackSprite = undefined
+    view.upgradeRing?.setVisible(false)
+    view.hpBack.setVisible(false)
+    view.hp.setVisible(false)
+
+    if (deathAnimation?.body.animationKey) {
+      view.body.setVisible(true)
+      view.body.setTexture(deathAnimation.body.textureKey, deathAnimation.body.frame)
+      view.body.setDisplaySize(deathAnimation.displayWidth, deathAnimation.displayHeight)
+      view.body.setY(deathAnimation.bodyOffsetY)
+      view.body.play(deathAnimation.body.animationKey)
+      view.body.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => this.destroyView(plantId, view))
+      return
+    }
+
+    this.fadeOutView(plantId, view)
   }
 
   clear() {
@@ -138,6 +186,10 @@ export class PlantRenderer {
       destroyPlantView(view)
       this.views.delete(plant.id)
       view = undefined
+    }
+
+    if (view?.deathAnimationStarted) {
+      return
     }
 
     if (!view) {
@@ -193,7 +245,8 @@ export class PlantRenderer {
       hpBack,
       hp,
       type: plant.type,
-      upgraded: false
+      upgraded: false,
+      deathAnimationStarted: false
     }
 
     this.syncUpgradeRing(view, plant)
@@ -228,6 +281,44 @@ export class PlantRenderer {
       repeat: -1,
       ease: 'Sine.easeInOut'
     })
+  }
+
+  private spawnDetachedDeathAnimation(plantType: Plant['type'], at: { x: number; y: number }) {
+    const visual = assetManifest.buildings[plantType]
+    const deathAnimation = visual.deathAnimation
+
+    if (!deathAnimation?.body.animationKey) {
+      return
+    }
+
+    const sprite = this.scene.add
+      .sprite(at.x, at.y + deathAnimation.bodyOffsetY, deathAnimation.body.textureKey, deathAnimation.body.frame)
+      .setOrigin(0.5, 1)
+      .setDisplaySize(deathAnimation.displayWidth, deathAnimation.displayHeight)
+      .setDepth(72)
+
+    sprite.play(deathAnimation.body.animationKey)
+    sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => sprite.destroy())
+  }
+
+  private fadeOutView(plantId: string, view: PlantView) {
+    this.scene.tweens.add({
+      targets: view.container,
+      alpha: 0,
+      y: view.container.y + 10,
+      duration: 240,
+      ease: 'Quad.easeIn',
+      onComplete: () => this.destroyView(plantId, view)
+    })
+  }
+
+  private destroyView(plantId: string, view: PlantView) {
+    if (this.views.get(plantId) !== view) {
+      return
+    }
+
+    destroyPlantView(view)
+    this.views.delete(plantId)
   }
 }
 

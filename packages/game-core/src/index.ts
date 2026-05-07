@@ -24,6 +24,7 @@ export type {
   AiWaveDirective,
   AiWavePlan,
   AiWaveRole,
+  AiWaveRoute,
   DirectorDecisionParams,
   DirectorHistoryEntry,
   DirectorOutcome,

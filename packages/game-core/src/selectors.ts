@@ -121,7 +121,8 @@ export function getHudSnapshot(state: GameState): HudSnapshot {
           state.phase !== 'card_select' &&
           state.sun >= definition.cost &&
           cooldownRemaining <= 0,
-        role: definition.type
+        role: definition.type,
+        attackKind: definition.attackKind
       }
     }),
     plants: state.plants.map((plant) => ({

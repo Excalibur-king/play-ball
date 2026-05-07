@@ -146,7 +146,7 @@ export class GameEngine {
       hydrateRealtimeAiWavePlan(this.state, {
         wave: command.wave,
         plan: command.plan
-      })
+      }, this.events)
       return
     }
 

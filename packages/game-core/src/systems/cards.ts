@@ -87,7 +87,7 @@ function expireTimedSummons(state: GameState, events: GameEvent[]) {
   })
 
   for (const plant of expired) {
-    events.push({ type: 'plantDestroyed', plantId: plant.id, at: { x: plant.x, y: plant.y } })
+    events.push({ type: 'plantDestroyed', plantId: plant.id, plantType: plant.type, at: { x: plant.x, y: plant.y } })
   }
 }
 

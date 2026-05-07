@@ -2,6 +2,7 @@ import { GameEngine, getWorldDefinition, type LevelId, type StrategyCardId } fro
 import Phaser from 'phaser'
 import { gameBridge } from '../bridge/gameBridge'
 import { LawnInput } from './input/LawnInput'
+import { AiWaveWarningRenderer } from './renderers/AiWaveWarningRenderer'
 import { DirectorLanePreviewRenderer } from './renderers/DirectorLanePreviewRenderer'
 import { EffectsRenderer } from './renderers/EffectsRenderer'
 import { LawnRenderer } from './renderers/LawnRenderer'
@@ -24,6 +25,7 @@ export class BattleScene extends Phaser.Scene {
   private projectileRenderer!: ProjectileRenderer
   private effectsRenderer!: EffectsRenderer
   private directorLanePreviewRenderer!: DirectorLanePreviewRenderer
+  private aiWaveWarningRenderer!: AiWaveWarningRenderer
   private routeGuideRenderer!: RouteGuideRenderer
   private placementPreviewRenderer!: PlacementPreviewRenderer
   private hoveredCell: { row: number; col: number } | null = null
@@ -57,6 +59,7 @@ export class BattleScene extends Phaser.Scene {
     this.projectileRenderer = new ProjectileRenderer(this)
     this.effectsRenderer = new EffectsRenderer(this)
     this.directorLanePreviewRenderer = new DirectorLanePreviewRenderer(this)
+    this.aiWaveWarningRenderer = new AiWaveWarningRenderer(this)
     this.routeGuideRenderer = new RouteGuideRenderer(this)
     this.placementPreviewRenderer = new PlacementPreviewRenderer(this, this.world)
 
@@ -77,6 +80,7 @@ export class BattleScene extends Phaser.Scene {
       this.unsubscribeCommands = undefined
       this.lawnInput?.destroy()
       this.directorLanePreviewRenderer?.destroy()
+      this.aiWaveWarningRenderer?.destroy()
       this.routeGuideRenderer?.destroy()
       this.placementPreviewRenderer?.destroy()
       this.clearDynamicViews()
@@ -100,8 +104,15 @@ export class BattleScene extends Phaser.Scene {
       plantRenderer: this.plantRenderer,
       zombieRenderer: this.zombieRenderer
     }
-    this.effectsRenderer.handleEvents(this.engine.drainEvents(), effectContext)
+    const events = this.engine.drainEvents()
+    for (const event of events) {
+      if (event.type === 'aiWavePlanHydrated') {
+        this.aiWaveWarningRenderer.trigger(event.routes)
+      }
+    }
+    this.effectsRenderer.handleEvents(events, effectContext)
     this.effectsRenderer.update(effectContext)
+    this.aiWaveWarningRenderer.sync(time)
 
     // React does not need per-frame updates; throttle HUD snapshots to reduce rerenders.
     if (time - this.lastSnapshotAt > 120) {

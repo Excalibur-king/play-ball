@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enemy 3x3 transparent sprite sheets -> action strips + manifest."""
+"""Enemy 4x4 transparent sprite sheets -> action strips + manifest."""
 
 from __future__ import annotations
 
@@ -9,25 +9,38 @@ from pathlib import Path
 from PIL import Image
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SOURCE_DIR = REPO_ROOT / "t"
+SOURCE_DIR_CANDIDATES = [
+    REPO_ROOT / "dr4",
+    REPO_ROOT.parent / "dr4",
+]
 OUTPUT_DIR = REPO_ROOT / "apps" / "web" / "public" / "assets" / "game" / "units" / "enemies"
 
-GRID_COLS = 3
-GRID_ROWS = 3
+GRID_COLS = 4
+GRID_ROWS = 4
 
 ACTION_BY_ROW = {
     0: "walk",
     1: "attack",
     2: "hit",
+    3: "death",
 }
 
 SOURCE_BY_ENEMY_ID = {
-    "ember_grunt": "rhxml_t.png",
-    "spark_runner": "hhlh_t.png",
-    "basalt_smasher": "hsmx_t.png",
-    "ash_wing": "hjbfsm_t.png",
-    "volcano_core_beast": "hsskmw_t.png",
+    "ember_grunt": "rhxml4_t.png",
+    "spark_runner": "hhhl4_t.png",
+    "basalt_smasher": "hsmx4_t.png",
+    "ash_wing": "hjbfsm4_t.png",
+    "volcano_core_beast": "hsskmw4_t.png",
 }
+
+
+def resolve_source_dir() -> Path:
+    for source_dir in SOURCE_DIR_CANDIDATES:
+        if source_dir.exists():
+            return source_dir
+
+    formatted_candidates = ", ".join(str(source_dir) for source_dir in SOURCE_DIR_CANDIDATES)
+    raise FileNotFoundError(f"missing source directory; checked: {formatted_candidates}")
 
 
 def slice_grid_cells(sheet: Image.Image) -> dict[str, list[Image.Image]]:
@@ -104,8 +117,8 @@ def save_action_strip(enemy_output_dir: Path, action: str, frames: list[Image.Im
     }
 
 
-def process_enemy(enemy_id: str, source_file_name: str) -> dict[str, dict[str, int | str]]:
-    source_path = SOURCE_DIR / source_file_name
+def process_enemy(source_dir: Path, enemy_id: str, source_file_name: str) -> dict[str, dict[str, int | str]]:
+    source_path = source_dir / source_file_name
 
     if not source_path.exists():
         raise FileNotFoundError(f"missing source sheet: {source_path}")
@@ -123,18 +136,21 @@ def process_enemy(enemy_id: str, source_file_name: str) -> dict[str, dict[str, i
 
 
 def main() -> int:
+    source_dir = resolve_source_dir()
     manifest: dict[str, dict[str, dict[str, int | str]]] = {}
 
     for enemy_id, source_file_name in SOURCE_BY_ENEMY_ID.items():
-        manifest[enemy_id] = process_enemy(enemy_id, source_file_name)
+        manifest[enemy_id] = process_enemy(source_dir, enemy_id, source_file_name)
         walk = manifest[enemy_id]["walk"]
         attack = manifest[enemy_id]["attack"]
         hit = manifest[enemy_id]["hit"]
+        death = manifest[enemy_id]["death"]
         print(
             f"[OK] {enemy_id}: "
             f"walk {walk['frameWidth']}x{walk['frameHeight']}, "
             f"attack {attack['frameWidth']}x{attack['frameHeight']}, "
-            f"hit {hit['frameWidth']}x{hit['frameHeight']}"
+            f"hit {hit['frameWidth']}x{hit['frameHeight']}, "
+            f"death {death['frameWidth']}x{death['frameHeight']}"
         )
 
     manifest_path = OUTPUT_DIR / "frames-manifest.json"

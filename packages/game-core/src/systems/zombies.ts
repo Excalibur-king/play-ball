@@ -25,6 +25,7 @@ export function updateZombies(state: GameState, dt: number, events: GameEvent[])
         events.push({
           type: 'plantDamaged',
           plantId: target.id,
+          plantType: target.type,
           at: { x: target.x, y: target.y },
           dangerous: zombie.category === 'heavy_attack' || zombie.category === 'boss',
           blockedDangerous: buildingDefinitions[target.type].canBlockGround
@@ -33,7 +34,7 @@ export function updateZombies(state: GameState, dt: number, events: GameEvent[])
         if (target.hp <= 0) {
           state.currentWaveStats.destroyedBuildings += 1
           state.currentWaveStats.byLane[target.row]!.destroyedBuildings += 1
-          events.push({ type: 'plantDestroyed', plantId: target.id, at: { x: target.x, y: target.y } })
+          events.push({ type: 'plantDestroyed', plantId: target.id, plantType: target.type, at: { x: target.x, y: target.y } })
         }
 
         if (

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { AiWaveDebugSnapshot, AiWavePlanResponse, RealtimeAiWavePlanRequest } from '@tower-rogue/shared'
+import type { AiWaveDebugSnapshot, AiWavePlan, AiWavePlanResponse, RealtimeAiWavePlanRequest } from '@tower-rogue/shared'
 import {
   requestLatestAiWaveDebug,
   requestRealtimeAiWavePlan
@@ -21,6 +21,7 @@ export function useEnemyDirector() {
   const setAiWaveDebugLoading = useGameUiStore((state) => state.setAiWaveDebugLoading)
   const setDirectorDebug = useGameUiStore((state) => state.setDirectorDebug)
   const setDirectorDebugLoading = useGameUiStore((state) => state.setDirectorDebugLoading)
+  const showAiDirectorAnnounce = useGameUiStore((state) => state.showAiDirectorAnnounce)
   const latestRealtimeRequestId = useRef(0)
   const realtimeRequestInFlight = useRef(false)
   const realtimeDirectorClock = useRef(0)
@@ -111,6 +112,7 @@ export function useEnemyDirector() {
           wave: snapshot.wave,
           plan
         })
+        showAiDirectorAnnounce(buildAiDirectorAnnounce(plan))
       } else {
         gameBridge.dispatch({
           type: 'applyRealtimeDirectorFallback',
@@ -166,6 +168,7 @@ export function useEnemyDirector() {
   }, [
     setAiWaveDebug,
     setAiWaveDebugLoading,
+    showAiDirectorAnnounce,
     snapshot
   ])
 }
@@ -218,4 +221,60 @@ function createLocalRealtimeAiWaveDebug(input: {
     usedFallback: !input.plan,
     fallbackReason: input.fallbackReason
   }
+}
+
+const ROLE_LABELS: Record<string, string> = {
+  normal: '常规部队',
+  fast: '快速突击',
+  heavyAttack: '重装单位',
+  flying: '空中编队'
+}
+
+const CADENCE_LABELS: Record<string, string> = {
+  sparse: '零散渗透',
+  steady: '稳步推进',
+  dense: '密集冲锋'
+}
+
+const ROUTE_LABELS: Record<string, string> = {
+  left: '左路',
+  center: '中路',
+  right: '右路',
+  mixed: '多路',
+  'row-1': '第1路',
+  'row-2': '第2路',
+  'row-3': '第3路',
+  'row-4': '第4路',
+  'row-5': '第5路'
+}
+
+function buildAiDirectorAnnounce(plan: AiWavePlan): string {
+  const firstPhase = plan.phases[0]
+  if (!firstPhase) return `AI 导演调度：${plan.pressureGoal}`
+
+  const roles = new Set<string>()
+  const routes = new Set<string>()
+  let cadence = ''
+
+  for (const directive of firstPhase.directives) {
+    if (directive.kind === 'role') {
+      roles.add(ROLE_LABELS[directive.role] ?? directive.role)
+    }
+    if (directive.route !== 'mixed') {
+      const label = ROUTE_LABELS[directive.route]
+      if (label) routes.add(label)
+    }
+    if (!cadence) {
+      cadence = CADENCE_LABELS[directive.cadence] ?? ''
+    }
+  }
+
+  const parts: string[] = []
+  if (roles.size > 0) parts.push([...roles].join('、'))
+  if (routes.size > 0) parts.push([...routes].join('、'))
+  if (cadence) parts.push(cadence)
+
+  return parts.length > 0
+    ? `AI 增援即将抵达：${parts.join(' · ')}`
+    : `AI 导演调度：${plan.pressureGoal}`
 }

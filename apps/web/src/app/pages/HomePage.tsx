@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { levels, strategyCards, type LevelId, type StrategyCardId } from '@tower-rogue/game-core'
 import { formatStrategyCardDamageAtLevel } from '../../ui/strategyCardText'
 import { StrategyCardArtwork } from '../../ui/StrategyCardArtwork'
@@ -39,6 +39,10 @@ export function HomePage() {
   const [skillPanelOpen, setSkillPanelOpen] = useState(false)
   const [shopPanelOpen, setShopPanelOpen] = useState(false)
   const [mapPanelOpen, setMapPanelOpen] = useState(false)
+  const [toast, setToast] = useState<{ message: string; key: number } | null>(null)
+  const showComingSoon = useCallback((label: string) => {
+    setToast({ message: `「${label}」即将开放`, key: Date.now() })
+  }, [])
   const [selectedLevelId, setSelectedLevelId] = useState<LevelId>(highlightedLevelId)
 
   const selectedLevel = levels.find((level) => level.id === selectedLevelId) ?? levels[0]
@@ -52,6 +56,7 @@ export function HomePage() {
   const selectedCards = skillLoadout
     .map((cardId) => strategyCards.find((card) => card.id === cardId))
     .filter((card): card is (typeof strategyCards)[number] => card !== undefined)
+  const skillPackSlots = Array.from({ length: 5 }, (_, index) => selectedCards[index])
   const latestUnlockedRewardCard = latestUnlockedRewardCardId ? getSkillCardById(latestUnlockedRewardCardId) : undefined
   const skillCardLocks = {
     ownedPremiumCards,
@@ -77,64 +82,54 @@ export function HomePage() {
 
   return (
     <main className="menu-screen">
-      <div className="menu-hero" aria-hidden="true">
-        <img
-          className="menu-hero-image"
-          src="/assets/home-ui/menu-mascot-mage.webp"
-          alt=""
-          draggable={false}
-          fetchPriority="high"
-        />
-      </div>
+      <video className="menu-background-video" autoPlay loop muted playsInline preload="auto" aria-hidden="true">
+        <source src="/assets/ui/主界面图.mp4" type="video/mp4" />
+      </video>
 
       <div className="menu-avatar-info" aria-label="头像信息">
-        <img className="menu-avatar-image" src="/assets/ui/avatar_info.png" alt="头像信息" draggable={false} />
+        <img className="menu-avatar-image" src="/assets/ui/头像信息.png" alt="头像信息" draggable={false} />
       </div>
 
       <div className="menu-resource-bar" aria-label="资源信息">
         <div className="menu-gold-info">
-          <img className="menu-gold-image" src="/assets/ui/gold_counter.png" alt="金币信息" draggable={false} />
+          <img className="menu-gold-image" src="/assets/ui/金币框.png" alt="金币信息" draggable={false} />
           <span>{gold}</span>
         </div>
 
         <div className="menu-skill-info">
-          <img className="menu-skill-image" src="/assets/ui/skill_crystal.png" alt="技能原石" draggable={false} />
+          <img className="menu-skill-image" src="/assets/ui/紫水晶框.png" alt="技能原石" draggable={false} />
           <span>{skillCrystals}</span>
         </div>
 
         <div className="menu-inspiration-info">
           <img
             className="menu-inspiration-image"
-            src="/assets/ui/inspiration_crystal.png"
-            alt="灵感原石"
+            src="/assets/ui/体力框.png"
+            alt="体力"
             draggable={false}
           />
           <span>{inspirationCrystals}</span>
-        </div>
-
-        <div className="menu-save-info">
-          <img className="menu-save-image" src="/assets/ui/save_card.png" alt="存档卡" draggable={false} />
         </div>
       </div>
 
       <div className="menu-social-row" aria-label="邮件好友设置">
         <div className="menu-mail-info">
-          <img className="menu-mail-image" src="/assets/ui/mail_icon.png" alt="邮件" draggable={false} />
+          <img className="menu-mail-image" src="/assets/ui/邮件按钮.png" alt="邮件" draggable={false} />
         </div>
 
         <div className="menu-friend-info">
-          <img className="menu-friend-image" src="/assets/ui/friend_icon.png" alt="好友" draggable={false} />
+          <img className="menu-friend-image" src="/assets/ui/好友按钮.png" alt="好友" draggable={false} />
         </div>
 
         <div className="menu-settings-info">
-          <img className="menu-settings-image" src="/assets/ui/settings_icon.png" alt="设置" draggable={false} />
+          <img className="menu-settings-image" src="/assets/ui/设置按钮.png" alt="设置" draggable={false} />
         </div>
       </div>
 
       <div className="menu-skill-pack" aria-label="当前刷图技能包">
         <div className="menu-skill-pack-header">
           <span className="menu-skill-pack-icon" aria-hidden="true" />
-          <span className="menu-skill-pack-title">刷图技能包</span>
+          <span className="menu-skill-pack-title">技能包</span>
           <span className="menu-skill-pack-count">{selectedCards.length}/5</span>
         </div>
         <div className="menu-skill-pack-cards">
@@ -160,30 +155,82 @@ export function HomePage() {
       </div>
 
       <div className="menu-entry-stack menu-entry-stack-left" aria-label="主界面入口左侧">
-        <button className="menu-entry-button" type="button" aria-label="开始冒险" onClick={() => setMapPanelOpen(true)}>
-          <img className="menu-entry-image" src="/assets/ui/academy_portal_button.png" alt="开始冒险" draggable={false} />
+        <button className="menu-entry-button menu-entry-button-shift-up" type="button" aria-label="学院传送门" onClick={() => setMapPanelOpen(true)}>
+          <img className="menu-entry-image" src="/assets/ui/学院传送门按钮.png" alt="学院传送门" draggable={false} />
         </button>
 
-        <button className="menu-entry-button" type="button" aria-label="技能" onClick={() => setSkillPanelOpen(true)}>
-          <img className="menu-entry-image" src="/assets/ui/skill_academy_button.png" alt="技能" draggable={false} />
+        <button
+          className="menu-entry-button menu-entry-button-compact menu-entry-button-announcement-offset menu-entry-button-announcement-compact"
+          type="button"
+          aria-label="公告"
+          onClick={() => showComingSoon('公告')}
+        >
+          <img className="menu-entry-image" src="/assets/ui/公告按钮.png" alt="公告" draggable={false} />
         </button>
 
-        <button className="menu-entry-button" type="button" aria-label="装备" onClick={() => alert('敬请期待')}>
-          <img className="menu-entry-image" src="/assets/ui/equipment_button.png" alt="装备" draggable={false} />
+        <button
+          className="menu-entry-button menu-entry-button-compact menu-entry-button-archive-offset"
+          type="button"
+          aria-label="图鉴"
+          onClick={() => showComingSoon('图鉴')}
+        >
+          <img className="menu-entry-image" src="/assets/ui/图鉴按钮.png" alt="图鉴" draggable={false} />
+        </button>
+      </div>
+
+      <div className="menu-entry-row menu-entry-row-bottom-left" aria-label="主界面底部左侧">
+        <button
+          className="menu-entry-button menu-entry-button-bottom-boost menu-entry-button-equip-shift"
+          type="button"
+          aria-label="装备"
+          onClick={() => showComingSoon('装备')}
+        >
+          <img className="menu-entry-image" src="/assets/ui/装备按钮.png" alt="装备" draggable={false} />
+        </button>
+
+        <button className="menu-entry-button menu-entry-button-bottom-boost" type="button" aria-label="英雄" onClick={() => showComingSoon('英雄')}>
+          <img className="menu-entry-image" src="/assets/ui/英雄按钮.png" alt="英雄" draggable={false} />
+        </button>
+
+        <button
+          className="menu-entry-button menu-entry-button-bottom-boost menu-entry-button-defense-shift"
+          type="button"
+          aria-label="防御塔"
+          onClick={() => showComingSoon('防御塔')}
+        >
+          <img className="menu-entry-image" src="/assets/ui/防御塔按钮.png" alt="防御塔" draggable={false} />
+        </button>
+
+        <button
+          className="menu-entry-button menu-entry-button-bottom-boost menu-entry-button-skill-shift"
+          type="button"
+          aria-label="技能"
+          onClick={() => setSkillPanelOpen(true)}
+        >
+          <img className="menu-entry-image" src="/assets/ui/技能按钮.png" alt="技能" draggable={false} />
+        </button>
+
+        <button
+          className="menu-entry-button menu-entry-button-achievement-shift"
+          type="button"
+          aria-label="成就"
+          onClick={() => showComingSoon('成就')}
+        >
+          <img className="menu-entry-image" src="/assets/ui/成就按钮.png" alt="成就" draggable={false} />
         </button>
       </div>
 
       <div className="menu-entry-stack menu-entry-stack-right" aria-label="主界面入口右侧">
         <button className="menu-entry-button" type="button" aria-label="商店" onClick={() => setShopPanelOpen(true)}>
-          <img className="menu-entry-image" src="/assets/ui/shop_button.png" alt="商店" draggable={false} />
+          <img className="menu-entry-image" src="/assets/ui/商店按钮.png" alt="商店" draggable={false} />
         </button>
 
-        <button className="menu-entry-button" type="button" aria-label="PK对战" onClick={() => alert('敬请期待')}>
-          <img className="menu-entry-image" src="/assets/ui/pk_battle_button.png" alt="PK对战" draggable={false} />
+        <button className="menu-entry-button" type="button" aria-label="PK对战" onClick={() => showComingSoon('PK对战')}>
+          <img className="menu-entry-image" src="/assets/ui/PK对战按钮.png" alt="PK对战" draggable={false} />
         </button>
 
-        <button className="menu-entry-button" type="button" aria-label="排行榜" onClick={() => alert('敬请期待')}>
-          <img className="menu-entry-image" src="/assets/ui/leaderboard_button.png" alt="排行榜" draggable={false} />
+        <button className="menu-entry-button" type="button" aria-label="排行榜" onClick={() => showComingSoon('排行榜')}>
+          <img className="menu-entry-image" src="/assets/ui/排行榜按钮.png" alt="排行榜" draggable={false} />
         </button>
       </div>
 
@@ -237,6 +284,23 @@ export function HomePage() {
             <button type="button" onClick={() => setSkillPanelOpen(false)}>
               关闭
             </button>
+          </div>
+          <div className="menu-skill-config-loadout" aria-label="当前技能包">
+            {skillPackSlots.map((card, index) =>
+              card ? (
+                <div key={card.id} className={`menu-skill-pack-slot type-${card.type}`}>
+                  <StrategyCardArtwork cardId={card.id} name={card.name} type={card.type} className="slot-art" />
+                  <div className="slot-info">
+                    <span className="slot-type-tag">{formatCardType(card.type)}</span>
+                    <span className="slot-name">{card.name}</span>
+                  </div>
+                </div>
+              ) : (
+                <div key={`empty-${index}`} className="menu-skill-pack-slot empty" aria-hidden="true">
+                  <span className="slot-empty-mark">+</span>
+                </div>
+              )
+            )}
           </div>
           <div className="menu-skill-config-count">已选择 {skillLoadout.length}/5</div>
           <div className="menu-skill-card-grid">
@@ -296,16 +360,15 @@ export function HomePage() {
               <span>每日补给</span>
               <strong>技能原石</strong>
               <em>
-                消耗 {SKILL_CRYSTAL_GOLD_COST} 金币购买 1 个技能原石。今日剩余 {remainingSkillCrystalPurchases}/
-                {DAILY_SKILL_CRYSTAL_PURCHASE_LIMIT} 次。
+                消耗金币购买 1 个技能原石。今日剩余 {remainingSkillCrystalPurchases}/{DAILY_SKILL_CRYSTAL_PURCHASE_LIMIT} 次。
               </em>
             </div>
             <button type="button" disabled={!canBuyDailySkillCrystal} onClick={buyDailySkillCrystal}>
               {remainingSkillCrystalPurchases <= 0
                 ? '今日已售罄'
                 : gold < SKILL_CRYSTAL_GOLD_COST
-                  ? `金币不足（需要 ${SKILL_CRYSTAL_GOLD_COST}）`
-                  : `购买：${SKILL_CRYSTAL_GOLD_COST} 金币`}
+                  ? '金币不足'
+                  : '购买 1 个'}
             </button>
           </div>
           <div className="menu-shop-card">
@@ -376,6 +439,10 @@ export function HomePage() {
         </div>
       )}
 
+      {toast && (
+        <ComingSoonToast key={toast.key} message={toast.message} onDone={() => setToast(null)} />
+      )}
+
       {latestMapClearReward && (
         <div className="menu-skill-config menu-reward-panel" role="dialog" aria-label="地图通关掉落">
           <div className="menu-skill-config-head">
@@ -397,6 +464,31 @@ export function HomePage() {
         </div>
       )}
     </main>
+  )
+}
+
+const TOAST_DURATION_MS = 2000
+
+function ComingSoonToast({ message, onDone }: { message: string; onDone: () => void }) {
+  const [exiting, setExiting] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      setExiting(true)
+      timerRef.current = setTimeout(onDone, 360)
+    }, TOAST_DURATION_MS)
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [onDone])
+
+  return (
+    <div className={`coming-soon-toast${exiting ? ' exiting' : ''}`} role="status" aria-live="polite">
+      <span className="coming-soon-toast-icon">🔒</span>
+      <span className="coming-soon-toast-text">{message}</span>
+      <span className="coming-soon-toast-sub">敬请期待</span>
+    </div>
   )
 }
 

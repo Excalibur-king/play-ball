@@ -5,33 +5,51 @@
   width: 100vw;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(6, 17, 31, 0.22), rgba(6, 17, 31, 0.56)),
-    url('/assets/ui/menu_background.png') center center / cover no-repeat;
+  background: #06111f;
+}
+
+.menu-background-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
 }
 
 .menu-entry-stack {
   position: absolute;
-  top: 7.8rem;
-  z-index: 1;
+  top: 10rem;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0;
 }
 
 .menu-entry-stack-left {
-  left: 4rem;
+  left: 0.85rem;
   align-items: flex-start;
+  gap: 0.75rem;
 }
 
 .menu-entry-stack-right {
-  right: 4rem;
-  align-items: flex-end;
+  right: 0.85rem;
+  top: calc(10rem - 25px);
+  align-items: flex-start;
+}
+
+.menu-entry-stack-right .menu-entry-button:nth-child(2) {
+  margin-top: -5rem;
+}
+
+.menu-entry-stack-right .menu-entry-button:nth-child(3) {
+  margin-top: -5rem;
 }
 
 .menu-entry-button {
   display: block;
-  width: clamp(200px, 18vw, 300px);
+  width: clamp(156px, 14vw, 222px);
   padding: 0;
   border: 0;
   background: transparent;
@@ -42,6 +60,30 @@
   transition:
     transform 140ms ease,
     filter 140ms ease;
+}
+
+.menu-entry-button-shift-up {
+  margin-top: -40px;
+}
+
+.menu-entry-button-compact {
+  width: clamp(136px, 12vw, 196px);
+}
+
+.menu-entry-button-announcement-offset {
+  position: relative;
+  top: -50px;
+  left: 20px;
+}
+
+.menu-entry-button-announcement-compact {
+  width: clamp(124px, 10.5vw, 180px);
+}
+
+.menu-entry-button-archive-offset {
+  position: relative;
+  top: -70px;
+  left: 10px;
 }
 
 .menu-entry-image {
@@ -82,7 +124,6 @@
 
 .menu-difficulty-panel button {
   display: grid;
-  align-content: center;
   gap: 0.24rem;
   min-height: 8.5rem;
   padding: 1rem;
@@ -146,6 +187,7 @@
 .menu-screen::before {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
     radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.28), transparent 36%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.24));
@@ -153,49 +195,12 @@
   pointer-events: none;
 }
 
-.menu-hero {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 1;
-  width: clamp(280px, 31vw, 560px);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.menu-hero::before {
-  position: absolute;
-  right: 12%;
-  bottom: 6%;
-  left: 12%;
-  z-index: 0;
-  height: 18%;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle, rgba(111, 204, 255, 0.34) 0%, rgba(111, 204, 255, 0.1) 48%, transparent 76%);
-  filter: blur(16px);
-  content: '';
-}
-
-.menu-hero-image {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: auto;
-  user-select: none;
-  image-rendering: pixelated;
-  filter:
-    drop-shadow(0 18px 32px rgba(7, 18, 35, 0.34))
-    drop-shadow(0 6px 12px rgba(65, 168, 255, 0.2));
-}
-
 .menu-avatar-info {
   position: absolute;
-  top: 1.15rem;
-  left: 0.95rem;
+  top: -4.4rem;
+  left: 0.6rem;
   z-index: 2;
-  width: clamp(190px, 18vw, 290px);
+  width: clamp(220px, 20vw, 300px);
   pointer-events: none;
 }
 
@@ -208,36 +213,75 @@
 
 .menu-resource-bar {
   position: absolute;
-  top: 0.55rem;
-  right: 4rem;
+  top: calc(0.55rem - 40px);
+  right: 18rem;
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   pointer-events: none;
   translate: 0 0;
 }
 
 .menu-social-row {
   position: absolute;
-  top: 4.15rem;
-  right: 4rem;
+  top: calc(0.55rem + 10px);
+  right: 0.85rem;
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.95rem;
+  gap: 0.45rem;
   pointer-events: none;
+}
+
+.menu-entry-row {
+  position: absolute;
+  left: 0.85rem;
+  bottom: 0.85rem;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.menu-entry-row .menu-entry-button {
+  width: clamp(64px, 5.6vw, 92px);
+}
+
+.menu-entry-button-bottom-boost {
+  width: clamp(190px, 16.5vw, 260px);
+}
+
+.menu-entry-button-equip-shift {
+  position: relative;
+  left: 45px;
+}
+
+.menu-entry-button-defense-shift {
+  position: relative;
+  left: -40px;
+}
+
+.menu-entry-button-skill-shift {
+  position: relative;
+  left: -80px;
+}
+
+.menu-entry-button-achievement-shift {
+  position: relative;
+  left: -124px;
 }
 
 /* ── 底部刷图技能包展示条 ── */
 
 .menu-skill-pack {
   position: absolute;
-  right: 50%;
+  right: 1rem;
+  left: auto;
   bottom: 0.8rem;
   z-index: 2;
-  width: clamp(380px, 46vw, 660px);
-  transform: translateX(50%);
+  width: clamp(430px, 38vw, 640px);
+  transform: none;
   padding: 0.55rem 0.75rem 0.7rem;
   border: 3px solid rgba(100, 180, 255, 0.38);
   border-radius: 1rem;
@@ -320,9 +364,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 5.6rem;
-  padding: 0.3rem;
+  justify-content: flex-start;
+  min-height: 4.8rem;
+  padding: 0.22rem;
   border: 2px solid rgba(120, 200, 255, 0.28);
   border-radius: 0.55rem;
   background:
@@ -343,8 +387,8 @@
 
 .slot-art {
   width: 100%;
-  height: 3rem;
-  margin-bottom: 0.25rem;
+  height: 2.5rem;
+  margin-bottom: 0.16rem;
   border-radius: 0.35rem;
   flex-shrink: 0;
 }
@@ -357,7 +401,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.08rem;
+  gap: 0.05rem;
   width: 100%;
 }
 
@@ -411,7 +455,7 @@
 .slot-type-tag {
   display: block;
   color: rgba(180, 210, 240, 0.6);
-  font-size: 0.58rem;
+  font-size: 0.46rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -427,7 +471,7 @@
 
 .slot-name {
   color: rgba(240, 246, 255, 0.94);
-  font-size: clamp(0.64rem, 0.9vw, 0.82rem);
+  font-size: clamp(0.5rem, 0.72vw, 0.62rem);
   font-weight: 900;
   line-height: 1.2;
   text-align: center;
@@ -436,23 +480,64 @@
 
 .slot-empty-mark {
   color: rgba(120, 200, 255, 0.22);
-  font-size: 1.2rem;
+  font-size: 0.82rem;
   font-weight: 400;
   line-height: 1;
 }
 
 .menu-skill-config {
   position: absolute;
-  inset: 7vh 8vw;
+  inset: 3vh 4vw;
   z-index: 5;
   display: flex;
   flex-direction: column;
-  padding: 1.1rem;
+  padding: 1.55rem;
   border: 4px solid #4f2e19;
   border-radius: 1rem;
   color: #3b2412;
   background: rgba(248, 222, 150, 0.97);
   box-shadow: 0 18px 42px rgba(11, 13, 18, 0.42);
+}
+
+.menu-skill-config[aria-label="技能包配置"] {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.menu-skill-config[aria-label="技能包配置"]::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('/assets/ui/技能包框.png') center center / 100% 100% no-repeat;
+  content: '';
+  pointer-events: none;
+}
+
+.menu-skill-config[aria-label="技能包配置"] > * {
+  position: relative;
+  z-index: 1;
+}
+
+.menu-skill-config[aria-label="技能包配置"] .menu-skill-config-head strong {
+  display: none;
+}
+
+.menu-skill-config[aria-label="技能包配置"] .menu-skill-config-head {
+  margin-bottom: 2rem;
+}
+
+.menu-skill-config[aria-label="技能包配置"] .menu-skill-config-head span {
+  max-width: 72%;
+}
+
+.menu-skill-config-loadout {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
 }
 
 .menu-skill-config-head {
@@ -469,19 +554,19 @@
 }
 
 .menu-skill-config-head strong {
-  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-size: clamp(1.2rem, 1.9vw, 1.7rem);
   font-weight: 900;
 }
 
 .menu-skill-config-head span,
 .menu-skill-config-count {
   color: #6f4728;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 800;
 }
 
 .menu-skill-config-head button {
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.9rem;
   border: 3px solid #4f2e19;
   border-radius: 999px;
   color: #fff4d7;
@@ -493,17 +578,15 @@
 .menu-skill-card-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-top: 0.8rem;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
   overflow: auto;
   padding-right: 0.35rem;
 }
 
 .menu-skill-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 13.5rem;
-  padding: 0.75rem;
+  min-height: 10.4rem;
+  padding: 0.48rem;
   border: 3px solid #5a381a;
   border-radius: 0.8rem;
   color: #35200f;
@@ -535,56 +618,51 @@
 
 .menu-skill-card span {
   color: rgba(53, 32, 15, 0.62);
-  font-size: 0.72rem;
+  font-size: 0.6rem;
   font-style: normal;
   font-weight: 900;
 }
 
 .menu-skill-card strong {
-  margin: 0.35rem 0;
-  font-size: 1rem;
+  margin: 0.15rem 0;
+  font-size: 0.72rem;
   font-weight: 900;
 }
 
 .menu-skill-card .card-damage-badge {
   width: fit-content;
-  margin: 0.15rem auto 0.38rem;
+  margin: 0.08rem auto 0.16rem;
 }
 
 .menu-skill-card-art {
-  height: 4.8rem;
-  margin-bottom: 0.48rem;
+  height: 3.2rem;
+  margin-bottom: 0.2rem;
 }
 
 .menu-skill-card em {
-  font-size: 0.78rem;
+  font-size: 0.58rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.18;
 }
 
 .menu-skill-card-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.4rem;
-  margin-top: auto;
-  padding-top: 0.65rem;
+  gap: 0.2rem;
+  margin-top: 0.22rem;
 }
 
 .menu-skill-card-actions button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.25rem;
-  padding: 0.38rem 0.42rem;
+  min-height: 1.6rem;
+  padding: 0.15rem 0.2rem;
   border: 2px solid #4f2e19;
   border-radius: 0.55rem;
   color: #fff4d7;
   background: linear-gradient(180deg, #91532f, #6b351e);
   cursor: pointer;
-  font-size: 0.72rem;
+  font-size: 0.52rem;
   font-weight: 900;
-  text-align: center;
 }
 
 .menu-skill-card-actions button:disabled {
@@ -611,6 +689,13 @@
   text-shadow:
     0 2px 0 rgba(57, 24, 11, 0.82),
     0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.menu-gold-info span {
+  right: auto;
+  left: 50%;
+  bottom: 26%;
+  transform: translate(-50%, -20px);
 }
 
 .menu-shop-panel,
@@ -708,7 +793,6 @@
 .menu-shop-card button,
 .menu-reward-card button,
 .menu-clear-reward-copy button {
-  align-self: center;
   min-width: 10rem;
   padding: 0.8rem 1rem;
   border: 3px solid #4f2e19;
@@ -718,7 +802,6 @@
   cursor: pointer;
   font-weight: 900;
   line-height: 1.35;
-  text-align: center;
 }
 
 .menu-shop-card button:disabled {
@@ -728,15 +811,15 @@
 }
 
 .menu-mail-info {
-  width: clamp(30px, 2.5vw, 44px);
+  width: clamp(36px, 3vw, 54px);
 }
 
 .menu-settings-info {
-  width: clamp(30px, 2.5vw, 44px);
+  width: clamp(36px, 3vw, 54px);
 }
 
 .menu-friend-info {
-  width: clamp(30px, 2.5vw, 44px);
+  width: clamp(36px, 3vw, 54px);
 }
 
 .menu-gold-info {
@@ -775,7 +858,7 @@
 }
 
 .menu-save-info {
-  width: clamp(100px, 10vw, 160px);
+  display: none;
 }
 
 .menu-save-image {
@@ -807,27 +890,20 @@
 }
 
 @media (max-width: 720px) {
-  .menu-hero {
-    top: auto;
-    bottom: 4.25rem;
-    width: clamp(220px, 52vw, 360px);
-    transform: translateX(-50%);
-  }
-
   .menu-avatar-info {
-    top: 0.95rem;
+    top: -4.4rem;
     left: 0.85rem;
     width: clamp(190px, 52vw, 280px);
   }
 
   .menu-resource-bar {
-    top: 0.4rem;
+    top: calc(0.4rem - 40px);
     gap: 0.38rem;
     right: 1rem;
   }
 
   .menu-social-row {
-    top: 2.55rem;
+    top: calc(0.4rem + 10px);
     right: 1rem;
     gap: 0.7rem;
   }
@@ -863,7 +939,7 @@
   .menu-mail-info,
   .menu-settings-info,
   .menu-friend-info {
-    width: clamp(28px, 7vw, 38px);
+    width: clamp(34px, 8.5vw, 48px);
   }
 
   .menu-gold-info,
@@ -884,14 +960,47 @@
 
   .menu-entry-stack-left {
     left: 1rem;
+    gap: 0.75rem;
   }
 
   .menu-entry-stack-right {
     right: 1rem;
+    top: calc(3.5rem - 25px);
   }
 
   .menu-entry-button {
     width: clamp(180px, 46vw, 280px);
+  }
+
+  .menu-entry-button-shift-up {
+    margin-top: -40px;
+  }
+
+  .menu-entry-button-compact {
+    width: clamp(156px, 40vw, 240px);
+  }
+
+  .menu-entry-button-announcement-compact {
+    width: clamp(142px, 36vw, 210px);
+  }
+
+  .menu-entry-button-bottom-boost {
+    width: clamp(216px, 28vw, 310px);
+  }
+
+  .menu-entry-button-defense-shift {
+    position: relative;
+    left: -40px;
+  }
+
+  .menu-entry-button-skill-shift {
+    position: relative;
+    left: -80px;
+  }
+
+  .menu-entry-button-achievement-shift {
+    position: relative;
+    left: -124px;
   }
 
   .menu-shop-panel,
@@ -908,6 +1017,122 @@
   .menu-reward-card button {
     width: 100%;
   }
+}
+
+/* ── 敬请期待 Toast ── */
+
+@keyframes coming-soon-enter {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.82);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes coming-soon-exit {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92) translateY(-12px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes coming-soon-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.coming-soon-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1.25rem 2.4rem 1.1rem;
+  border: 2px solid rgba(255, 220, 140, 0.35);
+  border-radius: 1.1rem;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 40%, rgba(255, 200, 100, 0.08), transparent),
+    linear-gradient(
+      135deg,
+      rgba(20, 14, 8, 0.92) 0%,
+      rgba(40, 28, 16, 0.94) 50%,
+      rgba(20, 14, 8, 0.92) 100%
+    );
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 200, 100, 0.08),
+    inset 0 1px 0 rgba(255, 220, 160, 0.15),
+    0 0 40px rgba(200, 140, 50, 0.08);
+  backdrop-filter: blur(16px) saturate(1.4);
+  animation: coming-soon-enter 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  pointer-events: none;
+}
+
+.coming-soon-toast::before {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 220, 140, 0.18),
+    rgba(255, 180, 80, 0.06) 40%,
+    rgba(255, 220, 140, 0.12) 60%,
+    transparent
+  );
+  content: '';
+  pointer-events: none;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 2px;
+}
+
+.coming-soon-toast.exiting {
+  animation: coming-soon-exit 360ms ease-in both;
+}
+
+.coming-soon-toast-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(200, 140, 50, 0.4));
+}
+
+.coming-soon-toast-text {
+  color: rgba(255, 240, 200, 0.95);
+  font-size: clamp(0.92rem, 1.3vw, 1.1rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.coming-soon-toast-sub {
+  display: inline-block;
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  color: rgba(255, 200, 120, 0.7);
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 200, 100, 0.06), transparent);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  background-size: 200% 100%;
+  animation: coming-soon-shimmer 2.4s linear infinite;
 }
 
 .menu-proto-button {

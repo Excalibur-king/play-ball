@@ -72,8 +72,8 @@ export class PreloadScene extends Phaser.Scene {
       this.anims.create({
         key: animation.key,
         frames: this.anims.generateFrameNumbers(animation.spritesheet, {
-          start: 0,
-          end: sheet.frameCount - 1
+          start: animation.startFrame ?? 0,
+          end: animation.endFrame ?? sheet.frameCount - 1
         }),
         frameRate: animation.frameRate,
         repeat: animation.repeat

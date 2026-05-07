@@ -2,101 +2,131 @@
   "ember_grunt": {
     "walk": {
       "file": "walk.png",
-      "frameWidth": 411,
-      "frameHeight": 534,
-      "frameCount": 3
+      "frameWidth": 323,
+      "frameHeight": 418,
+      "frameCount": 4
     },
     "attack": {
       "file": "attack.png",
-      "frameWidth": 622,
-      "frameHeight": 554,
-      "frameCount": 3
+      "frameWidth": 512,
+      "frameHeight": 427,
+      "frameCount": 4
     },
     "hit": {
       "file": "hit.png",
-      "frameWidth": 445,
-      "frameHeight": 565,
-      "frameCount": 3
+      "frameWidth": 430,
+      "frameHeight": 427,
+      "frameCount": 4
+    },
+    "death": {
+      "file": "death.png",
+      "frameWidth": 382,
+      "frameHeight": 412,
+      "frameCount": 4
     }
   },
   "spark_runner": {
     "walk": {
       "file": "walk.png",
-      "frameWidth": 587,
-      "frameHeight": 309,
-      "frameCount": 3
+      "frameWidth": 468,
+      "frameHeight": 294,
+      "frameCount": 4
     },
     "attack": {
       "file": "attack.png",
-      "frameWidth": 683,
-      "frameHeight": 361,
-      "frameCount": 3
+      "frameWidth": 512,
+      "frameHeight": 320,
+      "frameCount": 4
     },
     "hit": {
       "file": "hit.png",
-      "frameWidth": 557,
-      "frameHeight": 395,
-      "frameCount": 3
+      "frameWidth": 512,
+      "frameHeight": 329,
+      "frameCount": 4
+    },
+    "death": {
+      "file": "death.png",
+      "frameWidth": 479,
+      "frameHeight": 242,
+      "frameCount": 4
     }
   },
   "basalt_smasher": {
     "walk": {
       "file": "walk.png",
-      "frameWidth": 579,
-      "frameHeight": 524,
-      "frameCount": 3
+      "frameWidth": 444,
+      "frameHeight": 402,
+      "frameCount": 4
     },
     "attack": {
       "file": "attack.png",
-      "frameWidth": 613,
-      "frameHeight": 638,
-      "frameCount": 3
+      "frameWidth": 512,
+      "frameHeight": 499,
+      "frameCount": 4
     },
     "hit": {
       "file": "hit.png",
-      "frameWidth": 647,
-      "frameHeight": 607,
-      "frameCount": 3
+      "frameWidth": 460,
+      "frameHeight": 460,
+      "frameCount": 4
+    },
+    "death": {
+      "file": "death.png",
+      "frameWidth": 478,
+      "frameHeight": 465,
+      "frameCount": 4
     }
   },
   "ash_wing": {
     "walk": {
       "file": "walk.png",
-      "frameWidth": 683,
-      "frameHeight": 574,
-      "frameCount": 3
+      "frameWidth": 490,
+      "frameHeight": 346,
+      "frameCount": 4
     },
     "attack": {
       "file": "attack.png",
-      "frameWidth": 646,
-      "frameHeight": 524,
-      "frameCount": 3
+      "frameWidth": 512,
+      "frameHeight": 355,
+      "frameCount": 4
     },
     "hit": {
       "file": "hit.png",
-      "frameWidth": 585,
-      "frameHeight": 534,
-      "frameCount": 3
+      "frameWidth": 454,
+      "frameHeight": 328,
+      "frameCount": 4
+    },
+    "death": {
+      "file": "death.png",
+      "frameWidth": 467,
+      "frameHeight": 346,
+      "frameCount": 4
     }
   },
   "volcano_core_beast": {
     "walk": {
       "file": "walk.png",
-      "frameWidth": 618,
-      "frameHeight": 625,
-      "frameCount": 3
+      "frameWidth": 462,
+      "frameHeight": 498,
+      "frameCount": 4
     },
     "attack": {
       "file": "attack.png",
-      "frameWidth": 660,
-      "frameHeight": 605,
-      "frameCount": 3
+      "frameWidth": 512,
+      "frameHeight": 498,
+      "frameCount": 4
     },
     "hit": {
       "file": "hit.png",
-      "frameWidth": 636,
-      "frameHeight": 615,
-      "frameCount": 3
+      "frameWidth": 503,
+      "frameHeight": 498,
+      "frameCount": 4
+    },
+    "death": {
+      "file": "death.png",
+      "frameWidth": 512,
+      "frameHeight": 439,
+      "frameCount": 4
     }
   }
 }

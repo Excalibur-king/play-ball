@@ -4,10 +4,12 @@ import { formatStrategyCardDamage } from './strategyCardText'
 
 type CardChoicePanelProps = {
   recommendations: RecommendationSlot[]
+  battleAdvice: string
+  battleAdviceLoading: boolean
   onSelect: (cardId: StrategyCardId) => void
 }
 
-export function CardChoicePanel({ recommendations, onSelect }: CardChoicePanelProps) {
+export function CardChoicePanel({ recommendations, battleAdvice, battleAdviceLoading, onSelect }: CardChoicePanelProps) {
   if (recommendations.length === 0) {
     return null
   }
@@ -18,6 +20,14 @@ export function CardChoicePanel({ recommendations, onSelect }: CardChoicePanelPr
         <span className="card-choice-header-icon" aria-hidden="true" />
         <strong>选择策略卡</strong>
       </div>
+
+      {(battleAdvice || battleAdviceLoading) && (
+        <div className={`card-choice-advice ${battleAdviceLoading ? 'loading' : ''}`}>
+          <span className="card-choice-advice-label">AI 分析</span>
+          <p>{battleAdvice || '正在分析局势…'}</p>
+        </div>
+      )}
+
       <div className="card-choice-list">
         {recommendations.map((recommendation) => {
           const damageText = formatStrategyCardDamage(recommendation.card)

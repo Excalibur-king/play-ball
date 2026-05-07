@@ -16,7 +16,7 @@
   background-color: #140b0b;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
 }
 
 .game-canvas {

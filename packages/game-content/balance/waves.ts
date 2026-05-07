@@ -20,7 +20,7 @@ export const waves = [
     rewardPurchasePower: 75,
     pressureGoal: '第一波先用中路常规怪站住主防线，再从左路补一小段轻压，让玩家在低强度下熟悉双路补线。',
     nextWaveHint: '第 2 波仍以主防线为主，但会从侧路混入少量极速敌人，需要开始考虑阻挡、转火和补线速度。',
-    aiDirectorAllowed: false,
+    aiDirectorAllowed: true,
     status: 'draft'
   }),
   buildWave({
@@ -140,7 +140,7 @@ export const waves = [
     clearRewardId: 'reward_fire_dragon_breath',
     pressureGoal: 'Boss 顶中路、左右侧协同压场，检验完整防线被撕开后还能不能撑住。',
     nextWaveHint: '这是最终波。',
-    aiDirectorAllowed: false,
+    aiDirectorAllowed: true,
     status: 'draft'
   })
 ] as const satisfies readonly WaveDef[]
