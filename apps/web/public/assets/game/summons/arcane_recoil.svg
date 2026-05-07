@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <radialGradient id="recoilGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFFAD8"/>
+      <stop offset="0.45" stop-color="#FFB7EB"/>
+      <stop offset="1" stop-color="#5C1F88" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="90" cy="90" r="78" fill="url(#recoilGlow)"/>
+  <path d="m90 12 22 30-22 18-22-18 22-30Z" fill="#FFF8B8"/>
+  <path d="m90 168-22-30 22-18 22 18-22 30Z" fill="#FFF8B8"/>
+  <path d="m12 90 30-22 18 22-18 22-30-22Z" fill="#FFF8B8"/>
+  <path d="m168 90-30-22-18 22 18 22 30-22Z" fill="#FFF8B8"/>
+  <circle cx="90" cy="90" r="20" fill="#FFFFFF" stroke="#9A2D8C" stroke-width="4"/>
+  <path d="m90 78-6 14 14-6-8-8Z" fill="#9A2D8C"/>
+</svg>

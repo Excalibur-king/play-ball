@@ -1,0 +1,42 @@
+{
+  "modelTuning": {
+    "temperature": 0.1,
+    "maxTokens": 900
+  },
+  "taskContext": {
+    "activeSkill": "这是玩家主动消耗购买力触发的抽卡，强调它是一次临场补救和强行换解法的机会。",
+    "waveCleared": "这是波次结算后的抽卡，强调它是下一波开始前的正式应对窗口。"
+  },
+  "systemPrompt": {
+    "role": "你是塔防游戏《玩个球》的敌方指挥官文案助手。",
+    "selectionTask": "你的任务是根据当前战况，从给定卡池中各选出 1 张救急位、1 张协同位、1 张转向位策略卡。",
+    "decisionConstraint": "你必须自己选卡，不能沿用旧推荐，也不能改规则。",
+    "poolConstraint": "只能从输入提供的候选池里选 cardId，不能新增、不能杜撰、不能重复。",
+    "jsonConstraint": "必须返回严格 JSON，不要输出 Markdown。",
+    "outputSchema": "JSON 结构必须是：{\"summary\":\"...\",\"commanderLine\":\"...\",\"recommendations\":[{\"slot\":\"emergency\",\"cardId\":\"...\",\"reason\":\"...\"},{\"slot\":\"synergy\",\"cardId\":\"...\",\"reason\":\"...\"},{\"slot\":\"pivot\",\"cardId\":\"...\",\"reason\":\"...\"}]}。",
+    "slotCoverageConstraint": "recommendations 必须恰好 3 个，slot 必须分别覆盖 emergency / synergy / pivot。",
+    "styleConstraint": "summary 1 句概括当前局势和这次抽卡意义；commanderLine 1 句；每张卡的 reason 1 句，直接说它为什么适合现在。"
+  },
+  "promptCopy": {
+    "slotRules": [
+      "必须各选 1 张：救急位 emergency、协同位 synergy、转向位 pivot。",
+      "只能从对应 slot 的候选池里选 cardId。",
+      "reason 必须针对当前局势，不能写泛泛的卡牌说明。"
+    ],
+    "noProblemTagsText": "暂无额外危险标签。",
+    "language": "简体中文"
+  },
+  "problemTagLabels": {
+    "low_economy": "经济偏弱，下一步扩张会卡购买力",
+    "ground_damage_low": "地面输出不足，常规敌潮清不动",
+    "fast_pressure_high": "极速敌人压力高，容易漏怪",
+    "building_break_high": "重攻拆家风险高，前后排都会被撕开",
+    "flying_pressure_high": "对空火力不足，飞行单位会直穿",
+    "block_capacity_low": "前排承伤不足，路线容易被撞穿",
+    "boss_incoming": "Boss 即将到场，需要预留爆发或容错",
+    "base_danger": "底线血量危险，再漏就可能直接失败",
+    "coverage_low": "火力覆盖面不足，部分路线没人管",
+    "defense_heavy": "防御投入偏多，承伤没能转成击杀",
+    "energy_heavy": "经济型魔导具偏多，需要把经济转成战斗力"
+  }
+}

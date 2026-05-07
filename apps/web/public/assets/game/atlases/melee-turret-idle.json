@@ -1,0 +1,254 @@
+{
+  "frames": {
+    "building/melee_turret/idle/0001": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 236,
+        "h": 258
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 236,
+        "h": 258
+      },
+      "sourceSize": {
+        "w": 236,
+        "h": 258
+      }
+    },
+    "building/melee_turret/idle/0002": {
+      "frame": {
+        "x": 236,
+        "y": 0,
+        "w": 242,
+        "h": 258
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 242,
+        "h": 258
+      },
+      "sourceSize": {
+        "w": 242,
+        "h": 258
+      }
+    },
+    "building/melee_turret/idle/0003": {
+      "frame": {
+        "x": 478,
+        "y": 0,
+        "w": 233,
+        "h": 258
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 233,
+        "h": 258
+      },
+      "sourceSize": {
+        "w": 233,
+        "h": 258
+      }
+    },
+    "building/melee_turret/idle/0004": {
+      "frame": {
+        "x": 711,
+        "y": 0,
+        "w": 244,
+        "h": 258
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 244,
+        "h": 258
+      },
+      "sourceSize": {
+        "w": 244,
+        "h": 258
+      }
+    },
+    "building/melee_turret/idle/0005": {
+      "frame": {
+        "x": 0,
+        "y": 258,
+        "w": 236,
+        "h": 254
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 236,
+        "h": 254
+      },
+      "sourceSize": {
+        "w": 236,
+        "h": 254
+      }
+    },
+    "building/melee_turret/idle/0006": {
+      "frame": {
+        "x": 236,
+        "y": 258,
+        "w": 242,
+        "h": 254
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 242,
+        "h": 254
+      },
+      "sourceSize": {
+        "w": 242,
+        "h": 254
+      }
+    },
+    "building/melee_turret/idle/0007": {
+      "frame": {
+        "x": 478,
+        "y": 258,
+        "w": 233,
+        "h": 254
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 233,
+        "h": 254
+      },
+      "sourceSize": {
+        "w": 233,
+        "h": 254
+      }
+    },
+    "building/melee_turret/idle/0008": {
+      "frame": {
+        "x": 711,
+        "y": 258,
+        "w": 244,
+        "h": 254
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 244,
+        "h": 254
+      },
+      "sourceSize": {
+        "w": 244,
+        "h": 254
+      }
+    },
+    "building/melee_turret/idle/0009": {
+      "frame": {
+        "x": 0,
+        "y": 512,
+        "w": 236,
+        "h": 252
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 236,
+        "h": 252
+      },
+      "sourceSize": {
+        "w": 236,
+        "h": 252
+      }
+    },
+    "building/melee_turret/idle/0010": {
+      "frame": {
+        "x": 236,
+        "y": 512,
+        "w": 242,
+        "h": 252
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 242,
+        "h": 252
+      },
+      "sourceSize": {
+        "w": 242,
+        "h": 252
+      }
+    },
+    "building/melee_turret/idle/0011": {
+      "frame": {
+        "x": 478,
+        "y": 512,
+        "w": 233,
+        "h": 252
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 233,
+        "h": 252
+      },
+      "sourceSize": {
+        "w": 233,
+        "h": 252
+      }
+    },
+    "building/melee_turret/idle/0012": {
+      "frame": {
+        "x": 711,
+        "y": 512,
+        "w": 244,
+        "h": 252
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 244,
+        "h": 252
+      },
+      "sourceSize": {
+        "w": 244,
+        "h": 252
+      }
+    }
+  },
+  "meta": {
+    "app": "Garden Defense FX atlas generator",
+    "image": "melee-turret-idle.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 955,
+      "h": 764
+    },
+    "scale": "1"
+  }
+}

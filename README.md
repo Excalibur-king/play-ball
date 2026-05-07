@@ -17,34 +17,34 @@ The frontend can run without the API because the hidden director has a local fal
 ## Documentation
 
 - [Gameplay Document](docs/design/gameplay.md): current player-facing loop, rules, tuning tables, and implementation references.
+- [Art Pipeline](docs/design/art-pipeline.md): runtime art contract, style direction, folder layout, naming rules, and export checklist.
+- [Code 5 Merge Notes](docs/design/code5-merge-notes.md): records what was merged from `code 5`, what was rejected, and the decision boundary used for the merge.
 
 ## Premium Asset Pipeline
 
-The prototype now has a production-style 2D asset slice wired into Phaser:
+The battle scene now loads art through a manifest-driven resource layer:
 
-- `scripts/generate-premium-assets.mjs`: local atlas generator for the current vertical slice.
-- `apps/web/public/assets/game/atlases/plants-premium.webp`: animated pea shooter frames.
-- `apps/web/public/assets/game/atlases/zombies-premium.webp`: animated shambler and conehead frames.
-- `apps/web/public/assets/game/atlases/fx-premium.webp`: projectile and hit-burst frames.
-- Matching `.json` files use TexturePacker-style atlas metadata consumed by Phaser.
+- `apps/web/src/game/assets/assetManifest.ts`: preload manifest plus building / enemy / FX visual specs.
+- `apps/web/src/game/phaser/PreloadScene.ts`: central preload entry for atlases and unit SVGs.
+- `apps/web/src/game/phaser/renderers/*`: scene adapters that only consume manifest keys.
+- `apps/web/public/assets/game/units/**`: static battle-ready unit art keyed by gameplay ids.
+- `apps/web/public/assets/game/atlases/fx-premium.webp`: generated projectile and impact frames.
 
-Regenerate the current generated art assets with:
+Regenerate the current FX atlas with:
 
 ```bash
 pnpm assets:generate
 ```
 
-The current generator is intentionally deterministic and project-local. When final artist or AI-generated frame strips arrive, keep the same atlas keys and frame naming conventions so renderers do not need to change.
+The generator is intentionally deterministic and project-local. When final artist or AI-generated frame strips arrive, keep the same manifest keys and frame naming conventions so renderers do not need to change.
 
 Frame naming convention:
 
 ```text
-pea-shooter/idle/0001
-pea-shooter/shoot/0001
-shambler/walk/0001
-conehead/bite/0001
-pea-projectile/fly/0001
-pea-hit/burst/0001
+building/{buildingId}/idle/0001
+enemy/{enemyId}/walk/0001
+projectile/basic_bolt/fly/0001
+fx/projectile_impact/burst/0001
 ```
 
 Runtime loading is centralized in `apps/web/src/game/assets/assetManifest.ts` and `apps/web/src/game/phaser/PreloadScene.ts`.

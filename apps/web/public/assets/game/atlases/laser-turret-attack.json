@@ -1,0 +1,334 @@
+{
+  "frames": {
+    "building/laser_turret/attack/0001": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 70,
+        "h": 72
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 93,
+        "y": 95,
+        "w": 66,
+        "h": 68
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0002": {
+      "frame": {
+        "x": 74,
+        "y": 0,
+        "w": 114,
+        "h": 93
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 59,
+        "y": 85,
+        "w": 110,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0003": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 167,
+        "h": 83
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 26,
+        "y": 88,
+        "w": 163,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0004": {
+      "frame": {
+        "x": 363,
+        "y": 0,
+        "w": 234,
+        "h": 93
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 24,
+        "y": 77,
+        "w": 232,
+        "h": 89
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0005": {
+      "frame": {
+        "x": 0,
+        "y": 97,
+        "w": 224,
+        "h": 83
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 22,
+        "y": 89,
+        "w": 220,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0006": {
+      "frame": {
+        "x": 228,
+        "y": 97,
+        "w": 226,
+        "h": 90
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 21,
+        "y": 84,
+        "w": 222,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0007": {
+      "frame": {
+        "x": 458,
+        "y": 97,
+        "w": 237,
+        "h": 79
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 21,
+        "y": 92,
+        "w": 235,
+        "h": 75
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0008": {
+      "frame": {
+        "x": 699,
+        "y": 97,
+        "w": 247,
+        "h": 109
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 75,
+        "w": 245,
+        "h": 105
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0009": {
+      "frame": {
+        "x": 0,
+        "y": 210,
+        "w": 239,
+        "h": 83
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 19,
+        "y": 89,
+        "w": 237,
+        "h": 79
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0010": {
+      "frame": {
+        "x": 243,
+        "y": 210,
+        "w": 247,
+        "h": 109
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 77,
+        "w": 245,
+        "h": 105
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0011": {
+      "frame": {
+        "x": 494,
+        "y": 210,
+        "w": 211,
+        "h": 68
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 25,
+        "y": 97,
+        "w": 207,
+        "h": 64
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0012": {
+      "frame": {
+        "x": 709,
+        "y": 210,
+        "w": 210,
+        "h": 59
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 26,
+        "y": 101,
+        "w": 206,
+        "h": 55
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0013": {
+      "frame": {
+        "x": 0,
+        "y": 323,
+        "w": 203,
+        "h": 54
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 28,
+        "y": 105,
+        "w": 199,
+        "h": 50
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0014": {
+      "frame": {
+        "x": 207,
+        "y": 323,
+        "w": 191,
+        "h": 33
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 34,
+        "y": 113,
+        "w": 187,
+        "h": 29
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0015": {
+      "frame": {
+        "x": 402,
+        "y": 323,
+        "w": 116,
+        "h": 69
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 23,
+        "y": 97,
+        "w": 112,
+        "h": 65
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    },
+    "building/laser_turret/attack/0016": {
+      "frame": {
+        "x": 522,
+        "y": 323,
+        "w": 247,
+        "h": 240
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 10,
+        "y": 18,
+        "w": 243,
+        "h": 237
+      },
+      "sourceSize": {
+        "w": 256,
+        "h": 256
+      }
+    }
+  },
+  "meta": {
+    "app": "Garden Defense FX atlas generator",
+    "image": "laser-turret-attack.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 946,
+      "h": 563
+    },
+    "scale": "1"
+  }
+}

@@ -11,7 +11,7 @@ export const directorRules = [
   },
   {
     id: 'test_greedy_economy',
-    playerState: '玩家经济过强，能量建筑数量大于等于 3。',
+    playerState: '玩家经济过强，魂能导仪数量大于等于 3。',
     allowedAdjustment: '下一波加入 1 个重攻敌人。',
     limits: '不能连续两波加入重攻针对经济。',
     reasonTags: ['low_economy', 'building_break_high'],
@@ -35,11 +35,10 @@ export const directorRules = [
   },
   {
     id: 'reduce_breaker_after_losses',
-    playerState: '建筑被毁过多。',
+    playerState: '魔导具被毁过多。',
     allowedAdjustment: '降低下一波重攻数量 1 个。',
     limits: '不低于固定波次下限的 50%。',
     reasonTags: ['building_break_high'],
     status: 'draft'
   }
 ] as const satisfies readonly DirectorRuleDef[]
-

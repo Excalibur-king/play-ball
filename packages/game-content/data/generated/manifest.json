@@ -1,12 +1,15 @@
 {
-  "generatedAt": "2026-05-02T11:32:25.944Z",
+  "generatedAt": "2026-05-06T16:20:43.449Z",
   "version": "v0.2-content-aligned",
   "counts": {
     "maps": 1,
-    "buildings": 3,
+    "buildings": 5,
     "enemies": 5,
-    "cards": 15,
+    "enemyBalanceProfiles": 3,
+    "cards": 12,
     "waves": 5,
-    "directorRules": 5
+    "directorRules": 5,
+    "aiStrategy": 1,
+    "gameplay": 1
   }
 }

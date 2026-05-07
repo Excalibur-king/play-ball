@@ -1,28 +1,39 @@
-import { getPlantRuntimeStats } from '../plantStats'
+import { buildingDefinitions } from '@tower-rogue/game-content'
 import type { GameEvent, GameState } from '../types'
 
-export function updateSunEconomy(state: GameState, dt: number, events: GameEvent[]) {
-  state.passiveSunTimer += dt * state.director.sunDripMultiplier
+const purchasePowerPacket = 1
 
-  if (state.passiveSunTimer >= 7.5) {
-    state.passiveSunTimer -= 7.5
-    state.sun += 25
-    events.push({ type: 'sunChanged', amount: 25, at: { x: 72, y: 82 } })
+export function updateSunEconomy(state: GameState, dt: number, events: GameEvent[]) {
+  if (state.phase !== 'playing') {
+    return
   }
 
-  for (const plant of state.plants) {
-    const stats = getPlantRuntimeStats(plant)
+  for (const building of state.plants) {
+    const definition = buildingDefinitions[building.type]
 
-    if (!stats.sunInterval || !stats.sunAmount) {
+    if (definition.type !== 'energy' || !definition.productionInterval || !definition.purchasePowerPerTick) {
       continue
     }
 
-    plant.sunTimer += dt
+    const outputPerInterval =
+      definition.purchasePowerPerTick +
+      (building.upgraded ? definition.upgrade?.purchasePowerPerTickBonus ?? 0 : 0) +
+      state.activeCardEffects.energyOutputBonus
 
-    if (plant.sunTimer >= stats.sunInterval) {
-      plant.sunTimer -= stats.sunInterval
-      state.sun += stats.sunAmount
-      events.push({ type: 'sunChanged', amount: stats.sunAmount, at: { x: plant.x, y: plant.y - 30 } })
+    if (outputPerInterval <= 0) {
+      continue
+    }
+
+    const secondsPerPacket = definition.productionInterval / outputPerInterval
+
+    building.sunTimer += dt
+
+    // Pay the same total purchase power over the production interval, but drip
+    // it in small packets so the economy visibly climbs instead of jumping.
+    while (building.sunTimer + 1e-9 >= secondsPerPacket) {
+      building.sunTimer -= secondsPerPacket
+      state.sun += purchasePowerPacket
+      events.push({ type: 'sunChanged', amount: purchasePowerPacket, at: { x: building.x, y: building.y - 30 } })
     }
   }
 }

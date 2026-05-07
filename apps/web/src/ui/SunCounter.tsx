@@ -1,10 +1,8 @@
-import { SunMedium } from 'lucide-react'
-
 export function SunCounter({ sun }: { sun: number }) {
   return (
-    <div className="sun-counter">
-      <SunMedium size={22} />
-      <strong>{sun}</strong>
+    <div className="top-bar-sun">
+      <span className="top-bar-sun-icon">☀</span>
+      <strong className="top-bar-sun-value">{sun}</strong>
     </div>
   )
 }

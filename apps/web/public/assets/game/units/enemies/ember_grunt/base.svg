@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <linearGradient id="gruntBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#75605b"/>
+      <stop offset="0.55" stop-color="#3a2c2a"/>
+      <stop offset="1" stop-color="#1c1417"/>
+    </linearGradient>
+    <radialGradient id="gruntCore" cx="50%" cy="42%" r="58%">
+      <stop offset="0" stop-color="#fff2c4"/>
+      <stop offset="0.4" stop-color="#ffa24b"/>
+      <stop offset="1" stop-color="#cb3519"/>
+    </radialGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M60 136 L80 113 L100 136" stroke="#23191d" stroke-width="12" stroke-linecap="round"/>
+    <path d="M44 84 C44 53 60 34 80 34 C100 34 116 52 116 84 C116 109 100 126 80 126 C60 126 44 108 44 84 Z" fill="url(#gruntBody)" stroke="#8a766d" stroke-width="4"/>
+    <path d="M61 87 C61 75 69 64 80 64 C91 64 99 75 99 87 C99 100 91 108 80 108 C69 108 61 99 61 87 Z" fill="url(#gruntCore)" stroke="#ffd79c" stroke-width="3"/>
+    <path d="M49 84 L31 97" stroke="#423035" stroke-width="10" stroke-linecap="round"/>
+    <path d="M111 84 L129 97" stroke="#423035" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="69" cy="59" r="5" fill="#fff5d6"/>
+    <circle cx="91" cy="59" r="5" fill="#fff5d6"/>
+    <circle cx="69" cy="60" r="2.2" fill="#25171a"/>
+    <circle cx="91" cy="60" r="2.2" fill="#25171a"/>
+    <path d="M70 77 C76 81 84 81 90 77" stroke="#2b1719" stroke-width="4" stroke-linecap="round"/>
+    <path d="M80 22 L88 36 L72 36 Z" fill="#ffbe58" stroke="#ffe3a3" stroke-width="3"/>
+  </g>
+</svg>

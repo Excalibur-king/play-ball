@@ -13,11 +13,13 @@ docs/game-design/
   VERSION_PLAN.md
   ai/
     ai-role.md
+    enemy-director-spec.md
   versions/
     v0.1-core-whitebox.md
     v0.2-playable-loop.md
     v0.2-content-tables.md
     v0.2-engineering-breakdown.md
+    v0.3-ai-recommendation-validation.md
 ```
 
 ## 文档类型

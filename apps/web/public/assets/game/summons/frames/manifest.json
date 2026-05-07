@@ -1,0 +1,86 @@
+{
+  "attack_molten_chain": {
+    "cardId": "attack_molten_chain",
+    "frameWidth": 630,
+    "frameHeight": 368,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "defense_temp_wall": {
+    "cardId": "defense_temp_wall",
+    "frameWidth": 609,
+    "frameHeight": 455,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "emergency_freeze": {
+    "cardId": "emergency_freeze",
+    "frameWidth": 630,
+    "frameHeight": 512,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "emergency_repair_all": {
+    "cardId": "emergency_repair_all",
+    "frameWidth": 510,
+    "frameHeight": 488,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "energy_instant_power": {
+    "cardId": "energy_instant_power",
+    "frameWidth": 529,
+    "frameHeight": 512,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "pivot_wall_feedback": {
+    "cardId": "pivot_wall_feedback",
+    "frameWidth": 613,
+    "frameHeight": 512,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "premium_starfall_contract": {
+    "cardId": "premium_starfall_contract",
+    "frameWidth": 633,
+    "frameHeight": 491,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "reward_fire_dragon_breath": {
+    "cardId": "reward_fire_dragon_breath",
+    "frameWidth": 768,
+    "frameHeight": 304,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "spell_lava_rain": {
+    "cardId": "spell_lava_rain",
+    "frameWidth": 565,
+    "frameHeight": 416,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "summon_energy_sprite": {
+    "cardId": "summon_energy_sprite",
+    "frameWidth": 575,
+    "frameHeight": 459,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "summon_flame_hawks": {
+    "cardId": "summon_flame_hawks",
+    "frameWidth": 723,
+    "frameHeight": 495,
+    "frameCount": 4,
+    "method": "cutout"
+  },
+  "summon_furnace_golem": {
+    "cardId": "summon_furnace_golem",
+    "frameWidth": 707,
+    "frameHeight": 481,
+    "frameCount": 4,
+    "method": "cutout"
+  }
+}

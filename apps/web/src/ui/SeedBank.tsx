@@ -1,45 +1,50 @@
 import type { SeedSlot } from '@tower-rogue/game-core'
-import { Crosshair, Shield, Sprout } from 'lucide-react'
 
 type SeedBankProps = {
   isFinished: boolean
   seedBank: SeedSlot[]
-  onSelect: (seed: SeedSlot) => void
+  onSelect: (seed: SeedSlot, mode: 'single' | 'persistent') => void
 }
 
-// SeedBank stays declarative: it exposes selected seed intent,
-// while Phaser/game-core decide whether the click can affect the board.
 export function SeedBank({ isFinished, seedBank, onSelect }: SeedBankProps) {
+  const slotArtSources: Record<SeedSlot['type'], string> = {
+    energy_core: '/assets/ui/soul_conduit_card.png',
+    melee_turret: '/assets/ui/guardian_device_card.png',
+    ranged_turret: '/assets/ui/selection_device_card.png',
+    laser_turret: '/assets/ui/mystic_device_card.png',
+    lava_wall: '/assets/ui/barrier_device_card.png'
+  }
+
   return (
-    <div className="seed-bank">
-      {seedBank.map((seed) => (
-        <button
-          key={seed.type}
-          className={`seed-card ${seed.role} ${seed.selected ? 'selected' : ''}`}
-          disabled={isFinished || seed.cooldownRemaining > 0}
-          onClick={() => onSelect(seed)}
-          title={`${seed.name}: plant on empty cells or fuse into another plant`}
-        >
-          <span className="seed-icon">
-            <SeedIcon seed={seed} />
-          </span>
-          <span className="seed-name">{seed.name}</span>
-          <span className="seed-cost">{seed.cost}</span>
-          {seed.cooldownRemaining > 0 && <span className="cooldown">{seed.cooldownRemaining.toFixed(1)}s</span>}
-        </button>
-      ))}
-    </div>
+    <aside className="seed-bank-sidebar" aria-label="魔导具">
+      <span className="seed-bank-sidebar-title">魔导具</span>
+      <div className="seed-bank-sidebar-list">
+        {seedBank.map((seed) => {
+          const disabled = isFinished || seed.cooldownRemaining > 0
+
+          return (
+            <button
+              type="button"
+              key={seed.type}
+              className={`seed-sidebar-slot ${seed.role} ${seed.selected ? 'selected' : ''} ${seed.selectedMode === 'persistent' ? 'persistent' : ''}`}
+              disabled={disabled}
+              onClick={(event) => onSelect(seed, event.shiftKey ? 'persistent' : 'single')}
+              onDoubleClick={() => onSelect(seed, 'persistent')}
+              title={`${seed.name} · 消耗 ${seed.cost}${seed.selectedMode === 'persistent' ? ' · 连建中' : ''}`}
+              aria-label={`${seed.name}，消耗 ${seed.cost}${seed.cooldownRemaining > 0 ? `，冷却 ${seed.cooldownRemaining.toFixed(1)} 秒` : ''}`}
+            >
+              <img className="seed-sidebar-slot-art" src={slotArtSources[seed.type]} alt="" aria-hidden="true" draggable={false} />
+              <span className="seed-sidebar-slot-cost">{seed.cost}</span>
+              {seed.selected ? (
+                <span className={`seed-sidebar-slot-mode ${seed.selectedMode ?? 'single'}`}>
+                  {seed.selectedMode === 'persistent' ? '连建' : '单次'}
+                </span>
+              ) : null}
+              {seed.cooldownRemaining > 0 ? <span className="seed-sidebar-cooldown">{seed.cooldownRemaining.toFixed(1)}s</span> : null}
+            </button>
+          )
+        })}
+      </div>
+    </aside>
   )
-}
-
-function SeedIcon({ seed }: { seed: SeedSlot }) {
-  if (seed.role === 'damage') {
-    return <Crosshair size={18} />
-  }
-
-  if (seed.role === 'blocker') {
-    return <Shield size={18} />
-  }
-
-  return <Sprout size={18} />
 }

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="starfallGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFFAD8"/>
+      <stop offset="0.45" stop-color="#FFC56D"/>
+      <stop offset="1" stop-color="#FF6E35" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="84" fill="url(#starfallGlow)"/>
+  <path d="m100 14 16 56 60 4-46 38 16 60-46-32-46 32 16-60-46-38 60-4 16-56Z" fill="#FFF1A8" stroke="#A11F18" stroke-width="3"/>
+  <path d="m100 60 8 28 30 2-22 20 8 28-24-16-24 16 8-28-22-20 30-2 8-28Z" fill="#FFFFFF"/>
+  <circle cx="100" cy="100" r="10" fill="#A11F18"/>
+</svg>

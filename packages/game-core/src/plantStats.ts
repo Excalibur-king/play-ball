@@ -1,5 +1,5 @@
-import { plantDefinitions } from '@tower-rogue/game-content'
-import type { PlantDefinition, PlantType } from '@tower-rogue/game-content'
+import { buildingDefinitions } from '@tower-rogue/game-content'
+import type { PlantType } from '@tower-rogue/game-content'
 import type { Plant } from './types'
 
 export type PlantRuntimeStats = {
@@ -9,7 +9,7 @@ export type PlantRuntimeStats = {
   projectileSpeed?: number
   sunInterval?: number
   sunAmount?: number
-  roles: PlantDefinition['role'][]
+  roles: Array<'energy' | 'attack' | 'defense'>
 }
 
 export function getPlantComponents(plant: Pick<Plant, 'type' | 'components'>): PlantType[] {
@@ -21,35 +21,29 @@ export function getPlantRuntimeStats(plant: Pick<Plant, 'type' | 'components'>):
   let hp = 0
   let damage = 0
   let fireInterval: number | undefined
-  let projectileSpeed: number | undefined
   let sunInterval: number | undefined
   let sunAmount = 0
-  const roles: PlantDefinition['role'][] = []
+  const roles: PlantRuntimeStats['roles'] = []
 
   for (const type of components) {
-    const definition = plantDefinitions[type]
+    const definition = buildingDefinitions[type]
     hp += definition.hp
-    roles.push(definition.role)
+    roles.push(definition.type)
 
-    if (definition.damage) {
-      damage += definition.damage
+    if (definition.attackPower) {
+      damage += definition.attackPower
     }
 
-    if (definition.fireInterval) {
-      fireInterval = fireInterval === undefined ? definition.fireInterval : Math.min(fireInterval, definition.fireInterval)
+    if (definition.attackInterval) {
+      fireInterval = fireInterval === undefined ? definition.attackInterval : Math.min(fireInterval, definition.attackInterval)
     }
 
-    if (definition.projectileSpeed) {
-      projectileSpeed =
-        projectileSpeed === undefined ? definition.projectileSpeed : Math.max(projectileSpeed, definition.projectileSpeed)
+    if (definition.productionInterval) {
+      sunInterval = sunInterval === undefined ? definition.productionInterval : Math.min(sunInterval, definition.productionInterval)
     }
 
-    if (definition.sunInterval) {
-      sunInterval = sunInterval === undefined ? definition.sunInterval : Math.min(sunInterval, definition.sunInterval)
-    }
-
-    if (definition.sunAmount) {
-      sunAmount += definition.sunAmount
+    if (definition.purchasePowerPerTick) {
+      sunAmount += definition.purchasePowerPerTick
     }
   }
 
@@ -57,7 +51,7 @@ export function getPlantRuntimeStats(plant: Pick<Plant, 'type' | 'components'>):
     hp,
     damage: damage > 0 ? damage : undefined,
     fireInterval,
-    projectileSpeed,
+    projectileSpeed: 420,
     sunInterval,
     sunAmount: sunAmount > 0 ? sunAmount : undefined,
     roles
@@ -65,6 +59,6 @@ export function getPlantRuntimeStats(plant: Pick<Plant, 'type' | 'components'>):
 }
 
 export function canBlockDangerousZombie(plant: Pick<Plant, 'type' | 'components'>) {
-  const components = getPlantComponents(plant)
-  return components.length > 1 && components.some((type) => plantDefinitions[type].role === 'blocker')
+  return getPlantComponents(plant).some((type) => buildingDefinitions[type].canBlockGround)
 }
+

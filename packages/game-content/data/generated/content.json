@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-02T11:32:25.944Z",
+  "generatedAt": "2026-05-06T16:20:43.449Z",
   "version": "v0.2-content-aligned",
   "maps": [
     {
       "id": "volcano",
       "name": "火山",
       "theme": "熔岩、黑曜石、火山灰和高温喷口",
-      "laneCount": 3,
+      "laneCount": 5,
       "baseHp": 10,
-      "initialPurchasePower": 175,
+      "initialPurchasePower": 240,
       "runTimeMinutes": [
         2,
         5
@@ -21,10 +21,10 @@
   "buildings": [
     {
       "id": "energy_core",
-      "name": "能量核心",
+      "name": "魂能导仪",
       "type": "energy",
       "cost": 50,
-      "hp": 90,
+      "hp": 86,
       "purchasePowerPerTick": 25,
       "productionInterval": 8,
       "canBlockGround": false,
@@ -39,49 +39,115 @@
       ],
       "upgrade": {
         "cost": 75,
-        "hpBonus": 40,
+        "hpBonus": 45,
         "purchasePowerPerTickBonus": 10
       },
-      "visualRule": "稳定发光的熔岩能量核心，读法偏经济建筑，不要像攻击塔。",
+      "visualRule": "稳定发光的魂能导仪，读法偏经济型魔导具，不要像攻击武器。",
       "status": "draft",
-      "notes": "V0.2 经济原型：持续生产购买力，被破坏后停止产出。"
+      "notes": "V0.2 经济型魔导具原型：持续生产购买力，被破坏后停止产出。"
     },
     {
-      "id": "arrow_turret",
-      "name": "方向炮塔",
+      "id": "melee_turret",
+      "name": "守护魔导具",
       "type": "attack",
-      "cost": 100,
-      "hp": 120,
-      "attackPower": 28,
-      "attackInterval": 1.2,
-      "attackRange": 4,
-      "attackDirection": "up",
-      "canBlockGround": false,
+      "cost": 85,
+      "hp": 156,
+      "attackPower": 12,
+      "attackInterval": 0.5,
+      "attackRange": 1.4,
+      "attackDirection": "right",
+      "attackKind": "melee",
+      "canBlockGround": true,
       "canTargetGround": true,
-      "canTargetFlying": true,
+      "canTargetFlying": false,
       "tags": [
-        "single",
-        "anti_air",
-        "stable_damage"
+        "melee",
+        "fast_attack",
+        "frontline"
       ],
       "specialEffectHooks": [
         "attack_special"
       ],
       "upgrade": {
-        "cost": 100,
-        "attackPowerBonus": 14,
+        "cost": 90,
+        "hpBonus": 67,
+        "attackPowerBonus": 5
+      },
+      "visualRule": "短射程守护型魔导具，底座厚重，近战读法清晰，偏前排输出。",
+      "status": "draft",
+      "notes": "近战型魔导具：0.5 秒一击，血量厚，用于拦截贴脸敌人。"
+    },
+    {
+      "id": "ranged_turret",
+      "name": "索敌魔导具",
+      "type": "attack",
+      "cost": 125,
+      "hp": 112,
+      "attackPower": 36,
+      "attackInterval": 1.5,
+      "attackRange": 5.5,
+      "attackDirection": "right",
+      "attackKind": "projectile",
+      "projectileKey": "basicBolt",
+      "canBlockGround": false,
+      "canTargetGround": true,
+      "canTargetFlying": true,
+      "tags": [
+        "ranged",
+        "anti_air",
+        "burst_damage"
+      ],
+      "specialEffectHooks": [
+        "attack_special"
+      ],
+      "upgrade": {
+        "cost": 110,
+        "attackPowerBonus": 16,
         "attackRangeBonus": 1
       },
-      "visualRule": "炮口方向必须清楚，弹道读法稳定，能打地面和飞天。",
+      "visualRule": "远距索敌魔导具，炮口和弹道读法清晰，能打地面和飞天。",
       "status": "draft",
-      "notes": "V0.2 唯一基础输出源，先默认向上，后续再加放置朝向选择。"
+      "notes": "远程型魔导具：1.5 秒一发，血量偏低，负责远程爆发和对空。"
+    },
+    {
+      "id": "laser_turret",
+      "name": "秘仪魔导具",
+      "type": "attack",
+      "cost": 120,
+      "hp": 71,
+      "attackPower": 22,
+      "attackInterval": 0.35,
+      "attackRange": 7,
+      "attackDirection": "right",
+      "attackKind": "laser",
+      "charges": 10,
+      "projectileKey": "laserBeam",
+      "canBlockGround": false,
+      "canTargetGround": true,
+      "canTargetFlying": false,
+      "tags": [
+        "laser",
+        "burst_damage",
+        "limited_charges"
+      ],
+      "specialEffectHooks": [
+        "laser_special"
+      ],
+      "upgrade": {
+        "cost": 125,
+        "attackPowerBonus": 8,
+        "attackRangeBonus": 1
+      },
+      "visualRule": "视觉特效必须夸张，发射贯穿路径的强光束，十次后明显消退。",
+      "status": "draft",
+      "notes": "爆发型魔导具：发射 10 次路径光束后消退。"
     },
     {
       "id": "lava_wall",
-      "name": "熔岩壁垒",
+      "name": "屏障魔导具",
       "type": "defense",
       "cost": 75,
-      "hp": 360,
+      "hp": 298,
       "canBlockGround": true,
       "canTargetGround": false,
       "canTargetFlying": false,
@@ -94,11 +160,11 @@
       ],
       "upgrade": {
         "cost": 80,
-        "hpBonus": 180
+        "hpBonus": 141
       },
-      "visualRule": "厚重、低矮、横向阻挡感强，必须明显不是输出建筑。",
+      "visualRule": "厚重、低矮、横向阻挡感强，必须明显是屏障型魔导具而不是输出武器。",
       "status": "draft",
-      "notes": "V0.2 防御原型：阻挡地面敌人，不阻挡飞天。"
+      "notes": "V0.2 防御型魔导具原型：阻挡地面敌人，不阻挡飞天。"
     }
   ],
   "enemies": [
@@ -106,9 +172,10 @@
       "id": "ember_grunt",
       "name": "火渣兵",
       "role": "normal",
-      "hp": 90,
-      "speed": 0.75,
-      "buildingDamage": 12,
+      "directorCost": 1,
+      "hp": 110,
+      "speed": 0.43,
+      "buildingDamage": 14,
       "attackInterval": 1.2,
       "baseDamage": 1,
       "blockable": true,
@@ -119,7 +186,8 @@
       ],
       "special": "无特殊能力，作为基础压力单位。",
       "counterBy": [
-        "arrow_turret"
+        "melee_turret",
+        "ranged_turret"
       ],
       "visualRule": "小体型、暗红轮廓、无护甲，作为最基础读法。",
       "firstWave": 1,
@@ -129,9 +197,10 @@
       "id": "spark_runner",
       "name": "火星疾行者",
       "role": "fast",
-      "hp": 65,
-      "speed": 1.35,
-      "buildingDamage": 8,
+      "directorCost": 2,
+      "hp": 79,
+      "speed": 0.71,
+      "buildingDamage": 9,
       "attackInterval": 1,
       "baseDamage": 1,
       "blockable": true,
@@ -143,6 +212,7 @@
       "special": "高速冲线，考验防御机关和攻速补强。",
       "counterBy": [
         "lava_wall",
+        "melee_turret",
         "attack_speed_up",
         "emergency_freeze"
       ],
@@ -154,9 +224,10 @@
       "id": "basalt_smasher",
       "name": "玄武重击者",
       "role": "heavy_attack",
-      "hp": 180,
-      "speed": 0.55,
-      "buildingDamage": 34,
+      "directorCost": 3,
+      "hp": 216,
+      "speed": 0.32,
+      "buildingDamage": 52,
       "attackInterval": 1.4,
       "baseDamage": 1,
       "blockable": true,
@@ -166,13 +237,14 @@
         "ground",
         "building_breaker"
       ],
-      "special": "对建筑造成高伤害，逼玩家修复、防御或补单体输出。",
+      "special": "对魔导具造成高伤害，逼玩家修复、防御或补单体输出。",
       "counterBy": [
-        "arrow_turret",
+        "ranged_turret",
+        "laser_turret",
         "emergency_repair_all",
         "defense_taunt_wall"
       ],
-      "visualRule": "宽大厚重剪影、黑灰石甲、攻击建筑时有重击前摇。",
+      "visualRule": "宽大厚重剪影、黑灰石甲、攻击魔导具时有重击前摇。",
       "firstWave": 3,
       "status": "draft"
     },
@@ -180,8 +252,9 @@
       "id": "ash_wing",
       "name": "灰烬飞翼",
       "role": "flying",
-      "hp": 75,
-      "speed": 0.95,
+      "directorCost": 3,
+      "hp": 101,
+      "speed": 0.54,
       "buildingDamage": 0,
       "attackInterval": 0,
       "baseDamage": 1,
@@ -191,9 +264,9 @@
         "flying",
         "anti_block"
       ],
-      "special": "飞行单位，无视防御机关，检验方向炮塔覆盖和对空强化。",
+      "special": "飞行单位，无视防御机关，检验索敌魔导具覆盖和对空强化。",
       "counterBy": [
-        "arrow_turret",
+        "ranged_turret",
         "attack_anti_air_focus"
       ],
       "visualRule": "悬浮高度明显，地面阴影与翅膀轮廓区分飞行属性。",
@@ -204,9 +277,10 @@
       "id": "volcano_core_beast",
       "name": "火山核心兽",
       "role": "boss",
-      "hp": 900,
-      "speed": 0.38,
-      "buildingDamage": 42,
+      "directorCost": 99,
+      "hp": 1008,
+      "speed": 0.22,
+      "buildingDamage": 67,
       "attackInterval": 1.5,
       "baseDamage": 3,
       "blockable": true,
@@ -216,9 +290,10 @@
         "ground",
         "building_breaker"
       ],
-      "special": "最终检验单位，移动慢、拆建筑强、触底伤害高。",
+      "special": "最终检验单位，移动慢、拆魔导具强、触底伤害高。",
       "counterBy": [
-        "arrow_turret",
+        "ranged_turret",
+        "laser_turret",
         "attack_power_up",
         "emergency_repair_all"
       ],
@@ -227,10 +302,92 @@
       "status": "draft"
     }
   ],
+  "enemyBalanceProfiles": [
+    {
+      "id": "standard",
+      "name": "标准敌人档",
+      "status": "draft",
+      "notes": "当前 V0.2 默认使用的敌人参数，不做额外修正。"
+    },
+    {
+      "id": "easy",
+      "name": "简单敌人档",
+      "globalModifiers": {
+        "hpMultiplier": 0.88,
+        "speedMultiplier": 0.92,
+        "buildingDamageMultiplier": 0.78,
+        "directorCostMultiplier": 1.1,
+        "firstWaveOffset": 1
+      },
+      "roleModifiers": {
+        "heavy_attack": {
+          "hpMultiplier": 0.92,
+          "firstWaveOffset": 1
+        },
+        "boss": {
+          "hpMultiplier": 0.9,
+          "speedMultiplier": 0.95
+        }
+      },
+      "status": "draft",
+      "notes": "用于后续 easy 关卡：敌人整体更慢、更脆、拆塔更弱，强敌更晚登场。"
+    },
+    {
+      "id": "hard",
+      "name": "困难敌人档",
+      "globalModifiers": {
+        "hpMultiplier": 1.14,
+        "speedMultiplier": 1.05,
+        "buildingDamageMultiplier": 1.18,
+        "directorCostMultiplier": 0.95,
+        "firstWaveOffset": -1
+      },
+      "roleModifiers": {
+        "fast": {
+          "speedMultiplier": 1.08
+        },
+        "heavy_attack": {
+          "hpMultiplier": 1.12,
+          "buildingDamageMultiplier": 1.12,
+          "firstWaveOffset": -1
+        },
+        "boss": {
+          "hpMultiplier": 1.16,
+          "speedMultiplier": 1.04
+        }
+      },
+      "status": "draft",
+      "notes": "用于后续 hard 关卡：敌人整体更耐打、更快、更会拆塔，强敌也会更早出现。"
+    }
+  ],
   "cards": [
     {
+      "id": "energy_instant_power",
+      "name": "能量喷涌",
+      "type": "energy",
+      "tags": [
+        "economy",
+        "instant",
+        "recovery"
+      ],
+      "solves": {
+        "low_economy": 0.95,
+        "block_capacity_low": 0.3
+      },
+      "synergy": [
+        "all_buildings"
+      ],
+      "effect": {
+        "kind": "gain_purchase_power",
+        "value": 240
+      },
+      "description": "立即获得 240 点能量，用于补建筑和顶节奏。",
+      "recommendReason": "购买力偏低但需要立刻补建筑时，能量喷涌最直接。",
+      "status": "draft"
+    },
+    {
       "id": "emergency_freeze",
-      "name": "火山凝滞",
+      "name": "时滞法环",
       "type": "emergency",
       "tags": [
         "emergency",
@@ -250,37 +407,13 @@
         "nonBossDuration": 3,
         "bossDuration": 1
       },
-      "description": "当前场上所有非 Boss 敌人停止 3 秒，Boss 停止 1 秒。",
-      "recommendReason": "上波漏怪多或极速压力高时，凝滞可以立刻争取击杀时间。",
-      "status": "draft"
-    },
-    {
-      "id": "emergency_base_shield",
-      "name": "底线护盾",
-      "type": "emergency",
-      "tags": [
-        "emergency",
-        "base_protect"
-      ],
-      "solves": {
-        "base_danger": 1,
-        "fast_pressure_high": 0.35
-      },
-      "synergy": [
-        "survival"
-      ],
-      "effect": {
-        "kind": "grant_base_shield",
-        "value": 3,
-        "durationWaves": 1
-      },
-      "description": "下一波底线获得 3 点临时护盾。",
-      "recommendReason": "底线生命偏低或上波漏怪较多时，护盾能避免下一波直接失败。",
+      "description": "场上非 Boss 敌人停止 3 秒，Boss 停止 1 秒，用于救急控场。",
+      "recommendReason": "上波漏怪多或极速压力高时，时滞法环可以立刻争取击杀时间。",
       "status": "draft"
     },
     {
       "id": "emergency_repair_all",
-      "name": "熔岩修补",
+      "name": "愈光灌注",
       "type": "emergency",
       "tags": [
         "emergency",
@@ -299,143 +432,41 @@
         "kind": "repair_all_buildings",
         "value": 80
       },
-      "description": "所有建筑恢复 80 hp，不超过最大血量。",
-      "recommendReason": "建筑被毁或重攻压力高时，修补能稳住防线。",
+      "description": "所有装置恢复 80 点生命，不超过最大生命值，用于修复被打残的装置。",
+      "recommendReason": "建筑被毁或重攻压力高时，愈光灌注能稳住防线。",
       "status": "draft"
     },
     {
-      "id": "energy_instant_power",
-      "name": "能量喷涌",
-      "type": "energy",
-      "tags": [
-        "economy",
-        "instant",
-        "recovery"
-      ],
-      "solves": {
-        "low_economy": 0.95,
-        "block_capacity_low": 0.3
-      },
-      "synergy": [
-        "all_buildings"
-      ],
-      "effect": {
-        "kind": "gain_purchase_power",
-        "value": 90
-      },
-      "description": "立刻获得 90 购买力。",
-      "recommendReason": "购买力偏低但需要立刻补建筑时，能量喷涌最直接。",
-      "status": "draft"
-    },
-    {
-      "id": "energy_core_boost",
-      "name": "核心增幅",
-      "type": "energy",
-      "tags": [
-        "economy",
-        "scaling",
-        "energy_synergy"
-      ],
-      "solves": {
-        "low_economy": 0.75,
-        "energy_heavy": 0.65
-      },
-      "synergy": [
-        "energy_core"
-      ],
-      "effect": {
-        "kind": "boost_energy_core_output",
-        "value": 10,
-        "durationWaves": 2
-      },
-      "description": "所有能量核心产出 +10，持续 2 波。",
-      "recommendReason": "能量核心数量较多时，增幅能把经济路线滚起来。",
-      "status": "draft"
-    },
-    {
-      "id": "energy_refund",
-      "name": "回收协议",
-      "type": "energy",
-      "tags": [
-        "economy",
-        "insurance",
-        "anti_breaker"
-      ],
-      "solves": {
-        "building_break_high": 0.75,
-        "low_economy": 0.45
-      },
-      "synergy": [
-        "all_buildings"
-      ],
-      "effect": {
-        "kind": "refund_destroyed_buildings",
-        "refundRate": 0.5,
-        "durationWaves": 1
-      },
-      "description": "下一波内建筑被毁时返还其 cost 的 50%。",
-      "recommendReason": "重攻压力高或建筑频繁被毁时，回收协议能降低损失。",
-      "status": "draft"
-    },
-    {
-      "id": "attack_power_up",
-      "name": "炮塔过载",
+      "id": "spell_lava_rain",
+      "name": "星辉骤雨",
       "type": "attack",
       "tags": [
-        "attack",
-        "damage",
-        "single"
+        "spell",
+        "aoe",
+        "anti_swarm"
       ],
       "solves": {
         "ground_damage_low": 0.85,
-        "boss_incoming": 0.75
+        "fast_pressure_high": 0.65
       },
       "synergy": [
-        "arrow_turret"
+        "all_enemies"
       ],
       "effect": {
-        "kind": "boost_building_attack_power",
-        "target": "arrow_turret",
-        "value": 12,
-        "durationWaves": 1
+        "kind": "spell_lava_rain",
+        "strikes": 8,
+        "damage": 35
       },
-      "description": "所有方向炮塔 attackPower +12，持续 1 波。",
-      "recommendReason": "普通敌人堆积、Boss 临近或输出不足时，炮塔过载能直接补伤害。",
+      "description": "在全场降下 8 枚星辉法弹，优先落向敌人密集区域，每次造成 35 点范围伤害。",
+      "recommendReason": "敌人数量多时，星辉骤雨能快速清掉密集小怪。",
       "status": "draft"
     },
     {
-      "id": "attack_speed_up",
-      "name": "连发核心",
+      "id": "summon_flame_hawks",
+      "name": "风羽使魔",
       "type": "attack",
       "tags": [
-        "attack",
-        "speed",
-        "anti_fast"
-      ],
-      "solves": {
-        "fast_pressure_high": 0.85,
-        "ground_damage_low": 0.45
-      },
-      "synergy": [
-        "arrow_turret"
-      ],
-      "effect": {
-        "kind": "boost_building_attack_speed",
-        "target": "arrow_turret",
-        "value": -0.25,
-        "minAttackInterval": 0.65,
-        "durationWaves": 1
-      },
-      "description": "所有方向炮塔 attackInterval -0.25 秒，持续 1 波，最低 0.65 秒。",
-      "recommendReason": "极速敌人压力高或漏怪靠近底线时，连发核心能提升补刀效率。",
-      "status": "draft"
-    },
-    {
-      "id": "attack_anti_air_focus",
-      "name": "对空校准",
-      "type": "attack",
-      "tags": [
-        "attack",
+        "summon",
         "anti_air",
         "flying_counter"
       ],
@@ -444,48 +475,44 @@
         "coverage_low": 0.35
       },
       "synergy": [
-        "arrow_turret"
+        "all_enemies"
       ],
       "effect": {
-        "kind": "focus_flying_targets",
-        "target": "arrow_turret",
-        "damageMultiplier": 1.3,
-        "durationWaves": 1
+        "kind": "summon_flame_hawks",
+        "count": 2,
+        "damage": 65
       },
-      "description": "下一波方向炮塔优先锁定飞天敌人，且对飞天伤害 +30%。",
-      "recommendReason": "下一波飞天数量高或上波飞天漏怪时，对空校准是最清楚的补短板。",
+      "description": "召唤 2 只风羽使魔在空中巡逻，优先攻击飞行敌人，每只造成 65 点伤害。",
+      "recommendReason": "飞天压力高时，风羽使魔能独立补对空伤害。",
       "status": "draft"
     },
     {
-      "id": "defense_wall_hp_up",
-      "name": "壁垒加厚",
-      "type": "defense",
+      "id": "summon_furnace_golem",
+      "name": "学院魔偶",
+      "type": "attack",
       "tags": [
-        "defense",
-        "hp",
-        "block"
+        "summon",
+        "attack",
+        "frontline"
       ],
       "solves": {
-        "block_capacity_low": 0.8,
-        "building_break_high": 0.65,
-        "fast_pressure_high": 0.5
+        "ground_damage_low": 0.7,
+        "block_capacity_low": 0.55
       },
       "synergy": [
-        "lava_wall"
+        "melee_turret"
       ],
       "effect": {
-        "kind": "boost_wall_hp_and_repair",
-        "target": "lava_wall",
-        "hpBonus": 120,
-        "repairValue": 120
+        "kind": "summon_furnace_golem",
+        "durationSeconds": 25
       },
-      "description": "所有熔岩壁垒最大 hp +120，并立即恢复 120 hp。",
-      "recommendReason": "极速或重攻压力高时，壁垒加厚能让防线撑更久。",
+      "description": "在指定空格召唤 1 个学院魔偶（生命 160，每 0.5 秒出拳造成 16 点伤害，可阻挡前排），持续 25 秒后消散。",
+      "recommendReason": "需要临时前排输出时，学院魔偶能同时补阻挡和伤害。",
       "status": "draft"
     },
     {
       "id": "defense_temp_wall",
-      "name": "临时熔岩墙",
+      "name": "以太结界",
       "type": "defense",
       "tags": [
         "defense",
@@ -507,90 +534,39 @@
         "count": 1,
         "durationWaves": 1
       },
-      "description": "在压力最高路线生成 1 个临时熔岩壁垒，持续 1 波。",
-      "recommendReason": "某一路线压力明显过高时，临时熔岩墙能立刻补前排。",
+      "description": "在压力最高路线生成 1 道临时以太结界，持续 1 波，用于单路压力过高时救场。",
+      "recommendReason": "某一路线压力明显过高时，以太结界能立刻补前排。",
       "status": "draft"
     },
     {
-      "id": "defense_taunt_wall",
-      "name": "嘲讽机关",
-      "type": "defense",
+      "id": "summon_energy_sprite",
+      "name": "能量精灵",
+      "type": "energy",
       "tags": [
-        "defense",
-        "anti_breaker",
-        "protect_backline"
+        "summon",
+        "economy",
+        "energy"
       ],
       "solves": {
-        "building_break_high": 0.9,
-        "boss_incoming": 0.45
+        "low_economy": 0.8,
+        "energy_heavy": 0.45
       },
       "synergy": [
-        "lava_wall"
+        "energy_core"
       ],
       "effect": {
-        "kind": "taunt_heavy_attackers",
-        "target": "lava_wall",
-        "damageTakenMultiplier": 0.75,
-        "durationWaves": 1
+        "kind": "summon_energy_sprite",
+        "count": 2,
+        "durationSeconds": 9,
+        "collectionIntervalSeconds": 3
       },
-      "description": "下一波重攻敌人优先攻击熔岩壁垒，熔岩壁垒受到重攻伤害 -25%。",
-      "recommendReason": "重攻敌人预告或建筑被毁多时，嘲讽机关能保护后排经济和输出。",
-      "status": "draft"
-    },
-    {
-      "id": "pivot_direction_reset",
-      "name": "炮口重调",
-      "type": "pivot",
-      "tags": [
-        "pivot",
-        "coverage",
-        "positioning"
-      ],
-      "solves": {
-        "coverage_low": 0.95,
-        "flying_pressure_high": 0.55
-      },
-      "synergy": [
-        "arrow_turret"
-      ],
-      "effect": {
-        "kind": "allow_free_direction_reset",
-        "target": "arrow_turret",
-        "count": 1
-      },
-      "description": "允许免费调整所有方向炮塔朝向 1 次。",
-      "recommendReason": "攻击覆盖不足或飞天从未覆盖路线通过时，炮口重调给你重新布线的机会。",
-      "status": "draft"
-    },
-    {
-      "id": "pivot_energy_to_attack",
-      "name": "能量转火",
-      "type": "pivot",
-      "tags": [
-        "pivot",
-        "economy_attack_synergy"
-      ],
-      "solves": {
-        "ground_damage_low": 0.75,
-        "energy_heavy": 0.75
-      },
-      "synergy": [
-        "energy_core",
-        "arrow_turret"
-      ],
-      "effect": {
-        "kind": "energy_output_buffs_nearest_turret",
-        "attackPowerBonus": 6,
-        "buffDuration": 4,
-        "durationWaves": 1
-      },
-      "description": "下一波能量核心每次产出时，最近方向炮塔获得 +6 attackPower，持续 4 秒。",
-      "recommendReason": "能量建筑多但输出不足时，能量转火能把经济暂时转成战斗力。",
+      "description": "召唤 2 个能量精灵围绕能量核心飞行，每隔 3 秒额外收集一次现有能量核心的能量，不影响核心正常产出，持续 9 秒。",
+      "recommendReason": "经济落后但不想只靠被动产出时，能量精灵能补一段节奏。",
       "status": "draft"
     },
     {
       "id": "pivot_wall_feedback",
-      "name": "壁垒反震",
+      "name": "奥术反震",
       "type": "pivot",
       "tags": [
         "pivot",
@@ -612,9 +588,91 @@
         "cooldown": 1,
         "durationWaves": 1
       },
-      "description": "下一波熔岩壁垒受到地面攻击时，对攻击者造成 10 伤害，1 秒冷却。",
-      "recommendReason": "防御建筑多但输出不足时，壁垒反震能把前排承伤转成伤害。",
+      "description": "下一波中，己方结界类装置受到地面攻击时，对攻击者造成 10 点反震伤害，1 秒冷却。",
+      "recommendReason": "防御建筑多但输出不足时，奥术反震能把前排承伤转成伤害。",
       "status": "draft"
+    },
+    {
+      "id": "attack_molten_chain",
+      "name": "秘火连锁",
+      "type": "attack",
+      "tags": [
+        "attack",
+        "aoe",
+        "anti_swarm"
+      ],
+      "solves": {
+        "ground_damage_low": 0.7,
+        "fast_pressure_high": 0.55
+      },
+      "synergy": [
+        "ranged_turret"
+      ],
+      "effect": {
+        "kind": "spell_molten_chain",
+        "bounces": 5,
+        "damage": 45
+      },
+      "description": "召唤一团秘火在敌人之间弹跳 5 次，每次命中一个敌人并造成 45 点小范围溅射伤害。",
+      "recommendReason": "密集小怪压力高时，秘火连锁能主动清理一批敌人。",
+      "status": "draft"
+    },
+    {
+      "id": "reward_fire_dragon_breath",
+      "name": "火龙吐息",
+      "type": "emergency",
+      "tags": [
+        "reward",
+        "aoe",
+        "fire_dragon",
+        "map_clear"
+      ],
+      "solves": {
+        "base_danger": 0.85,
+        "ground_damage_low": 0.8,
+        "fast_pressure_high": 0.7,
+        "boss_incoming": 0.55
+      },
+      "synergy": [
+        "all_enemies"
+      ],
+      "effect": {
+        "kind": "summon_fire_dragon_breath",
+        "target": "all_enemies",
+        "damage": 110
+      },
+      "description": "通关火山地图后解锁。召唤火龙掠过战场，对场上所有敌人进行群体攻击，每个敌人都受到 110 点伤害。",
+      "recommendReason": "火山地图通关奖励技能，用于后续地图中处理满场敌人压力。",
+      "status": "draft",
+      "notes": "火山地图通关后解锁，不进入普通波次后的随机策略卡池。"
+    },
+    {
+      "id": "premium_starfall_contract",
+      "name": "星陨契约",
+      "type": "attack",
+      "tags": [
+        "premium",
+        "burst_damage",
+        "single_target",
+        "shop"
+      ],
+      "solves": {
+        "boss_incoming": 0.85,
+        "ground_damage_low": 0.7,
+        "fast_pressure_high": 0.45
+      },
+      "synergy": [
+        "all_enemies"
+      ],
+      "effect": {
+        "kind": "premium_starfall_contract",
+        "strikes": 3,
+        "damage": 150
+      },
+      "description": "通过主界面【商店】购买后解锁。使用后召唤 3 颗星陨火石砸向当前血量最高的敌人，每颗造成 150 点单体伤害；如果目标死亡，剩余火石会自动转向场上其他敌人。",
+      "recommendReason": "商店购买的强力爆发技能，适合处理 Boss 或场上高血量威胁。",
+      "status": "draft",
+      "notes": "通过商店消耗灵感原石解锁，可加入刷图技能包，每局最多使用一次。"
     }
   ],
   "waves": [
@@ -622,151 +680,302 @@
       "id": "volcano_wave_01",
       "mapId": "volcano",
       "index": 1,
-      "durationSeconds": 30,
+      "durationSeconds": 34,
+      "directorReserveBudget": 0,
+      "rewardPurchasePower": 75,
+      "pressureGoal": "第一波先用中路常规怪站住主防线，再从左路补一小段轻压，让玩家在低强度下熟悉双路补线。",
+      "nextWaveHint": "第 2 波仍以主防线为主，但会从侧路混入少量极速敌人，需要开始考虑阻挡、转火和补线速度。",
+      "aiDirectorAllowed": false,
+      "status": "draft",
+      "phases": [
+        {
+          "id": "volcano_wave_01_phase_01",
+          "label": "双路起手",
+          "description": "先稳住主路，再给一侧补轻压，让玩家从第一波开始建立双路补线意识。",
+          "startSecond": 0,
+          "endSecond": 34
+        }
+      ],
       "enemyGroups": [
         {
           "enemyId": "ember_grunt",
-          "count": 8,
-          "route": "mixed",
-          "startSecond": 2,
-          "interval": 2.8
+          "count": 3,
+          "route": "center",
+          "interval": 3.8,
+          "startSecond": 4
+        },
+        {
+          "enemyId": "ember_grunt",
+          "count": 2,
+          "route": "left",
+          "interval": 4.2,
+          "startSecond": 8
         }
-      ],
-      "rewardPurchasePower": 60,
-      "pressureGoal": "熟悉基础输出，让玩家理解攻击建筑负责清理普通敌人。",
-      "nextWaveHint": "第 2 波会出现极速敌人，需要防御机关或攻速补强。",
-      "aiDirectorAllowed": false,
-      "status": "draft"
+      ]
     },
     {
       "id": "volcano_wave_02",
       "mapId": "volcano",
       "index": 2,
       "durationSeconds": 40,
+      "directorReserveBudget": 4,
+      "rewardPurchasePower": 80,
+      "pressureGoal": "第 2 波先让主路维持轻压，再从侧路插入少量快怪，开始教玩家在双路间转火和补线。",
+      "nextWaveHint": "第 3 波会把侧路压力做实，并把重攻敌人压进主防线，考验前排能否顶住。",
+      "aiDirectorAllowed": true,
+      "directorPolicy": {
+        "allowedIntents": [
+          "relief",
+          "probe_fast"
+        ],
+        "preferredIntents": [
+          "probe_fast"
+        ],
+        "maxSpendRatio": 0.75
+      },
+      "status": "draft",
+      "phases": [
+        {
+          "id": "volcano_wave_02_phase_01",
+          "label": "主路稍压",
+          "description": "继续让主路吃压，但强度控制在可处理范围内，给玩家留出转火和补线空间。",
+          "startSecond": 0,
+          "endSecond": 13
+        },
+        {
+          "id": "volcano_wave_02_phase_02",
+          "label": "侧路快探",
+          "description": "沿第一波已经出现过的侧路补少量快怪，试探玩家的补线速度、转火能力和阻挡反应。",
+          "startSecond": 13,
+          "endSecond": 40
+        }
+      ],
       "enemyGroups": [
         {
           "enemyId": "ember_grunt",
-          "count": 8,
-          "route": "mixed",
-          "startSecond": 2,
-          "interval": 2.4
+          "count": 5,
+          "route": "center",
+          "interval": 3.1,
+          "startSecond": 3
         },
         {
           "enemyId": "spark_runner",
-          "count": 4,
-          "route": "center",
-          "startSecond": 8,
-          "interval": 2.4
+          "count": 2,
+          "route": "left",
+          "interval": 2.5,
+          "startSecond": 13
         }
-      ],
-      "rewardPurchasePower": 70,
-      "pressureGoal": "逼玩家做阻挡，让玩家意识到没有防御机关会漏极速敌人。",
-      "nextWaveHint": "第 3 波会出现重攻敌人，会更快破坏建筑。",
-      "aiDirectorAllowed": true,
-      "status": "draft"
+      ]
     },
     {
       "id": "volcano_wave_03",
       "mapId": "volcano",
       "index": 3,
       "durationSeconds": 45,
+      "directorReserveBudget": 5,
+      "rewardPurchasePower": 85,
+      "pressureGoal": "先用单侧普通怪建立第二条防线需求，再让少量重攻压到主防线上，避免前期同时被多路撕开。",
+      "nextWaveHint": "第 4 波会从另一侧加入飞天敌人，单靠屏障魔导具挡不住。",
+      "aiDirectorAllowed": true,
+      "directorPolicy": {
+        "allowedIntents": [
+          "relief",
+          "pressure_economy"
+        ],
+        "preferredIntents": [
+          "pressure_economy"
+        ],
+        "maxSpendRatio": 0.8
+      },
+      "status": "draft",
+      "phases": [
+        {
+          "id": "volcano_wave_03_phase_01",
+          "label": "侧路起压",
+          "description": "先让玩家意识到第二条防线正在形成，但还没到必须全图救火的程度。",
+          "startSecond": 0,
+          "endSecond": 16
+        },
+        {
+          "id": "volcano_wave_03_phase_02",
+          "label": "拆塔题登场",
+          "description": "重攻怪开始拆前排，逼玩家补单体火力和承伤结构。",
+          "startSecond": 16,
+          "endSecond": 24
+        },
+        {
+          "id": "volcano_wave_03_phase_03",
+          "label": "主路补压",
+          "description": "在侧路分心后回补主路，开始考验双路注意力。",
+          "startSecond": 24,
+          "endSecond": 45
+        }
+      ],
       "enemyGroups": [
         {
           "enemyId": "ember_grunt",
-          "count": 8,
-          "route": "mixed",
-          "startSecond": 2,
-          "interval": 2.6
+          "count": 5,
+          "route": "left",
+          "interval": 2.8,
+          "startSecond": 3
         },
         {
           "enemyId": "basalt_smasher",
-          "count": 3,
+          "count": 2,
           "route": "left",
-          "startSecond": 13,
-          "interval": 5
+          "interval": 5.2,
+          "startSecond": 16
+        },
+        {
+          "enemyId": "ember_grunt",
+          "count": 3,
+          "route": "center",
+          "interval": 3.4,
+          "startSecond": 24
         }
-      ],
-      "rewardPurchasePower": 80,
-      "pressureGoal": "制造建筑被拆压力，让玩家看到建筑血量和修复的重要性。",
-      "nextWaveHint": "第 4 波会出现飞天敌人，防御机关无法阻挡。",
-      "aiDirectorAllowed": true,
-      "status": "draft"
+      ]
     },
     {
       "id": "volcano_wave_04",
       "mapId": "volcano",
       "index": 4,
       "durationSeconds": 55,
+      "directorReserveBudget": 6,
+      "rewardPurchasePower": 90,
+      "pressureGoal": "左右两侧分工施压，让玩家同时处理地面冲线和对空覆盖。",
+      "nextWaveHint": "第 5 波是 Boss，中路会顶住重压，侧翼还会持续漏压。",
+      "aiDirectorAllowed": true,
+      "directorPolicy": {
+        "allowedIntents": [
+          "relief",
+          "probe_anti_air",
+          "split_pressure"
+        ],
+        "preferredIntents": [
+          "probe_anti_air"
+        ],
+        "maxSpendRatio": 0.85
+      },
+      "status": "draft",
+      "phases": [
+        {
+          "id": "volcano_wave_04_phase_01",
+          "label": "左路持续压",
+          "description": "先把注意力钉在地面一侧，让玩家感受火力被拉开的前兆。",
+          "startSecond": 0,
+          "endSecond": 9
+        },
+        {
+          "id": "volcano_wave_04_phase_02",
+          "label": "中路快压",
+          "description": "中路提速，打乱原本稳定的阻挡和清线节奏。",
+          "startSecond": 9,
+          "endSecond": 14
+        },
+        {
+          "id": "volcano_wave_04_phase_03",
+          "label": "右路空袭",
+          "description": "飞行敌人入场，要求玩家把覆盖从地面扩展到对空。",
+          "startSecond": 14,
+          "endSecond": 55
+        }
+      ],
       "enemyGroups": [
         {
           "enemyId": "ember_grunt",
-          "count": 8,
-          "route": "mixed",
-          "startSecond": 2,
-          "interval": 2.2
+          "count": 6,
+          "route": "left",
+          "interval": 2.2,
+          "startSecond": 2
         },
         {
           "enemyId": "spark_runner",
-          "count": 4,
-          "route": "mixed",
-          "startSecond": 10,
-          "interval": 4
+          "count": 5,
+          "route": "center",
+          "interval": 2.2,
+          "startSecond": 9
         },
         {
           "enemyId": "ash_wing",
-          "count": 5,
-          "route": "mixed",
-          "startSecond": 14,
-          "interval": 5
+          "count": 6,
+          "route": "right",
+          "interval": 4,
+          "startSecond": 14
         }
-      ],
-      "rewardPurchasePower": 90,
-      "pressureGoal": "制造对空覆盖压力，让玩家意识到防御机关不能解决飞天。",
-      "nextWaveHint": "第 5 波是 Boss，火山核心兽即将出现。",
-      "aiDirectorAllowed": true,
-      "status": "draft"
+      ]
     },
     {
       "id": "volcano_wave_05",
       "mapId": "volcano",
       "index": 5,
       "durationSeconds": 75,
+      "directorReserveBudget": 0,
+      "bossId": "volcano_core_beast",
+      "clearRewardId": "reward_fire_dragon_breath",
+      "pressureGoal": "Boss 顶中路、左右侧协同压场，检验完整防线被撕开后还能不能撑住。",
+      "nextWaveHint": "这是最终波。",
+      "aiDirectorAllowed": false,
+      "status": "draft",
+      "phases": [
+        {
+          "id": "volcano_wave_05_phase_01",
+          "label": "侧翼预热",
+          "description": "先用侧翼小压牵扯注意力，让最终波不是一上来就只看 Boss。",
+          "startSecond": 0,
+          "endSecond": 8
+        },
+        {
+          "id": "volcano_wave_05_phase_02",
+          "label": "Boss 入场",
+          "description": "核心兽顶中路，宣布最终综合检查正式开始。",
+          "startSecond": 8,
+          "endSecond": 15
+        },
+        {
+          "id": "volcano_wave_05_phase_03",
+          "label": "中路重压",
+          "description": "Boss 站住后再叠拆塔重压，逼玩家判断承伤和爆发是否够用。",
+          "startSecond": 15,
+          "endSecond": 20
+        },
+        {
+          "id": "volcano_wave_05_phase_04",
+          "label": "右路持续空袭",
+          "description": "最终波后段把对空题也叠回来，检验完整防线而不是单点解法。",
+          "startSecond": 20,
+          "endSecond": 75
+        }
+      ],
       "enemyGroups": [
+        {
+          "enemyId": "ember_grunt",
+          "count": 6,
+          "route": "left",
+          "interval": 2.4,
+          "startSecond": 2
+        },
         {
           "enemyId": "volcano_core_beast",
           "count": 1,
           "route": "center",
-          "startSecond": 8,
-          "interval": 1
-        },
-        {
-          "enemyId": "ember_grunt",
-          "count": 8,
-          "route": "mixed",
-          "startSecond": 2,
-          "interval": 2.6
+          "interval": 1,
+          "startSecond": 8
         },
         {
           "enemyId": "basalt_smasher",
-          "count": 3,
-          "route": "mixed",
-          "startSecond": 18,
-          "interval": 6
+          "count": 4,
+          "route": "center",
+          "interval": 4.8,
+          "startSecond": 15
         },
         {
           "enemyId": "ash_wing",
-          "count": 4,
-          "route": "mixed",
-          "startSecond": 24,
-          "interval": 5
+          "count": 5,
+          "route": "right",
+          "interval": 4.2,
+          "startSecond": 20
         }
-      ],
-      "bossId": "volcano_core_beast",
-      "clearRewardId": "volcano_victory_cache",
-      "pressureGoal": "最终构筑检验，综合压测输出、防御、修复和对空覆盖。",
-      "nextWaveHint": "这是最终波。",
-      "aiDirectorAllowed": false,
-      "status": "draft"
+      ]
     }
   ],
   "directorRules": [
@@ -783,7 +992,7 @@
     },
     {
       "id": "test_greedy_economy",
-      "playerState": "玩家经济过强，能量建筑数量大于等于 3。",
+      "playerState": "玩家经济过强，魂能导仪数量大于等于 3。",
       "allowedAdjustment": "下一波加入 1 个重攻敌人。",
       "limits": "不能连续两波加入重攻针对经济。",
       "reasonTags": [
@@ -814,7 +1023,7 @@
     },
     {
       "id": "reduce_breaker_after_losses",
-      "playerState": "建筑被毁过多。",
+      "playerState": "魔导具被毁过多。",
       "allowedAdjustment": "降低下一波重攻数量 1 个。",
       "limits": "不低于固定波次下限的 50%。",
       "reasonTags": [
@@ -822,5 +1031,78 @@
       ],
       "status": "draft"
     }
-  ]
+  ],
+  "aiStrategy": {
+    "modelTuning": {
+      "temperature": 0.1,
+      "maxTokens": 900
+    },
+    "taskContext": {
+      "activeSkill": "这是玩家主动消耗购买力触发的抽卡，强调它是一次临场补救和强行换解法的机会。",
+      "waveCleared": "这是波次结算后的抽卡，强调它是下一波开始前的正式应对窗口。"
+    },
+    "systemPrompt": {
+      "role": "你是塔防游戏《玩个球》的敌方指挥官文案助手。",
+      "selectionTask": "你的任务是根据当前战况，从给定卡池中各选出 1 张救急位、1 张协同位、1 张转向位策略卡。",
+      "decisionConstraint": "你必须自己选卡，不能沿用旧推荐，也不能改规则。",
+      "poolConstraint": "只能从输入提供的候选池里选 cardId，不能新增、不能杜撰、不能重复。",
+      "jsonConstraint": "必须返回严格 JSON，不要输出 Markdown。",
+      "outputSchema": "JSON 结构必须是：{\"summary\":\"...\",\"commanderLine\":\"...\",\"recommendations\":[{\"slot\":\"emergency\",\"cardId\":\"...\",\"reason\":\"...\"},{\"slot\":\"synergy\",\"cardId\":\"...\",\"reason\":\"...\"},{\"slot\":\"pivot\",\"cardId\":\"...\",\"reason\":\"...\"}]}。",
+      "slotCoverageConstraint": "recommendations 必须恰好 3 个，slot 必须分别覆盖 emergency / synergy / pivot。",
+      "styleConstraint": "summary 1 句概括当前局势和这次抽卡意义；commanderLine 1 句；每张卡的 reason 1 句，直接说它为什么适合现在。"
+    },
+    "promptCopy": {
+      "slotRules": [
+        "必须各选 1 张：救急位 emergency、协同位 synergy、转向位 pivot。",
+        "只能从对应 slot 的候选池里选 cardId。",
+        "reason 必须针对当前局势，不能写泛泛的卡牌说明。"
+      ],
+      "noProblemTagsText": "暂无额外危险标签。",
+      "language": "简体中文"
+    },
+    "problemTagLabels": {
+      "low_economy": "经济偏弱，下一步扩张会卡购买力",
+      "ground_damage_low": "地面输出不足，常规敌潮清不动",
+      "fast_pressure_high": "极速敌人压力高，容易漏怪",
+      "building_break_high": "重攻拆家风险高，前后排都会被撕开",
+      "flying_pressure_high": "对空火力不足，飞行单位会直穿",
+      "block_capacity_low": "前排承伤不足，路线容易被撞穿",
+      "boss_incoming": "Boss 即将到场，需要预留爆发或容错",
+      "base_danger": "底线血量危险，再漏就可能直接失败",
+      "coverage_low": "火力覆盖面不足，部分路线没人管",
+      "defense_heavy": "防御投入偏多，承伤没能转成击杀",
+      "energy_heavy": "经济型魔导具偏多，需要把经济转成战斗力"
+    }
+  },
+  "gameplay": {
+    "combatBalance": {
+      "timeUnitSeconds": 4,
+      "standardTowerDps": 24,
+      "heavySiegeDpsToTowerDpsRatio": 1.55,
+      "enemySpeedMultiplier": 0.75,
+      "enemyTtkUnits": {
+        "normal": 1.15,
+        "fast": 0.82,
+        "heavy_attack": 2.25,
+        "flying": 1.05,
+        "boss": 10.5
+      },
+      "buildingTtdUnitsAgainstHeavy": {
+        "wall": 2,
+        "meleeTower": 1.05,
+        "rangedTower": 0.75,
+        "economy": 0.58,
+        "laserTower": 0.48
+      }
+    },
+    "activeStrategyDraw": {
+      "cost": 60,
+      "cooldownSeconds": 30
+    },
+    "runLoop": {
+      "initialReadySeconds": 10,
+      "postCardReadySeconds": 6,
+      "waveCardSelectSeconds": 8
+    }
+  }
 }

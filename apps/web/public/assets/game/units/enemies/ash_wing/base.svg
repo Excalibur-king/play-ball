@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="176" height="176" viewBox="0 0 176 176">
+  <defs>
+    <linearGradient id="wingMembrane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8f817e"/>
+      <stop offset="0.5" stop-color="#4d4044"/>
+      <stop offset="1" stop-color="#21191e"/>
+    </linearGradient>
+    <radialGradient id="wingCore" cx="50%" cy="45%" r="54%">
+      <stop offset="0" stop-color="#fff7d2"/>
+      <stop offset="0.4" stop-color="#ffbf58"/>
+      <stop offset="1" stop-color="#cc3b1b"/>
+    </radialGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M88 40 C106 34 131 36 153 51 C132 56 113 66 101 81 Z" fill="url(#wingMembrane)" stroke="#968781" stroke-width="4"/>
+    <path d="M88 40 C70 34 45 36 23 51 C44 56 63 66 75 81 Z" fill="url(#wingMembrane)" stroke="#968781" stroke-width="4"/>
+    <path d="M79 70 C58 63 38 74 26 97 C47 97 64 101 77 111 Z" fill="#30262b" stroke="#8b7a76" stroke-width="4"/>
+    <path d="M97 70 C118 63 138 74 150 97 C129 97 112 101 99 111 Z" fill="#30262b" stroke="#8b7a76" stroke-width="4"/>
+    <path d="M61 72 L23 51" stroke="#6d5d61" stroke-width="4" stroke-linecap="round"/>
+    <path d="M115 72 L153 51" stroke="#6d5d61" stroke-width="4" stroke-linecap="round"/>
+    <path d="M59 103 C59 76 72 58 88 58 C104 58 117 76 117 103 C117 122 104 137 88 137 C72 137 59 122 59 103 Z" fill="#241b20" stroke="#a39185" stroke-width="4"/>
+    <path d="M74 102 C74 92 80 85 88 85 C96 85 102 92 102 102 C102 112 96 119 88 119 C80 119 74 112 74 102 Z" fill="url(#wingCore)" stroke="#ffe2a0" stroke-width="3"/>
+    <circle cx="76" cy="77" r="5" fill="#fff5d4"/>
+    <circle cx="100" cy="77" r="5" fill="#fff5d4"/>
+    <circle cx="76" cy="78" r="2.2" fill="#2a1719"/>
+    <circle cx="100" cy="78" r="2.2" fill="#2a1719"/>
+    <path d="M79 91 C85 97 91 97 97 91" stroke="#2e1518" stroke-width="4" stroke-linecap="round"/>
+    <path d="M88 22 L95 37 L81 37 Z" fill="#ffbe59" stroke="#ffe3a4" stroke-width="3"/>
+  </g>
+</svg>

@@ -1,0 +1,102 @@
+{
+  "ember_grunt": {
+    "walk": {
+      "file": "walk.png",
+      "frameWidth": 411,
+      "frameHeight": 534,
+      "frameCount": 3
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 622,
+      "frameHeight": 554,
+      "frameCount": 3
+    },
+    "hit": {
+      "file": "hit.png",
+      "frameWidth": 445,
+      "frameHeight": 565,
+      "frameCount": 3
+    }
+  },
+  "spark_runner": {
+    "walk": {
+      "file": "walk.png",
+      "frameWidth": 587,
+      "frameHeight": 309,
+      "frameCount": 3
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 683,
+      "frameHeight": 361,
+      "frameCount": 3
+    },
+    "hit": {
+      "file": "hit.png",
+      "frameWidth": 557,
+      "frameHeight": 395,
+      "frameCount": 3
+    }
+  },
+  "basalt_smasher": {
+    "walk": {
+      "file": "walk.png",
+      "frameWidth": 579,
+      "frameHeight": 524,
+      "frameCount": 3
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 613,
+      "frameHeight": 638,
+      "frameCount": 3
+    },
+    "hit": {
+      "file": "hit.png",
+      "frameWidth": 647,
+      "frameHeight": 607,
+      "frameCount": 3
+    }
+  },
+  "ash_wing": {
+    "walk": {
+      "file": "walk.png",
+      "frameWidth": 683,
+      "frameHeight": 574,
+      "frameCount": 3
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 646,
+      "frameHeight": 524,
+      "frameCount": 3
+    },
+    "hit": {
+      "file": "hit.png",
+      "frameWidth": 585,
+      "frameHeight": 534,
+      "frameCount": 3
+    }
+  },
+  "volcano_core_beast": {
+    "walk": {
+      "file": "walk.png",
+      "frameWidth": 618,
+      "frameHeight": 625,
+      "frameCount": 3
+    },
+    "attack": {
+      "file": "attack.png",
+      "frameWidth": 660,
+      "frameHeight": 605,
+      "frameCount": 3
+    },
+    "hit": {
+      "file": "hit.png",
+      "frameWidth": 636,
+      "frameHeight": 615,
+      "frameCount": 3
+    }
+  }
+}

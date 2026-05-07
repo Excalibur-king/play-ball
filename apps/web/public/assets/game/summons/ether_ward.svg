@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200">
+  <defs>
+    <linearGradient id="wardShield" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#A8FFEC"/>
+      <stop offset="0.5" stop-color="#3FB7C8"/>
+      <stop offset="1" stop-color="#0E3A55"/>
+    </linearGradient>
+  </defs>
+  <path d="M80 14c30 6 56 22 64 50v50c0 38-28 70-64 92-36-22-64-54-64-92V64c8-28 34-44 64-50Z" fill="#0E3A55" stroke="#D8FFF2" stroke-width="6"/>
+  <path d="M80 28c24 4 44 18 50 40v44c0 30-22 56-50 72-28-16-50-42-50-72V68c6-22 26-36 50-40Z" fill="url(#wardShield)" opacity=".8"/>
+  <path d="M48 110h64M80 78v64" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="80" cy="110" r="14" fill="#FFFFFF"/>
+  <circle cx="80" cy="110" r="6" fill="#0E3A55"/>
+</svg>

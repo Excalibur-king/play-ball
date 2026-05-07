@@ -1,0 +1,58 @@
+[
+  {
+    "id": "standard",
+    "name": "标准敌人档",
+    "status": "draft",
+    "notes": "当前 V0.2 默认使用的敌人参数，不做额外修正。"
+  },
+  {
+    "id": "easy",
+    "name": "简单敌人档",
+    "globalModifiers": {
+      "hpMultiplier": 0.88,
+      "speedMultiplier": 0.92,
+      "buildingDamageMultiplier": 0.78,
+      "directorCostMultiplier": 1.1,
+      "firstWaveOffset": 1
+    },
+    "roleModifiers": {
+      "heavy_attack": {
+        "hpMultiplier": 0.92,
+        "firstWaveOffset": 1
+      },
+      "boss": {
+        "hpMultiplier": 0.9,
+        "speedMultiplier": 0.95
+      }
+    },
+    "status": "draft",
+    "notes": "用于后续 easy 关卡：敌人整体更慢、更脆、拆塔更弱，强敌更晚登场。"
+  },
+  {
+    "id": "hard",
+    "name": "困难敌人档",
+    "globalModifiers": {
+      "hpMultiplier": 1.14,
+      "speedMultiplier": 1.05,
+      "buildingDamageMultiplier": 1.18,
+      "directorCostMultiplier": 0.95,
+      "firstWaveOffset": -1
+    },
+    "roleModifiers": {
+      "fast": {
+        "speedMultiplier": 1.08
+      },
+      "heavy_attack": {
+        "hpMultiplier": 1.12,
+        "buildingDamageMultiplier": 1.12,
+        "firstWaveOffset": -1
+      },
+      "boss": {
+        "hpMultiplier": 1.16,
+        "speedMultiplier": 1.04
+      }
+    },
+    "status": "draft",
+    "notes": "用于后续 hard 关卡：敌人整体更耐打、更快、更会拆塔，强敌也会更早出现。"
+  }
+]

@@ -1,0 +1,437 @@
+/* ── Prototype HUD layout ── */
+.proto-shell {
+  width: 100vw;
+  min-height: 100vh;
+  background: #0d1419;
+}
+
+.proto-stage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.proto-bg-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(62, 120, 58, 0.18), transparent 60%),
+    linear-gradient(180deg, #1b3424 0%, #0e1a12 48%, #1a0e0a 100%);
+  color: rgba(255, 255, 255, 0.12);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+.proto-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ── Top bar — single connected strip ── */
+.proto-top-bar {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  align-items: stretch;
+  width: fit-content;
+  max-width: calc(100vw - 24px);
+  border: 3px solid #c49e5a;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2a3a5a, #1e2d4a);
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.proto-top-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+}
+
+.proto-top-divider {
+  width: 2px;
+  align-self: stretch;
+  background: linear-gradient(180deg, rgba(196, 158, 90, 0.6), rgba(196, 158, 90, 0.2));
+}
+
+/* ── MP section ── */
+.proto-mp-section {
+  gap: 10px;
+}
+
+.proto-mp-icon {
+  width: 36px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background:
+    radial-gradient(ellipse at 50% 30%, #8ce8ff, #3d8eff 60%, #1a4baa);
+  box-shadow:
+    0 0 14px rgba(100, 200, 255, 0.5),
+    inset 0 -4px 8px rgba(0, 20, 80, 0.4);
+}
+
+.proto-mp-body {
+  display: grid;
+  gap: 2px;
+}
+
+.proto-mp-label {
+  color: #a0c4e8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.proto-mp-value {
+  color: #e8f4ff;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* ── Shared progress bar ── */
+.proto-bar {
+  width: 80px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.proto-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.proto-bar-fill.mp {
+  background: linear-gradient(90deg, #4db8ff, #1a6fff);
+}
+
+.proto-bar-fill.wave {
+  background: linear-gradient(90deg, #5ca8ff, #3070dd);
+}
+
+.proto-bar-fill.hp {
+  background: linear-gradient(90deg, #6fd95e, #d4a830 70%, #d45050);
+}
+
+/* ── Seed cards (center section) ── */
+.proto-seed-section {
+  gap: 6px;
+  padding: 6px 10px;
+}
+
+.proto-seed {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 54px;
+  padding: 4px 4px 6px;
+  border: 2px solid rgba(196, 158, 90, 0.5);
+  border-radius: 6px;
+  background: rgba(58, 75, 110, 0.7);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.proto-seed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 220, 100, 0.25);
+}
+
+.proto-seed.selected {
+  border-color: #ffe66a;
+  box-shadow:
+    0 0 0 2px #ffe66a,
+    0 4px 14px rgba(255, 230, 106, 0.4);
+  transform: translateY(-3px);
+}
+
+.proto-seed.attack { background: rgba(90, 140, 60, 0.6); }
+.proto-seed.defense { background: rgba(120, 90, 55, 0.6); }
+.proto-seed.energy { background: rgba(170, 140, 50, 0.6); }
+
+.proto-seed-stars {
+  display: flex;
+  gap: 1px;
+}
+
+.proto-star {
+  color: #ffd84a;
+  font-size: 10px;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.proto-seed-portrait {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 250, 220, 0.3), transparent 70%),
+    rgba(40, 55, 80, 0.6);
+}
+
+.proto-seed-cost {
+  color: #ffd84a;
+  font-size: 11px;
+  font-weight: 900;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ── Wave section ── */
+.proto-wave-section {
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 18px;
+  text-align: center;
+}
+
+.proto-wave-label {
+  color: #a0c4e8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.proto-wave-value {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.proto-wave-value small {
+  color: #8aa8cc;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.proto-wave-bar {
+  width: 64px;
+  margin: 2px auto 0;
+}
+
+/* ── HP section ── */
+.proto-hp-section {
+  gap: 8px;
+}
+
+.proto-hp-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.proto-hp-body {
+  display: grid;
+  gap: 2px;
+}
+
+.proto-hp-label {
+  color: #a0c4e8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.proto-hp-value {
+  color: #e8f4ff;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.proto-hp-bar {
+  width: 100px;
+}
+
+/* ── Enemy list ── */
+.proto-enemy-section {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 8px 16px;
+}
+
+.proto-enemy-row {
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.proto-enemy-name {
+  color: #a0c4e8;
+}
+
+.proto-enemy-count {
+  color: #fff;
+}
+
+/* ── Bottom bar — strategy cards & skill pack ── */
+.proto-bottom-bar {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  translate: -50% 0;
+  width: fit-content;
+  max-width: calc(100vw - 24px);
+  pointer-events: auto;
+}
+
+.proto-bottom-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.proto-tab {
+  padding: 6px 20px;
+  border: 2px solid rgba(196, 158, 90, 0.4);
+  border-radius: 999px;
+  color: #8aa8cc;
+  background: rgba(30, 45, 74, 0.85);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  transition: all 0.15s;
+}
+
+.proto-tab:hover {
+  color: #e8f4ff;
+  border-color: rgba(196, 158, 90, 0.6);
+}
+
+.proto-tab.active {
+  color: #2a1c0e;
+  background: linear-gradient(180deg, #ffe885, #d4a830);
+  border-color: #c49e5a;
+}
+
+.proto-card-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.proto-card {
+  display: flex;
+  flex-direction: column;
+  width: 148px;
+  padding: 10px;
+  border: 3px solid #c49e5a;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  background: linear-gradient(180deg, #3a4b6e, #2a3a5a);
+  box-shadow:
+    0 5px 14px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.proto-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.proto-card.synergy { border-color: #8fc96d; }
+.proto-card.emergency { border-color: #f08754; }
+.proto-card.pivot { border-color: #8cc8d8; }
+.proto-card.attack { border-color: #ef9c4a; }
+.proto-card.defense { border-color: #a0855a; }
+.proto-card.energy { border-color: #f1c44d; }
+
+.proto-card-art {
+  width: 100%;
+  height: 72px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 250, 220, 0.15), transparent 60%),
+    rgba(40, 55, 80, 0.6);
+}
+
+.proto-card-slot {
+  color: rgba(200, 210, 230, 0.6);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.proto-card strong {
+  display: block;
+  margin: 4px 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.proto-card-desc {
+  color: #a0b8d4;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ── Exit button ── */
+.proto-exit {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 8px 16px;
+  border: 2px solid rgba(196, 158, 90, 0.5);
+  border-radius: 8px;
+  color: #e8f4ff;
+  background: rgba(30, 45, 74, 0.9);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+  pointer-events: auto;
+  transition: background 0.15s;
+}
+
+.proto-exit:hover {
+  background: rgba(50, 70, 110, 0.95);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1000px) {
+  .proto-top-bar {
+    flex-wrap: wrap;
+    max-width: calc(100vw - 24px);
+  }
+
+  .proto-seed-section {
+    order: 10;
+    width: 100%;
+    justify-content: center;
+    border-top: 2px solid rgba(196, 158, 90, 0.3);
+  }
+
+  .proto-card-row {
+    flex-wrap: wrap;
+  }
+
+  .proto-card {
+    width: min(148px, calc(33vw - 16px));
+  }
+}

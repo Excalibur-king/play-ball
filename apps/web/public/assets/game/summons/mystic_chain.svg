@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 120">
+  <defs>
+    <radialGradient id="chainOrb" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFFAD8"/>
+      <stop offset="0.5" stop-color="#FF8A4F"/>
+      <stop offset="1" stop-color="#A02312"/>
+    </radialGradient>
+  </defs>
+  <path d="M14 80 C42 36 80 30 110 60 C140 90 178 84 206 40" stroke="#FFD86F" stroke-width="10" fill="none" stroke-linecap="round" opacity=".82"/>
+  <path d="M14 80 C42 36 80 30 110 60 C140 90 178 84 206 40" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round" opacity=".88"/>
+  <circle cx="22" cy="76" r="14" fill="url(#chainOrb)" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="68" cy="48" r="16" fill="url(#chainOrb)" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="110" cy="60" r="20" fill="url(#chainOrb)" stroke="#FFEAB6" stroke-width="4"/>
+  <circle cx="152" cy="74" r="16" fill="url(#chainOrb)" stroke="#FFFFFF" stroke-width="3"/>
+  <circle cx="198" cy="44" r="14" fill="url(#chainOrb)" stroke="#FFFFFF" stroke-width="3"/>
+</svg>

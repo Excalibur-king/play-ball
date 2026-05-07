@@ -1,5 +1,5 @@
 :root {
-  --bg: #8fd4ff;
+  --bg: #0d1419;
   --panel: rgba(255, 239, 191, 0.94);
   --panel-strong: rgba(255, 245, 216, 0.98);
   --line: #6f4a2b;
@@ -11,10 +11,19 @@
   --danger: #c94848;
   --text: #3f2a17;
   --muted: #715037;
+  --menu-ink: #f8ead1;
+  --menu-muted: rgba(248, 234, 209, 0.72);
+  --menu-border: rgba(255, 190, 115, 0.24);
+  --menu-panel: rgba(17, 24, 30, 0.82);
+  --menu-panel-strong: rgba(26, 34, 41, 0.92);
+  --menu-gold: #ffc46b;
+  --menu-gold-deep: #f07e34;
+  --menu-lava: #f35d3d;
+  --menu-sky: #77d0ff;
   color: var(--text);
   background: var(--bg);
   font-family:
-    Inter, ui-rounded, "Comic Sans MS", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+    "Avenir Next", "Trebuchet MS", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: geometricPrecision;
 }
@@ -27,10 +36,91 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 button {
   border: 0;
   font: inherit;
+}
+
+.strategy-card-art {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(88, 46, 24, 0.34);
+  border-radius: 0.85rem;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 251, 236, 0.72), transparent 48%),
+    linear-gradient(180deg, rgba(77, 27, 14, 0.18), rgba(45, 20, 10, 0.38));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.28);
+}
+
+.strategy-card-art.attack {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 241, 205, 0.74), transparent 48%),
+    linear-gradient(180deg, rgba(149, 56, 24, 0.22), rgba(95, 24, 14, 0.48));
+}
+
+.strategy-card-art.energy {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 251, 214, 0.76), transparent 48%),
+    linear-gradient(180deg, rgba(179, 129, 18, 0.18), rgba(124, 74, 16, 0.42));
+}
+
+.strategy-card-art.defense {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 232, 202, 0.72), transparent 48%),
+    linear-gradient(180deg, rgba(116, 72, 34, 0.2), rgba(68, 37, 21, 0.5));
+}
+
+.strategy-card-art.emergency {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 234, 216, 0.74), transparent 48%),
+    linear-gradient(180deg, rgba(170, 65, 37, 0.18), rgba(113, 29, 23, 0.48));
+}
+
+.strategy-card-art.pivot {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(232, 251, 255, 0.72), transparent 48%),
+    linear-gradient(180deg, rgba(72, 123, 145, 0.16), rgba(43, 80, 102, 0.46));
+}
+
+.strategy-card-art-image,
+.strategy-card-art-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.strategy-card-art-image {
+  object-fit: cover;
+  user-select: none;
+}
+
+.strategy-card-art-fallback {
+  display: grid;
+  place-items: center;
+  color: rgba(255, 247, 225, 0.96);
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 0 rgba(70, 25, 16, 0.55);
+}
+
+.strategy-card-art-bg {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.strategy-card-art-bg .strategy-card-art-fallback {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 220, 160, 0.18), transparent 60%),
+    linear-gradient(180deg, rgba(40, 22, 12, 0.6), rgba(16, 10, 6, 0.9));
 }

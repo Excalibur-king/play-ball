@@ -1,0 +1,31 @@
+{
+  "combatBalance": {
+    "timeUnitSeconds": 4,
+    "standardTowerDps": 24,
+    "heavySiegeDpsToTowerDpsRatio": 1.55,
+    "enemySpeedMultiplier": 0.75,
+    "enemyTtkUnits": {
+      "normal": 1.15,
+      "fast": 0.82,
+      "heavy_attack": 2.25,
+      "flying": 1.05,
+      "boss": 10.5
+    },
+    "buildingTtdUnitsAgainstHeavy": {
+      "wall": 2,
+      "meleeTower": 1.05,
+      "rangedTower": 0.75,
+      "economy": 0.58,
+      "laserTower": 0.48
+    }
+  },
+  "activeStrategyDraw": {
+    "cost": 60,
+    "cooldownSeconds": 30
+  },
+  "runLoop": {
+    "initialReadySeconds": 10,
+    "postCardReadySeconds": 6,
+    "waveCardSelectSeconds": 8
+  }
+}

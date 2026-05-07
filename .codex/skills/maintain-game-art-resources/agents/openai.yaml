@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintain Game Art Resources"
+  short_description: "Wire, replace, and validate battle art assets."
+  default_prompt: "Use $maintain-game-art-resources to replace or add battle art assets in this repository and wire them into the Phaser runtime."

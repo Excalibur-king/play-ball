@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="176" height="176" viewBox="0 0 176 176">
+  <defs>
+    <linearGradient id="smasherBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7b756f"/>
+      <stop offset="0.45" stop-color="#413935"/>
+      <stop offset="1" stop-color="#1d1719"/>
+    </linearGradient>
+    <linearGradient id="smasherCore" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff1b9"/>
+      <stop offset="0.4" stop-color="#ffb04a"/>
+      <stop offset="1" stop-color="#d93a1e"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M62 150 L78 121 L98 121 L114 150" stroke="#22181b" stroke-width="14" stroke-linecap="round"/>
+    <path d="M45 83 C45 46 62 28 88 28 C114 28 131 47 131 83 C131 118 114 140 88 140 C62 140 45 118 45 83 Z" fill="url(#smasherBody)" stroke="#93877d" stroke-width="5"/>
+    <path d="M22 89 L50 82 L56 111 L29 121 Z" fill="url(#smasherBody)" stroke="#8b7d74" stroke-width="5"/>
+    <path d="M154 89 L126 82 L120 111 L147 121 Z" fill="url(#smasherBody)" stroke="#8b7d74" stroke-width="5"/>
+    <path d="M63 94 L72 122" stroke="#ffb65a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M113 94 L104 122" stroke="#ffb65a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M63 71 C63 57 74 46 88 46 C102 46 113 57 113 71 C113 86 102 96 88 96 C74 96 63 86 63 71 Z" fill="#271d20" stroke="#a69384" stroke-width="4"/>
+    <path d="M75 86 L88 57 L101 86 Z" fill="url(#smasherCore)" stroke="#ffe1a2" stroke-width="3"/>
+    <circle cx="72" cy="57" r="5" fill="#fff5d3"/>
+    <circle cx="104" cy="57" r="5" fill="#fff5d3"/>
+    <circle cx="72" cy="58" r="2.3" fill="#281619"/>
+    <circle cx="104" cy="58" r="2.3" fill="#281619"/>
+    <path d="M73 107 C81 113 95 113 103 107" stroke="#2d1718" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>

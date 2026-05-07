@@ -1,31 +1,29 @@
 import type { Plant } from '@tower-rogue/game-core'
 import Phaser from 'phaser'
+import { assetManifest } from '../../assets/assetManifest'
 import { gardenPalette } from '../theme'
 
-type PlantPiece =
-  | Phaser.GameObjects.Arc
-  | Phaser.GameObjects.Ellipse
-  | Phaser.GameObjects.Rectangle
-  | Phaser.GameObjects.Image
-  | Phaser.GameObjects.Sprite
-
 type PlantView = {
-  componentsKey: string
-  pieces: PlantPiece[]
+  container: Phaser.GameObjects.Container
+  body: Phaser.GameObjects.Sprite
   hpBack: Phaser.GameObjects.Rectangle
   hp: Phaser.GameObjects.Rectangle
-  mainSprite?: Phaser.GameObjects.Sprite
+  type: Plant['type']
+  upgraded: boolean
+  attackSprite?: Phaser.GameObjects.Sprite
+  upgradeRing?: Phaser.GameObjects.Arc
 }
 
-// Mirrors game-core plants into disposable Phaser view objects.
-// The simulation owns positions and health; this class owns idle/recoil animation only.
+// Mirrors game-core buildings into disposable Phaser view objects.
+// The simulation owns positions and health; this class only adapts manifest
+// visuals into containers, sprites, and lightweight feedback effects.
 export class PlantRenderer {
   private readonly views = new Map<string, PlantView>()
 
   constructor(private readonly scene: Phaser.Scene) {}
 
   sync(plants: Plant[]) {
-    const currentIds = new Set(plants.map((plant) => plant.id))
+    const currentIds = new Set(plants.filter((plant) => shouldRenderPlantBase(plant)).map((plant) => plant.id))
 
     for (const [id, view] of this.views) {
       if (!currentIds.has(id)) {
@@ -35,40 +33,95 @@ export class PlantRenderer {
     }
 
     for (const plant of plants) {
+      if (!shouldRenderPlantBase(plant)) {
+        continue
+      }
       this.syncPlant(plant)
     }
   }
 
   playShooterRecoil(plants: Plant[], from: { x: number; y: number }) {
-    const plant = plants.find((item) => Math.abs(item.x + 30 - from.x) < 10 && Math.abs(item.y - 7 - from.y) < 12)
+    const plant = plants.find(
+      (item) => shouldRenderPlantBase(item) && Math.abs(item.x + 30 - from.x) < 10 && Math.abs(item.y - 7 - from.y) < 34
+    )
+    const view = plant ? this.views.get(plant.id) : undefined
 
-    if (!plant) {
+    if (!plant || !view) {
       return
     }
 
-    const view = this.views.get(plant.id)
-
-    if (!view) {
+    const recoil = assetManifest.buildings[plant.type].recoil
+    if (!recoil) {
       return
     }
 
-    if (view.mainSprite) {
-      view.mainSprite.play('pea-shooter-shoot', true)
-      view.mainSprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        if (view.mainSprite?.active) {
-          view.mainSprite.play('pea-shooter-idle', true)
-        }
-      })
-    }
+    const baseX = view.body.x
+    const baseScaleX = view.body.scaleX
 
     this.scene.tweens.add({
-      targets: view.pieces,
-      x: '-=6',
-      scaleX: 0.96,
-      duration: 70,
+      targets: view.body,
+      x: baseX - recoil.distance,
+      scaleX: baseScaleX * recoil.scaleX,
+      duration: recoil.duration,
       yoyo: true,
-      ease: 'Quad.easeOut'
+      ease: 'Quad.easeOut',
+      onComplete: () => {
+        view.body.setX(baseX)
+        view.body.setScale(baseScaleX, view.body.scaleY)
+      }
     })
+  }
+
+  playAttackAnimation(plants: Plant[], from: { x: number; y: number }) {
+    const plant = plants.find(
+      (item) => shouldRenderPlantBase(item) && Math.abs(item.x + 30 - from.x) < 10 && Math.abs(item.y - 7 - from.y) < 34
+    )
+    const view = plant ? this.views.get(plant.id) : undefined
+
+    if (!plant || !view) {
+      return
+    }
+
+    const attackAnimation = assetManifest.buildings[plant.type].attackAnimation
+    if (!attackAnimation) {
+      return
+    }
+
+    if (view.attackSprite) {
+      view.attackSprite.destroy()
+      view.attackSprite = undefined
+    }
+
+    view.body.setVisible(false)
+    const attackSprite = this.scene.add.sprite(
+      0,
+      attackAnimation.bodyOffsetY,
+      attackAnimation.body.textureKey,
+      attackAnimation.body.frame
+    )
+    attackSprite.setOrigin(0.5, 1)
+    const lockAttackSpriteSize = () => {
+      attackSprite.setDisplaySize(attackAnimation.displayWidth, attackAnimation.displayHeight)
+    }
+
+    lockAttackSpriteSize()
+    attackSprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, lockAttackSpriteSize)
+    view.container.add(attackSprite)
+    view.attackSprite = attackSprite
+
+    if (attackAnimation.body.animationKey) {
+      attackSprite.play(attackAnimation.body.animationKey)
+      attackSprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        if (view.attackSprite === attackSprite) {
+          attackSprite.destroy()
+          view.attackSprite = undefined
+          view.body.setVisible(true)
+        }
+      })
+      return
+    }
+
+    view.body.setVisible(true)
   }
 
   clear() {
@@ -80,9 +133,8 @@ export class PlantRenderer {
 
   private syncPlant(plant: Plant) {
     let view = this.views.get(plant.id)
-    const componentsKey = plant.components.join('+')
 
-    if (view && view.componentsKey !== componentsKey) {
+    if (view && view.type !== plant.type) {
       destroyPlantView(view)
       this.views.delete(plant.id)
       view = undefined
@@ -93,146 +145,85 @@ export class PlantRenderer {
       this.views.set(plant.id, view)
     }
 
+    const visual = assetManifest.buildings[plant.type]
     const hpRatio = Phaser.Math.Clamp(plant.hp / plant.maxHp, 0, 1)
+
+    view.container.setPosition(plant.x, plant.y)
+    view.container.setDepth(10 + plant.row)
+    view.hpBack.setPosition(plant.x, plant.y - visual.hpOffsetY)
     view.hp.setSize(44 * hpRatio, 5)
-    view.hp.setPosition(plant.x - 22 + 22 * hpRatio, plant.y - 44)
-
-    for (const piece of view.pieces) {
-      piece.setDepth(10 + plant.row)
-    }
-
+    view.hp.setPosition(plant.x - 22 + 22 * hpRatio, plant.y - visual.hpOffsetY)
     view.hpBack.setDepth(20 + plant.row)
     view.hp.setDepth(21 + plant.row)
+
+    if (view.upgraded !== plant.upgraded) {
+      this.syncUpgradeRing(view, plant)
+    }
   }
 
-  private createPlantView(plant: Plant): PlantView {
-    const pieces: PlantPiece[] = []
-    const components = plant.components.length > 0 ? plant.components : [plant.type]
-    const isFused = components.length > 1
-    const hasPea = components.includes('pea-shooter')
-    const hasSunflower = components.includes('sunflower')
-    const hasWallNut = components.includes('wall-nut')
-    const fusionColor = getFusionColor(components)
+  private createPlantView(plant: Plant) {
+    const visual = assetManifest.buildings[plant.type]
+    const container = this.scene.add.container(plant.x, plant.y)
+    const shadow = this.scene.add.ellipse(0, visual.shadow.offsetY, visual.shadow.width, visual.shadow.height, gardenPalette.shadow, visual.shadow.alpha)
+    const body = this.scene.add.sprite(0, visual.bodyOffsetY, visual.body.textureKey, visual.body.frame)
 
-    const shadow = this.scene.add.ellipse(plant.x, plant.y + 36, isFused ? 80 : 68, 15, gardenPalette.shadow, 0.18)
-    pieces.push(shadow)
+    body.setOrigin(0.5, 1)
+    body.setDisplaySize(visual.displayWidth, visual.displayHeight)
+    container.add([shadow, body])
 
-    if (isFused) {
-      const aura = this.scene.add.circle(plant.x, plant.y, 42, fusionColor, 0.16)
-      aura.setStrokeStyle(3, fusionColor, 0.62)
-      pieces.push(aura)
-    }
-
-    if (hasWallNut) {
-      const shield = this.scene.add.circle(plant.x, plant.y + 2, isFused ? 38 : 34, 0x8f623d, isFused ? 0.34 : 0.14)
-      shield.setStrokeStyle(isFused ? 4 : 0, 0xffe1a3, isFused ? 0.74 : 0)
-      pieces.push(shield)
-    }
-
-    if (hasSunflower) {
-      const glow = this.scene.add.circle(plant.x, plant.y, 34, gardenPalette.sun, 0.16)
-      pieces.push(glow)
-
-      if (!hasPea) {
-        const sprite = this.scene.add
-          .image(plant.x, hasWallNut ? plant.y - 13 : plant.y, 'plant-sunflower')
-          .setDisplaySize(hasWallNut ? 54 : isFused ? 68 : 76, hasWallNut ? 54 : isFused ? 68 : 76)
-        pieces.push(sprite)
-      } else {
-        this.addSunMotifs(plant, pieces)
-      }
-    }
-
-    if (hasPea) {
-      const glow = this.scene.add.circle(plant.x + 4, plant.y - 5, 34, gardenPalette.plantHealth, 0.14)
-      const sprite = this.scene.add
-        .sprite(plant.x + 6, plant.y + 2, 'plants-premium', 'pea-shooter/idle/0001')
-        .setDisplaySize(isFused ? 124 : 116, isFused ? 112 : 104)
-        .play('pea-shooter-idle')
-      pieces.push(glow, sprite)
-
-      if (hasWallNut) {
-        this.addArmorPlates(plant, pieces)
-      }
-
-      this.startIdleAnimation(plant, pieces)
-
-      const hpBack = this.scene.add.rectangle(plant.x, plant.y - 44, 46, 5, gardenPalette.healthBack, 0.72)
-      const hp = this.scene.add.rectangle(plant.x, plant.y - 44, 44, 5, gardenPalette.plantHealth, 1)
-
-      return { componentsKey: plant.components.join('+'), pieces, hpBack, hp, mainSprite: sprite }
-    }
-
-    if (hasWallNut) {
-      const sprite = this.scene.add
-        .image(plant.x, hasSunflower ? plant.y + 10 : plant.y, 'plant-wall-nut')
-        .setDisplaySize(isFused ? 78 : 70, isFused ? 88 : 82)
-      pieces.push(sprite)
-
-      if (hasSunflower) {
-        this.addSunMotifs(plant, pieces)
-      }
-    }
-
-    this.startIdleAnimation(plant, pieces)
-
-    const hpBack = this.scene.add.rectangle(plant.x, plant.y - 44, 46, 5, gardenPalette.healthBack, 0.72)
-    const hp = this.scene.add.rectangle(plant.x, plant.y - 44, 44, 5, gardenPalette.plantHealth, 1)
-
-    return { componentsKey: plant.components.join('+'), pieces, hpBack, hp }
-  }
-
-  private addSunMotifs(plant: Plant, pieces: PlantPiece[]) {
-    pieces.push(
-      this.scene.add.circle(plant.x - 27, plant.y - 30, 7, gardenPalette.sun, 0.92),
-      this.scene.add.circle(plant.x + 29, plant.y - 28, 5, gardenPalette.sun, 0.82),
-      this.scene.add.circle(plant.x + 33, plant.y + 10, 4, gardenPalette.sun, 0.72)
-    )
-  }
-
-  private addArmorPlates(plant: Plant, pieces: PlantPiece[]) {
-    const leftPlate = this.scene.add.rectangle(plant.x - 28, plant.y + 4, 12, 36, 0x9a6a42, 0.78)
-    const rightPlate = this.scene.add.rectangle(plant.x + 32, plant.y + 4, 12, 36, 0x9a6a42, 0.78)
-    leftPlate.setStrokeStyle(2, 0xffdf9a, 0.72)
-    rightPlate.setStrokeStyle(2, 0xffdf9a, 0.72)
-    pieces.push(leftPlate, rightPlate)
-  }
-
-  private startIdleAnimation(plant: Plant, pieces: PlantPiece[]) {
-    // Idle motion is intentionally view-only. It should never change simulation positions.
-    const components = plant.components.length > 0 ? plant.components : [plant.type]
-
-    if (components.includes('sunflower') && !components.includes('pea-shooter')) {
-      this.scene.tweens.add({
-        targets: pieces,
-        y: '+=3',
-        scaleX: 1.03,
-        scaleY: 0.97,
-        duration: 1100,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut'
-      })
-      return
-    }
-
-    if (components.includes('pea-shooter')) {
-      this.scene.tweens.add({
-        targets: pieces,
-        y: '+=2',
-        duration: 900,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut'
-      })
-      return
+    if (visual.body.animationKey) {
+      body.play(visual.body.animationKey)
     }
 
     this.scene.tweens.add({
-      targets: pieces,
-      scaleX: 1.015,
-      scaleY: 0.985,
-      duration: 1350,
+      targets: body,
+      y: visual.bodyOffsetY - visual.idleBob.distance,
+      duration: visual.idleBob.duration,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    })
+
+    const hpBack = this.scene.add.rectangle(plant.x, plant.y - visual.hpOffsetY, 46, 5, gardenPalette.healthBack, 0.72)
+    const hp = this.scene.add.rectangle(plant.x, plant.y - visual.hpOffsetY, 44, 5, gardenPalette.plantHealth, 1)
+
+    const view: PlantView = {
+      container,
+      body,
+      hpBack,
+      hp,
+      type: plant.type,
+      upgraded: false
+    }
+
+    this.syncUpgradeRing(view, plant)
+    return view
+  }
+
+  private syncUpgradeRing(view: PlantView, plant: Plant) {
+    if (view.upgradeRing) {
+      view.container.remove(view.upgradeRing, true)
+      view.upgradeRing = undefined
+    }
+
+    if (!plant.upgraded) {
+      view.upgraded = false
+      return
+    }
+
+    const visual = assetManifest.buildings[plant.type]
+    const ring = this.scene.add.circle(0, visual.upgradeRing.offsetY, visual.upgradeRing.radius, 0xffffff, 0)
+    ring.setStrokeStyle(3, 0xffef9a, 0.78)
+    view.container.add(ring)
+    view.upgradeRing = ring
+    view.upgraded = true
+
+    this.scene.tweens.add({
+      targets: ring,
+      alpha: 0.45,
+      scaleX: 1.06,
+      scaleY: 1.06,
+      duration: 760,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'
@@ -240,23 +231,21 @@ export class PlantRenderer {
   }
 }
 
-function getFusionColor(components: Plant['components']) {
-  if (components.includes('pea-shooter') && components.includes('sunflower')) {
-    return 0xffd85c
-  }
-
-  if (components.includes('pea-shooter') && components.includes('wall-nut')) {
-    return 0x9fdb74
-  }
-
-  return 0xffb45e
-}
-
 function destroyPlantView(view: PlantView) {
-  for (const piece of view.pieces) {
-    piece.destroy()
-  }
-
+  view.attackSprite?.destroy()
+  view.container.destroy(true)
   view.hpBack.destroy()
   view.hp.destroy()
+}
+
+function shouldRenderPlantBase(plant: Plant) {
+  if (plant.type === 'lava_wall' && plant.temporaryUntilWave !== undefined) {
+    return false
+  }
+
+  if (plant.type === 'melee_turret' && plant.temporaryUntilTime !== undefined) {
+    return false
+  }
+
+  return true
 }

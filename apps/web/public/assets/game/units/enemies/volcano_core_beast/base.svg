@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="beastBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a837b"/>
+      <stop offset="0.45" stop-color="#4c4240"/>
+      <stop offset="1" stop-color="#21191d"/>
+    </linearGradient>
+    <radialGradient id="beastCore" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#fff9d9"/>
+      <stop offset="0.3" stop-color="#ffc45d"/>
+      <stop offset="0.7" stop-color="#ff7e31"/>
+      <stop offset="1" stop-color="#c82a18"/>
+    </radialGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M62 165 L79 130 L112 130 L129 165" stroke="#22181c" stroke-width="18" stroke-linecap="round"/>
+    <path d="M39 93 C39 49 63 26 96 26 C129 26 153 49 153 93 C153 137 129 165 96 165 C63 165 39 137 39 93 Z" fill="url(#beastBody)" stroke="#a19589" stroke-width="6"/>
+    <path d="M33 86 L58 63 L63 109 L41 129 Z" fill="#30262a" stroke="#8f8178" stroke-width="5"/>
+    <path d="M159 86 L134 63 L129 109 L151 129 Z" fill="#30262a" stroke="#8f8178" stroke-width="5"/>
+    <path d="M58 57 L73 35 L89 50 L80 76 Z" fill="#2b2125" stroke="#98897d" stroke-width="5"/>
+    <path d="M134 57 L119 35 L103 50 L112 76 Z" fill="#2b2125" stroke="#98897d" stroke-width="5"/>
+    <path d="M62 102 C62 82 77 68 96 68 C115 68 130 82 130 102 C130 124 115 141 96 141 C77 141 62 124 62 102 Z" fill="#271e22" stroke="#ae9d8f" stroke-width="5"/>
+    <path d="M78 121 L96 79 L114 121 Z" fill="url(#beastCore)" stroke="#ffe5ab" stroke-width="4"/>
+    <circle cx="73" cy="69" r="6" fill="#fff5d6"/>
+    <circle cx="119" cy="69" r="6" fill="#fff5d6"/>
+    <circle cx="73" cy="70" r="2.5" fill="#28161a"/>
+    <circle cx="119" cy="70" r="2.5" fill="#28161a"/>
+    <path d="M74 151 C83 158 109 158 118 151" stroke="#2e1718" stroke-width="6" stroke-linecap="round"/>
+    <path d="M85 17 L96 31 L107 17" stroke="#ffbe59" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="96" cy="109" r="56" fill="#ff8d3f" opacity="0.08"/>
+  </g>
+</svg>

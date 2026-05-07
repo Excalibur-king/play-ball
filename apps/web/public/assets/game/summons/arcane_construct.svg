@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <defs>
+    <linearGradient id="constructStone" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#5B3F8C"/>
+      <stop offset="1" stop-color="#1A1131"/>
+    </linearGradient>
+    <radialGradient id="constructCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFF5C8"/>
+      <stop offset="0.45" stop-color="#FFA8DA"/>
+      <stop offset="1" stop-color="#5C1F88"/>
+    </radialGradient>
+  </defs>
+  <rect x="47" y="38" width="86" height="104" rx="18" fill="url(#constructStone)" stroke="#F0C56A" stroke-width="6"/>
+  <rect x="65" y="66" width="50" height="45" rx="8" fill="url(#constructCore)" stroke="#FFD0F0" stroke-width="4"/>
+  <rect x="27" y="72" width="25" height="56" rx="10" fill="#272239" stroke="#D78238" stroke-width="5"/>
+  <rect x="128" y="72" width="25" height="56" rx="10" fill="#272239" stroke="#D78238" stroke-width="5"/>
+  <rect x="58" y="137" width="23" height="25" rx="7" fill="#1d1a1f"/>
+  <rect x="99" y="137" width="23" height="25" rx="7" fill="#1d1a1f"/>
+  <circle cx="73" cy="55" r="5" fill="#FFE8B8"/>
+  <circle cx="107" cy="55" r="5" fill="#FFE8B8"/>
+  <path d="M75 90c6 6 24 6 30 0M82 80h16" stroke="#3A1A5C" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -3,9 +3,9 @@
     "id": "volcano",
     "name": "火山",
     "theme": "熔岩、黑曜石、火山灰和高温喷口",
-    "laneCount": 3,
+    "laneCount": 5,
     "baseHp": 10,
-    "initialPurchasePower": 175,
+    "initialPurchasePower": 240,
     "runTimeMinutes": [
       2,
       5

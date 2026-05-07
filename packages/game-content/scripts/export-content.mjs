@@ -55,9 +55,36 @@ function assertJsonSafe(name, value) {
 const mapIds = assertUniqueIds('maps', contentBundle.maps)
 const buildingIds = assertUniqueIds('buildings', contentBundle.buildings)
 const enemyIds = assertUniqueIds('enemies', contentBundle.enemies)
+assertUniqueIds('enemyBalanceProfiles', contentBundle.enemyBalanceProfiles)
 assertUniqueIds('cards', contentBundle.cards)
 assertUniqueIds('waves', contentBundle.waves)
 assertUniqueIds('directorRules', contentBundle.directorRules)
+
+assertNumberRange('aiStrategy.modelTuning.temperature', contentBundle.aiStrategy.modelTuning.temperature, 0, 2)
+assertPositiveNumber('aiStrategy.modelTuning.maxTokens', contentBundle.aiStrategy.modelTuning.maxTokens)
+assertPositiveNumber('gameplay.combatBalance.timeUnitSeconds', contentBundle.gameplay.combatBalance.timeUnitSeconds)
+assertPositiveNumber('gameplay.combatBalance.standardTowerDps', contentBundle.gameplay.combatBalance.standardTowerDps)
+assertPositiveNumber(
+  'gameplay.combatBalance.heavySiegeDpsToTowerDpsRatio',
+  contentBundle.gameplay.combatBalance.heavySiegeDpsToTowerDpsRatio
+)
+for (const role of ['normal', 'fast', 'heavy_attack', 'flying', 'boss']) {
+  assertPositiveNumber(
+    `gameplay.combatBalance.enemyTtkUnits.${role}`,
+    contentBundle.gameplay.combatBalance.enemyTtkUnits[role]
+  )
+}
+for (const key of ['wall', 'meleeTower', 'rangedTower', 'economy', 'laserTower']) {
+  assertPositiveNumber(
+    `gameplay.combatBalance.buildingTtdUnitsAgainstHeavy.${key}`,
+    contentBundle.gameplay.combatBalance.buildingTtdUnitsAgainstHeavy[key]
+  )
+}
+assertPositiveNumber('gameplay.activeStrategyDraw.cost', contentBundle.gameplay.activeStrategyDraw.cost)
+assertPositiveNumber('gameplay.activeStrategyDraw.cooldownSeconds', contentBundle.gameplay.activeStrategyDraw.cooldownSeconds)
+assertPositiveNumber('gameplay.runLoop.initialReadySeconds', contentBundle.gameplay.runLoop.initialReadySeconds)
+assertPositiveNumber('gameplay.runLoop.postCardReadySeconds', contentBundle.gameplay.runLoop.postCardReadySeconds)
+assertPositiveNumber('gameplay.runLoop.waveCardSelectSeconds', contentBundle.gameplay.runLoop.waveCardSelectSeconds)
 
 for (const map of contentBundle.maps) {
   assertPositiveNumber(`map "${map.id}" laneCount`, map.laneCount)
@@ -80,6 +107,14 @@ for (const building of contentBundle.buildings) {
     assertPositiveNumber(`building "${building.id}" attackPower`, building.attackPower)
     assertPositiveNumber(`building "${building.id}" attackInterval`, building.attackInterval)
     assertPositiveNumber(`building "${building.id}" attackRange`, building.attackRange)
+
+    if ((building.attackKind === 'projectile' || building.attackKind === 'laser') && typeof building.projectileKey !== 'string') {
+      fail(`building "${building.id}" must define projectileKey for attackKind "${String(building.attackKind)}"`)
+    }
+
+    if (building.attackKind === 'laser') {
+      assertPositiveNumber(`building "${building.id}" charges`, building.charges)
+    }
   }
 
   if (building.upgrade) {
@@ -90,10 +125,27 @@ for (const building of contentBundle.buildings) {
 for (const enemy of contentBundle.enemies) {
   assertPositiveNumber(`enemy "${enemy.id}" hp`, enemy.hp)
   assertPositiveNumber(`enemy "${enemy.id}" speed`, enemy.speed)
+  assertPositiveNumber(`enemy "${enemy.id}" directorCost`, enemy.directorCost)
   assertNumberRange(`enemy "${enemy.id}" buildingDamage`, enemy.buildingDamage, 0, Number.MAX_SAFE_INTEGER)
   assertNumberRange(`enemy "${enemy.id}" attackInterval`, enemy.attackInterval, 0, Number.MAX_SAFE_INTEGER)
   assertPositiveNumber(`enemy "${enemy.id}" baseDamage`, enemy.baseDamage)
   assertPositiveNumber(`enemy "${enemy.id}" firstWave`, enemy.firstWave)
+}
+
+for (const profile of contentBundle.enemyBalanceProfiles) {
+  validateEnemyBalanceModifier(`enemyBalanceProfile "${profile.id}".globalModifiers`, profile.globalModifiers)
+
+  for (const [role, modifiers] of Object.entries(profile.roleModifiers ?? {})) {
+    validateEnemyBalanceModifier(`enemyBalanceProfile "${profile.id}".roleModifiers.${role}`, modifiers)
+  }
+
+  for (const [enemyId, modifiers] of Object.entries(profile.enemyModifiers ?? {})) {
+    if (!enemyIds.has(enemyId)) {
+      fail(`enemyBalanceProfile "${profile.id}" references missing enemy "${enemyId}"`)
+    }
+
+    validateEnemyBalanceModifier(`enemyBalanceProfile "${profile.id}".enemyModifiers.${enemyId}`, modifiers)
+  }
 }
 
 for (const card of contentBundle.cards) {
@@ -104,6 +156,7 @@ for (const card of contentBundle.cards) {
   for (const target of possibleBuildingTargets) {
     const allowedNonBuildingTargets = new Set([
       'all_buildings',
+      'all_attack_buildings',
       'all_enemies',
       'highest_pressure_route',
       'survival',
@@ -122,6 +175,7 @@ for (const wave of contentBundle.waves) {
   }
   assertPositiveNumber(`wave "${wave.id}" index`, wave.index)
   assertPositiveNumber(`wave "${wave.id}" durationSeconds`, wave.durationSeconds)
+  assertNumberRange(`wave "${wave.id}" directorReserveBudget`, wave.directorReserveBudget, 0, Number.MAX_SAFE_INTEGER)
 
   if (wave.bossId && !enemyIds.has(wave.bossId)) {
     fail(`wave "${wave.id}" references missing bossId "${wave.bossId}"`)
@@ -153,9 +207,12 @@ const files = {
   'maps.json': contentBundle.maps,
   'buildings.json': contentBundle.buildings,
   'enemies.json': contentBundle.enemies,
+  'enemyBalanceProfiles.json': contentBundle.enemyBalanceProfiles,
   'cards.json': contentBundle.cards,
   'waves.json': contentBundle.waves,
   'directorRules.json': contentBundle.directorRules,
+  'aiStrategy.json': contentBundle.aiStrategy,
+  'gameplay.json': contentBundle.gameplay,
   'content.json': {
     generatedAt,
     ...contentBundle
@@ -167,9 +224,12 @@ const files = {
       maps: contentBundle.maps.length,
       buildings: contentBundle.buildings.length,
       enemies: contentBundle.enemies.length,
+      enemyBalanceProfiles: contentBundle.enemyBalanceProfiles.length,
       cards: contentBundle.cards.length,
       waves: contentBundle.waves.length,
-      directorRules: contentBundle.directorRules.length
+      directorRules: contentBundle.directorRules.length,
+      aiStrategy: 1,
+      gameplay: 1
     }
   }
 }
@@ -182,3 +242,27 @@ for (const [fileName, data] of Object.entries(files)) {
 }
 
 console.log(`Exported ${Object.keys(files).length} content files to ${generatedDir}`)
+
+function validateEnemyBalanceModifier(label, modifiers) {
+  if (!modifiers) {
+    return
+  }
+
+  if (modifiers.hpMultiplier !== undefined) assertNumberRange(`${label}.hpMultiplier`, modifiers.hpMultiplier, 0.1, 5)
+  if (modifiers.speedMultiplier !== undefined) assertNumberRange(`${label}.speedMultiplier`, modifiers.speedMultiplier, 0.1, 5)
+  if (modifiers.buildingDamageMultiplier !== undefined) {
+    assertNumberRange(`${label}.buildingDamageMultiplier`, modifiers.buildingDamageMultiplier, 0, 5)
+  }
+  if (modifiers.baseDamageMultiplier !== undefined) {
+    assertNumberRange(`${label}.baseDamageMultiplier`, modifiers.baseDamageMultiplier, 0.1, 5)
+  }
+  if (modifiers.attackIntervalMultiplier !== undefined) {
+    assertNumberRange(`${label}.attackIntervalMultiplier`, modifiers.attackIntervalMultiplier, 0.1, 5)
+  }
+  if (modifiers.directorCostMultiplier !== undefined) {
+    assertNumberRange(`${label}.directorCostMultiplier`, modifiers.directorCostMultiplier, 0.1, 5)
+  }
+  if (modifiers.firstWaveOffset !== undefined && !isFiniteNumber(modifiers.firstWaveOffset)) {
+    fail(`${label}.firstWaveOffset must be a finite number, got ${String(modifiers.firstWaveOffset)}`)
+  }
+}

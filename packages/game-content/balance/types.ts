@@ -17,6 +17,7 @@ export type MapDef = {
 
 export type BuildingType = 'energy' | 'attack' | 'defense'
 export type AttackDirection = 'up' | 'down' | 'left' | 'right'
+export type AttackKind = 'melee' | 'projectile' | 'laser'
 
 export type BuildingUpgradeDef = {
   cost: number
@@ -38,6 +39,9 @@ export type BuildingDef = {
   attackInterval?: number
   attackRange?: number
   attackDirection?: AttackDirection
+  attackKind?: AttackKind
+  charges?: number
+  projectileKey?: string
   canBlockGround: boolean
   canTargetGround: boolean
   canTargetFlying: boolean
@@ -55,6 +59,7 @@ export type EnemyDef = {
   id: string
   name: string
   role: EnemyRole
+  directorCost: number
   hp: number
   speed: number
   buildingDamage: number
@@ -67,6 +72,26 @@ export type EnemyDef = {
   counterBy: string[]
   visualRule: string
   firstWave: number
+  status: ContentStatus
+  notes?: string
+}
+
+export type EnemyBalanceScalarModifier = {
+  hpMultiplier?: number
+  speedMultiplier?: number
+  buildingDamageMultiplier?: number
+  baseDamageMultiplier?: number
+  attackIntervalMultiplier?: number
+  directorCostMultiplier?: number
+  firstWaveOffset?: number
+}
+
+export type EnemyBalanceProfileDef = {
+  id: string
+  name: string
+  globalModifiers?: EnemyBalanceScalarModifier
+  roleModifiers?: Partial<Record<EnemyRole, EnemyBalanceScalarModifier>>
+  enemyModifiers?: Partial<Record<string, EnemyBalanceScalarModifier>>
   status: ContentStatus
   notes?: string
 }
@@ -110,18 +135,43 @@ export type WaveEnemyGroup = {
   interval: number
 }
 
+export type WavePhaseDef = {
+  id: string
+  label: string
+  startSecond: number
+  endSecond: number
+  description?: string
+}
+
+export type DirectorIntentDef =
+  | 'relief'
+  | 'probe_fast'
+  | 'probe_anti_air'
+  | 'pressure_economy'
+  | 'split_pressure'
+  | 'boss_setup'
+
+export type DirectorPolicyDef = {
+  allowedIntents?: readonly DirectorIntentDef[]
+  preferredIntents?: readonly DirectorIntentDef[]
+  maxSpendRatio?: number
+}
+
 export type WaveDef = {
   id: string
   mapId: string
   index: number
   durationSeconds: number
+  phases: WavePhaseDef[]
   enemyGroups: WaveEnemyGroup[]
+  directorReserveBudget: number
   bossId?: string
   rewardPurchasePower?: number
   clearRewardId?: string
   pressureGoal: string
   nextWaveHint: string
   aiDirectorAllowed: boolean
+  directorPolicy?: DirectorPolicyDef
   status: ContentStatus
   notes?: string
 }
@@ -136,12 +186,82 @@ export type DirectorRuleDef = {
   notes?: string
 }
 
+export type ActiveStrategyDrawDef = {
+  cost: number
+  cooldownSeconds: number
+}
+
+export type RunLoopDef = {
+  initialReadySeconds: number
+  postCardReadySeconds: number
+  waveCardSelectSeconds: number
+}
+
+export type CombatBalanceDef = {
+  timeUnitSeconds: number
+  standardTowerDps: number
+  heavySiegeDpsToTowerDpsRatio: number
+  enemySpeedMultiplier: number
+  enemyTtkUnits: Record<EnemyRole, number>
+  buildingTtdUnitsAgainstHeavy: {
+    wall: number
+    meleeTower: number
+    rangedTower: number
+    economy: number
+    laserTower: number
+  }
+}
+
+export type AiStrategyModelTuningDef = {
+  temperature: number
+  maxTokens: number
+}
+
+export type AiStrategyTaskContextDef = {
+  activeSkill: string
+  waveCleared: string
+}
+
+export type AiStrategySystemPromptDef = {
+  role: string
+  selectionTask: string
+  decisionConstraint: string
+  poolConstraint: string
+  jsonConstraint: string
+  outputSchema: string
+  slotCoverageConstraint: string
+  styleConstraint: string
+}
+
+export type AiStrategyPromptCopyDef = {
+  slotRules: readonly [string, string, string]
+  noProblemTagsText: string
+  language: string
+}
+
+export type AiStrategyConfigDef = {
+  modelTuning: AiStrategyModelTuningDef
+  taskContext: AiStrategyTaskContextDef
+  systemPrompt: AiStrategySystemPromptDef
+  promptCopy: AiStrategyPromptCopyDef
+  problemTagLabels: Record<PressureTag, string>
+}
+
+export type GameplayConfigDef = {
+  combatBalance: CombatBalanceDef
+  activeStrategyDraw: ActiveStrategyDrawDef
+  runLoop: RunLoopDef
+}
+
 export type ContentBundle = {
   version: string
   maps: readonly MapDef[]
   buildings: readonly BuildingDef[]
   enemies: readonly EnemyDef[]
+  enemyBalanceProfiles: readonly EnemyBalanceProfileDef[]
   cards: readonly StrategyCardDef[]
   waves: readonly WaveDef[]
   directorRules: readonly DirectorRuleDef[]
+  aiStrategy: AiStrategyConfigDef
+  gameplay: GameplayConfigDef
 }

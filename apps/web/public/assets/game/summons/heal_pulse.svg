@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <defs>
+    <radialGradient id="healCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.4" stop-color="#C5F4D6"/>
+      <stop offset="1" stop-color="#2EA77A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="80" cy="80" r="60" fill="url(#healCore)"/>
+  <path d="M64 32h32v32h32v32H96v32H64V96H32V64h32V32Z" fill="#F8FFEC" stroke="#1F6644" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="80" cy="80" r="10" fill="#FFE08A"/>
+</svg>
